@@ -10,18 +10,19 @@ public class MarkerSplitTest {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    MarkerFactory mf = new MarkerFactory();
 
     @Test
     public void test1() {
         final String strb = "1,,1,1,,45,30,2011-11-11T12:00:00-05:00,False,,,,,False,False,1,0,,,,,,,,,,,1,1";
         final byte[] b = strb.getBytes();
 
+    MarkerFactory mf = new MarkerFactory();
         final String str = ",1,";
+        final String splits[] = strb.split(str);
+        mf.setMaxListSize(splits.length);
         final Marker line = mf.create(0, b.length - 1);
         final byte[] token = TokenFactory.create(str);
         final FlyList<Marker> ms = line.splitAndGetMarkers(b, token, mf);
-        final String splits[] = strb.split(str);
         if (splits.length != ms.size()) {
             assertEquals(splits.length, ms.size());
         }
@@ -40,10 +41,12 @@ public class MarkerSplitTest {
         final byte[] b = strb.getBytes();
 
         final String str = ",";
+    MarkerFactory mf = new MarkerFactory();
+        final String splits[] = strb.split(str);
+        mf.setMaxListSize(splits.length);
         final Marker line = mf.create(0, b.length - 1);
         final byte[] token = TokenFactory.create(str);
         final FlyList<Marker> ms = line.splitAndGetMarkers(b, token, mf);
-        final String splits[] = strb.split(str);
         if (splits.length != ms.size()) {
             assertEquals(splits.length, ms.size());
         }
@@ -63,10 +66,12 @@ public class MarkerSplitTest {
         final byte[] b = strb.getBytes();
 
         final String str = ",";
+    MarkerFactory mf = new MarkerFactory();
+        final String splits[] = strb.split(str);
+        mf.setMaxListSize(splits.length);
         final Marker line = mf.create(0, b.length - 1);
         final byte[] token = TokenFactory.create(str);
         final FlyList<Marker> ms = line.splitAndGetMarkers(b, token, mf);
-        final String splits[] = strb.split(str);
         if (splits.length != ms.size()) {
             assertEquals(splits.length, ms.size());
         }
@@ -83,13 +88,14 @@ public class MarkerSplitTest {
     @Test
     public void test4() {
         final String strb = "a,,b,,c,,d,,";
-        final byte[] b = strb.getBytes();
-
         final String str = ",,";
+        final String splits[] = strb.split(str);
+        final byte[] b = strb.getBytes();
+    MarkerFactory mf = new MarkerFactory();
+        mf.setMaxListSize(splits.length);
         final Marker line = mf.create(0, b.length - 1);
         final byte[] token = TokenFactory.create(str);
         final FlyList<Marker> ms = line.splitAndGetMarkers(b, token, mf);
-        final String splits[] = strb.split(str);
         if (splits.length != ms.size()) {
             assertEquals(splits.length, ms.size());
         }
