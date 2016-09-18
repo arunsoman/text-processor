@@ -21,7 +21,7 @@ public class FlyList<T> implements List<T> {
     }
 
     public boolean add(final T element) {
-        if (size < array.length - 1) {
+        if (size < array.length) {
             array[size++] = element;
             return true;
         }
