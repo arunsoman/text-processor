@@ -11,9 +11,12 @@ public class FlyList<T> implements List<T> {
 
     private int size;
 
+    private FlyList() {
+    	array = null;
+    }
     @SuppressWarnings("unchecked")
     public FlyList(int size) {
-        size = 0;
+        this.size = 0;
         array = (T[]) new Object[size];
     }
 
