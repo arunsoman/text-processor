@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -44,9 +45,7 @@ import com.google.common.cache.RemovalNotification;
 import lombok.Data;
 
 @Component
-@Configuration
-@EnableConfigurationProperties
-@ConfigurationProperties(prefix="folder")
+@ConfigurationProperties(prefix = "folder")
 @Data
 public class FolderEventListener {
 
@@ -57,20 +56,21 @@ public class FolderEventListener {
 	private Map<WatchKey, List<OutputUnit>> hashCache = new HashMap<WatchKey, List<OutputUnit>>(10);
 	private long cacheCleanUpTime;
 	private int expireTimeInMinutes;
-	private List<Watch> watch;
+
 	
-@Configuration
-@EnableConfigurationProperties
-@ConfigurationProperties(prefix="watch")
+	private List<Watch> watch;
+
+
 	@Data
-	class Watch{
-		  private String source;
-		  private String   regex;
-		  private String   destination;
+	public static class Watch {
+		private String source;
+		private String regex;
+		private String destination;
+
 		public Watch() {
 			System.out.println("------------");
 		}
-		  
+
 	}
 
 	@PostConstruct
@@ -104,7 +104,7 @@ public class FolderEventListener {
 
 		}, 0, cacheCleanUpTime); // every 30s cache clean up will happen
 
-		for(Watch w: watch)
+		for (Watch w : watch)
 			try {
 				attachFolder(w.source, w.regex, w.destination);
 			} catch (IOException e) {
@@ -112,7 +112,6 @@ public class FolderEventListener {
 				e.printStackTrace();
 			}
 	}
-
 
 	private class OutputUnit {
 		private String regex;
@@ -128,7 +127,7 @@ public class FolderEventListener {
 			this.outFolder = outFolder;
 			this.cache = cache;
 			this.hashCache = hCache;
-			this.sourceFolder= sourceFolder;
+			this.sourceFolder = sourceFolder;
 		}
 
 	}
@@ -136,11 +135,11 @@ public class FolderEventListener {
 	public void attachFolder(String source, String regex, String outfolder) throws IOException {
 		WatchKey key = Paths.get(source).register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
 		List<OutputUnit> outputUnits = hashCache.get(key);
-		try{
-			outputUnits.add(new OutputUnit(regex, outfolder, cache, hashCache,source));
-		}catch (NullPointerException e) {
-		outputUnits = new ArrayList<OutputUnit>();
-		outputUnits.add(new OutputUnit(regex, outfolder, cache, hashCache,source));
+		try {
+			outputUnits.add(new OutputUnit(regex, outfolder, cache, hashCache, source));
+		} catch (NullPointerException e) {
+			outputUnits = new ArrayList<OutputUnit>();
+			outputUnits.add(new OutputUnit(regex, outfolder, cache, hashCache, source));
 		}
 		hashCache.put(key, outputUnits);
 
@@ -171,22 +170,23 @@ public class FolderEventListener {
 	private void createlinkonFileWriteComplete(String sourceFile, OutputUnit outputUnit)
 			throws InterruptedException, IOException, UnsupportedOperationException {
 		File file = new File(sourceFile);
-			RandomAccessFile raf = null;
-			try {
+		RandomAccessFile raf = null;
+		try {
 
-				raf = new RandomAccessFile(file, "rw");
-				Files.createSymbolicLink(Paths.get(outputUnit.outFolder.concat("/").concat(sourceFile)), Paths.get(outputUnit.sourceFolder.concat("/").concat(sourceFile)));
-			} catch (IOException e) {
-				if (file.exists()) {
-					outputUnit.cache.put(sourceFile, outputUnit);
-				} else {
-					System.out.println("File was deleted while copying: '" + file.getAbsolutePath() + "'");
-				}
-			} finally {
-				if (raf != null) {
-					raf.close();
-				}
+			raf = new RandomAccessFile(file, "rw");
+			Files.createSymbolicLink(Paths.get(outputUnit.outFolder.concat("/").concat(sourceFile)),
+					Paths.get(outputUnit.sourceFolder.concat("/").concat(sourceFile)));
+		} catch (IOException e) {
+			if (file.exists()) {
+				outputUnit.cache.put(sourceFile, outputUnit);
+			} else {
+				System.out.println("File was deleted while copying: '" + file.getAbsolutePath() + "'");
 			}
+		} finally {
+			if (raf != null) {
+				raf.close();
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -220,14 +220,14 @@ public class FolderEventListener {
 						if (kind == ENTRY_CREATE) {
 							List<OutputUnit> outputUnits = hashCache.get(take);
 							boolean found = false;
-							for(OutputUnit outputUnit: outputUnits){
-								if(fileName.matches(outputUnit.regex)){
+							for (OutputUnit outputUnit : outputUnits) {
+								if (fileName.matches(outputUnit.regex)) {
 									outputUnit.cache.put(fileName, outputUnit);
 									found = true;
 								}
 							}
-							if(!found){
-								System.out.println("no regx found for"+fileName);
+							if (!found) {
+								System.out.println("no regx found for" + fileName);
 							}
 						}
 						if (kind == ENTRY_MODIFY) {
