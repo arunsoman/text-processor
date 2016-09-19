@@ -12,6 +12,6 @@ import org.springframework.stereotype.Controller;
 public class Main {
 
     public static void main(final String[] args) throws Exception {
-        SpringApplication.run(Main.class, args).getBean(FolderEventListener.class);
+        SpringApplication.run(Main.class, args);
     }
 }
