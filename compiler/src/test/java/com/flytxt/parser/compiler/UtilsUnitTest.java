@@ -34,7 +34,6 @@ public class UtilsUnitTest {
 		try {
 			res = utils.complie(src, dest);
 		} catch (Exception e) {
-			e.printStackTrace();
 			return;
 		}
         fail("Should have produced  error text");
@@ -43,7 +42,7 @@ public class UtilsUnitTest {
     @Test
     public void testGoodClass() throws Exception {
         final Utils utils = new Utils();
-        final String src = "/tmp/java/demo/com/flytxt/utils/parser/Script.java";
+        final String src = "/tmp/java/demo/Script.java";
         final String dest = "/tmp/classes";
         final String res = utils.complie(src, dest);
         if (res != null) {
