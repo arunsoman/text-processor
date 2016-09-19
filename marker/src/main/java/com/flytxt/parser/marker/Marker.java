@@ -35,6 +35,7 @@ public class Marker {
 
         final FlyList<Marker> markers = mf.getArrayList();
         int currentIndex = index, lastIndex = index, tokenIndex;
+        boolean endReached = false;
 
         while (currentIndex - index <= length) {
             for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++) { // loop to check if token is present at position i
@@ -45,13 +46,14 @@ public class Marker {
                     currentIndex = currentIndex + tokenIndex;
                     lastIndex = currentIndex;
                 } else {
+                    endReached = true;
                     break;
                 }
             } else {
                 currentIndex++;
             }
         }
-        if (lastIndex < length + 1) {
+        if (!endReached && lastIndex < length + 1) {
             markers.add(mf.create(lastIndex, this.length - (lastIndex - 1)));
         }
         return markers;
