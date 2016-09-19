@@ -30,12 +30,18 @@ public class FolderParser extends ParserUtils {
 		String [] tt = line.split("->");
 		if(line.startsWith("inputFolder")){
 			inputFolder = "public String getFolder(){ return"
-			+ getValue(tt[0]) +";}\n";
+			+ getValue(tt[0].trim()) +";}\n";
 		}
-		if(tt.length >= 2){
+		if(tt.length >= 2 && tt[1].startsWith("filePicker")){
+			if(inputFileFilter != null){
+				throw new RuntimeException("script can't have multiple filePicker");
+			}
 			inputFileFilter = "public String getFilter(){ return "
 					+ getValue(tt[1]) +";}\n";
 		}else{
+			if(inputFileFilter != null){
+				throw new RuntimeException("script can't have multiple filePicker");
+			}
 			inputFileFilter = "public String getFilter(){ return null ;}\n";
 		}
 		
