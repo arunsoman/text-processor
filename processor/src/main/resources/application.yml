@@ -24,8 +24,7 @@ compiler:
 folder:
   expireTimeInMinutes: 1
   cacheCleanUpTime: 180000
-
-watch:
+  watch:
   -
     source: /tmp/src
     regex: csv
