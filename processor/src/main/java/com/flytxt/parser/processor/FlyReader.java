@@ -55,13 +55,14 @@ public class FlyReader implements Callable<FlyReader> {
             try {
                 Files.createDirectories(folderP);
             } catch (final IOException e1) {
-                logger.info("could not create input folder, stoppin this FlyReader ", e1);
+                logger.info("could not create input folder, stopping this FlyReader ", e1);
                 stopRequested = true;
             }
         }
         logger.debug("Starting file reader @ " + folder);
         final byte[] data = new byte[6024];
         final MarkerFactory mf = new MarkerFactory();
+        mf.setMaxListSize(lp.getMaxListSize());
         while (!stopRequested) {
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder))) {
                 for (final Path path : directoryStream) {

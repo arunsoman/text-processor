@@ -41,9 +41,12 @@ public class Marker {
                 ;
             }
             if (tokenIndex == token.length) {
-                markers.add(mf.create(lastIndex, currentIndex - lastIndex));
-                currentIndex = currentIndex + tokenIndex;
-                lastIndex = currentIndex;
+                if (markers.add(mf.create(lastIndex, currentIndex - lastIndex))) { // breaks if the remaining markers are not required in the script
+                    currentIndex = currentIndex + tokenIndex;
+                    lastIndex = currentIndex;
+                } else {
+                    break;
+                }
             } else {
                 currentIndex++;
             }
