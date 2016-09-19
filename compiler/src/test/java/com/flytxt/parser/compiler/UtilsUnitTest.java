@@ -18,28 +18,31 @@ public class UtilsUnitTest {
     @Test
     public void testCompileGivenScript() throws Exception {
         final Utils utils = new Utils();
-        final String scr = "/tmp/scripts/demo/script2.pl";
+        final String scr = "src/test/resources/Script.pl";
+        System.out.println(System.getProperty("user.dir"));
         final String java = utils.createJavaContent(scr);
-        final String createFile = utils.createFile("/tmp/java/demo/", java, "script2.java");
+        final String createFile = utils.createFile("/tmp/java/demo/", java, "Script.java");
         utils.complie(createFile, "/tmp/java/demo");
     }
 
     @Test
-    public void testBadClass() throws Exception {
+    public void testBadClass(){
         final Utils utils = new Utils();
-        final String src = "/Users/arunsoman/git/text-processor/compiler/src/test/resources/compiler/Bad.java";
+        final String src = "src/test/resources/compiler/Bad.java";
         final String dest = "/tmp/";
-        final String res = utils.complie(src, dest);
-        logger.debug(res);
-        if (res == null) {
-            fail("sshould have produced  error text");
-        }
+        String res;
+		try {
+			res = utils.complie(src, dest);
+		} catch (Exception e) {
+			return;
+		}
+        fail("Should have produced  error text");
     }
 
     @Test
     public void testGoodClass() throws Exception {
         final Utils utils = new Utils();
-        final String src = "/tmp/java/demo/com/flytxt/utils/parser/Script2.java";
+        final String src = "/tmp/java/demo/Script.java";
         final String dest = "/tmp/classes";
         final String res = utils.complie(src, dest);
         if (res != null) {

@@ -20,3 +20,16 @@ compiler:
   getJar: /getJar
   remoteHost: http://localhost:9000
   hostName: demo
+
+folder:
+  expireTimeInMinutes: 1
+  cacheCleanUpTime: 180000
+  watch:
+  -
+    source: /tmp/src
+    regex: csv
+    destination: /tmp/dest
+  -
+    source: /tmp/src1
+    regex: pdf
+    destination: /tmp/dest1

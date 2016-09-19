@@ -103,7 +103,7 @@ public class Utils {
     }
 
     public void createJar(final String loc, final String dest) throws IOException {
-        logger.debug("JAr---" + loc + " : " + dest);
+	logger.debug("create jar---"+loc+" : "+dest); 
         final Path destP = Paths.get(dest).getParent();
         if (!Files.exists(destP)) {
             Files.createDirectories(destP);
@@ -127,12 +127,12 @@ public class Utils {
                 }
                 final String folderName = entry.getParent().toString().substring(root);
                 if (isDirectory) {
-                    logger.debug("zip ; " + folderName + "/");
+//	            	logger.debug("zip ; "+folderName+"/");
                     jarOut.putNextEntry(new ZipEntry(folderName + "/"));
                 } else {
-                    logger.debug("zip ; " + entry.toString().substring(root));
+//	            	logger.debug("zip ; "+entry.toString().substring(root));
                     jarOut.putNextEntry(new ZipEntry(entry.toString().substring(root)));
-                    logger.debug("read ; " + entry.toString());
+//	            	logger.debug("read ; "+entry.toString());
                     jarOut.write(Files.readAllBytes(entry));
                     jarOut.closeEntry();
                 }

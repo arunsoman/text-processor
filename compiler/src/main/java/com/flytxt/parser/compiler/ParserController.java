@@ -36,8 +36,11 @@ public class ParserController {
 	@RequestMapping(path = "/submit", method = RequestMethod.GET)
 	public @ResponseBody String submitScript(@RequestParam("host") String host, @RequestParam("script") String script,
 			@RequestParam("scriptName") String scriptName) {
-
+		if(!Character.isUpperCase(scriptName.charAt(0)) || ! scriptName.endsWith(".pl")){
+			return scriptName +" should start with uppercase and should end with .pl";
+		}
 		try {
+			
 			utils.createFile(loc.getScriptDumpLoc(host), script, scriptName);
 			String javaContent = utils.createJavaContent(loc.getScriptURI(host, scriptName));
 			String javaFile = utils.createFile(loc.getJavaDumpLoc(host), javaContent,
