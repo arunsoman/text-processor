@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
+import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.ArrayList;
@@ -29,10 +30,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.Data;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import com.google.common.cache.CacheBuilder;
@@ -42,203 +42,212 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalListeners;
 import com.google.common.cache.RemovalNotification;
 
-import lombok.Data;
-
 @Component
 @ConfigurationProperties(prefix = "folder")
 @Data
 public class FolderEventListener {
 
-	private AtomicBoolean recursive = new AtomicBoolean(true);
-	private WatchService watcher;
-	private Timer timer;
-	private LoadingCache<String, OutputUnit> cache;
-	private Map<WatchKey, List<OutputUnit>> hashCache = new HashMap<WatchKey, List<OutputUnit>>(10);
-	private long cacheCleanUpTime;
-	private int expireTimeInMinutes;
+    private AtomicBoolean recursive = new AtomicBoolean(true);
 
-	
-	private List<Watch> watch;
+    private WatchService watcher;
 
+    private Timer timer;
 
-	@Data
-	public static class Watch {
-		private String source;
-		private String regex;
-		private String destination;
+    private LoadingCache<String, OutputUnit> cache;
 
-		public Watch() {
-			System.out.println("------------");
-		}
+    private Map<WatchKey, List<OutputUnit>> hashCache = new HashMap<WatchKey, List<OutputUnit>>(10);
 
-	}
+    private long cacheCleanUpTime;
 
-	@PostConstruct
-	public void start() {
-		try {
-			watcher = FileSystems.getDefault().newWatchService();
-			cache = CacheBuilder.newBuilder().maximumSize(Integer.MAX_VALUE)
-					.expireAfterAccess(expireTimeInMinutes, TimeUnit.MINUTES)
-					.removalListener(
-							RemovalListeners.asynchronous(new RemovalListenerImpl(), Executors.newCachedThreadPool()))
-					.build(new CacheLoader<String, OutputUnit>() {
+    private int expireTimeInMinutes;
 
-						@Override
-						public OutputUnit load(String arg0) throws Exception {
-							return null;
-						}
-					});
+    private List<Watch> watch;
 
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+    @Data
+    public static class Watch {
 
-		Thread thread = new Thread(new Producer());
-		thread.start();
-		timer = new Timer(true);
-		timer.scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
-				cache.cleanUp();
-			}
+        private String source;
 
-		}, 0, cacheCleanUpTime); // every 30s cache clean up will happen
+        private String regex;
 
-		for (Watch w : watch)
-			try {
-				attachFolder(w.source, w.regex, w.destination);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	}
+        private String destination;
 
-	private class OutputUnit {
-		private String regex;
-		private String outFolder;
-		private LoadingCache<String, OutputUnit> cache;
-		private Map<WatchKey, List<OutputUnit>> hashCache;
-		private String sourceFolder;
+        public Watch() {
+            System.out.println("------------");
+        }
 
-		public OutputUnit(String regex, String outFolder, LoadingCache<String, OutputUnit> cache,
-				Map<WatchKey, List<OutputUnit>> hCache, String sourceFolder) {
-			super();
-			this.regex = regex;
-			this.outFolder = outFolder;
-			this.cache = cache;
-			this.hashCache = hCache;
-			this.sourceFolder = sourceFolder;
-		}
+    }
 
-	}
+    @PostConstruct
+    public void start() {
+        try {
+            watcher = FileSystems.getDefault().newWatchService();
+            cache = CacheBuilder.newBuilder().maximumSize(Integer.MAX_VALUE).expireAfterAccess(expireTimeInMinutes, TimeUnit.MINUTES)
+                    .removalListener(RemovalListeners.asynchronous(new RemovalListenerImpl(), Executors.newCachedThreadPool())).build(new CacheLoader<String, OutputUnit>() {
 
-	public void attachFolder(String source, String regex, String outfolder) throws IOException {
-		WatchKey key = Paths.get(source).register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
-		List<OutputUnit> outputUnits = hashCache.get(key);
-		try {
-			outputUnits.add(new OutputUnit(regex, outfolder, cache, hashCache, source));
-		} catch (NullPointerException e) {
-			outputUnits = new ArrayList<OutputUnit>();
-			outputUnits.add(new OutputUnit(regex, outfolder, cache, hashCache, source));
-		}
-		hashCache.put(key, outputUnits);
+                        @Override
+                        public OutputUnit load(final String arg0) throws Exception {
+                            return null;
+                        }
+                    });
 
-	}
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
 
-	@PreDestroy
-	public void shutdown() {
-		cache.cleanUp();
-		timer.cancel();
-		recursive.set(false);
-	}
+        final Thread thread = new Thread(new Producer());
+        thread.start();
+        timer = new Timer(true);
+        timer.scheduleAtFixedRate(new TimerTask() {
 
-	public class RemovalListenerImpl implements RemovalListener<String, OutputUnit> {
+            @Override
+            public void run() {
+                cache.cleanUp();
+            }
 
-		public void onRemoval(RemovalNotification<String, OutputUnit> remove) {
-			try {
-				if (remove.wasEvicted()) {
-					OutputUnit value = remove.getValue();
-					createlinkonFileWriteComplete(remove.getKey(), value);
-				}
-			} catch (UnsupportedOperationException | InterruptedException | IOException e) {
-				e.printStackTrace();
-			}
-		}
+        }, 0, cacheCleanUpTime); // every 30s cache clean up will happen
 
-	}
+        for (final Watch w : watch) {
+            try {
+                attachFolder(w.source, w.regex, w.destination);
+            } catch (final IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
 
-	private void createlinkonFileWriteComplete(String sourceFile, OutputUnit outputUnit)
-			throws InterruptedException, IOException, UnsupportedOperationException {
-		File file = new File(sourceFile);
-		RandomAccessFile raf = null;
-		try {
+    private class OutputUnit {
 
-			raf = new RandomAccessFile(file, "rw");
-			Files.createSymbolicLink(Paths.get(outputUnit.outFolder.concat("/").concat(sourceFile)),
-					Paths.get(outputUnit.sourceFolder.concat("/").concat(sourceFile)));
-		} catch (IOException e) {
-			if (file.exists()) {
-				outputUnit.cache.put(sourceFile, outputUnit);
-			} else {
-				System.out.println("File was deleted while copying: '" + file.getAbsolutePath() + "'");
-			}
-		} finally {
-			if (raf != null) {
-				raf.close();
-			}
-		}
-	}
+        private final String regex;
 
-	@SuppressWarnings("unchecked")
-	private <T> WatchEvent<T> cast(WatchEvent<?> event) {
-		return (WatchEvent<T>) event;
-	}
+        private final String outFolder;
 
-	private class Producer implements Runnable {
-		@Override
-		public void run() {
-			try {
-				WatchKey take = null;
-				while (recursive.get()) {
-					try {
-						take = watcher.take();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+        private final LoadingCache<String, OutputUnit> cache;
 
-					for (WatchEvent<?> event : take.pollEvents()) {
-						WatchEvent.Kind kind = event.kind();
+        @SuppressWarnings("unused")
+        private final Map<WatchKey, List<OutputUnit>> hashCache;
 
-						if (kind == OVERFLOW) {
-							continue;
-						}
-						WatchEvent<Path> ev = cast(event);
-						Path file = ev.context();
-						String fileName = file.getFileName().toString();
-						System.out.format("%s: %s\n", event.kind().name(), fileName);
+        private final String sourceFolder;
 
-						if (kind == ENTRY_CREATE) {
-							List<OutputUnit> outputUnits = hashCache.get(take);
-							boolean found = false;
-							for (OutputUnit outputUnit : outputUnits) {
-								if (fileName.matches(outputUnit.regex)) {
-									outputUnit.cache.put(fileName, outputUnit);
-									found = true;
-								}
-							}
-							if (!found) {
-								System.out.println("no regx found for" + fileName);
-							}
-						}
-						if (kind == ENTRY_MODIFY) {
-							cache.get(fileName);
-						}
-					}
-					take.reset();
-				}
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+        public OutputUnit(final String regex, final String outFolder, final LoadingCache<String, OutputUnit> cache, final Map<WatchKey, List<OutputUnit>> hCache, final String sourceFolder) {
+            super();
+            this.regex = regex;
+            this.outFolder = outFolder;
+            this.cache = cache;
+            this.hashCache = hCache;
+            this.sourceFolder = sourceFolder;
+        }
+
+    }
+
+    public void attachFolder(final String source, final String regex, final String outfolder) throws IOException {
+        final WatchKey key = Paths.get(source).register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
+        List<OutputUnit> outputUnits = hashCache.get(key);
+        try {
+            outputUnits.add(new OutputUnit(regex, outfolder, cache, hashCache, source));
+        } catch (final NullPointerException e) {
+            outputUnits = new ArrayList<OutputUnit>();
+            outputUnits.add(new OutputUnit(regex, outfolder, cache, hashCache, source));
+        }
+        hashCache.put(key, outputUnits);
+
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        cache.cleanUp();
+        timer.cancel();
+        recursive.set(false);
+    }
+
+    public class RemovalListenerImpl implements RemovalListener<String, OutputUnit> {
+
+        @Override
+        public void onRemoval(final RemovalNotification<String, OutputUnit> remove) {
+            try {
+                if (remove.wasEvicted()) {
+                    final OutputUnit value = remove.getValue();
+                    createlinkonFileWriteComplete(remove.getKey(), value);
+                }
+            } catch (UnsupportedOperationException | InterruptedException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private void createlinkonFileWriteComplete(final String sourceFile, final OutputUnit outputUnit) throws InterruptedException, IOException, UnsupportedOperationException {
+        final File file = new File(sourceFile);
+        RandomAccessFile raf = null;
+        try {
+
+            raf = new RandomAccessFile(file, "rw");
+            Files.createSymbolicLink(Paths.get(outputUnit.outFolder.concat("/").concat(sourceFile)), Paths.get(outputUnit.sourceFolder.concat("/").concat(sourceFile)));
+        } catch (final IOException e) {
+            if (file.exists()) {
+                outputUnit.cache.put(sourceFile, outputUnit);
+            } else {
+                System.out.println("File was deleted while copying: '" + file.getAbsolutePath() + "'");
+            }
+        } finally {
+            if (raf != null) {
+                raf.close();
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> WatchEvent<T> cast(final WatchEvent<?> event) {
+        return (WatchEvent<T>) event;
+    }
+
+    private class Producer implements Runnable {
+
+        @Override
+        public void run() {
+            try {
+                WatchKey take = null;
+                while (recursive.get()) {
+                    try {
+                        take = watcher.take();
+                    } catch (final InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    for (final WatchEvent<?> event : take.pollEvents()) {
+                        final Kind<?> kind = event.kind();
+
+                        if (kind == OVERFLOW) {
+                            continue;
+                        }
+                        final WatchEvent<Path> ev = cast(event);
+                        final Path file = ev.context();
+                        final String fileName = file.getFileName().toString();
+                        System.out.format("%s: %s\n", event.kind().name(), fileName);
+
+                        if (kind == ENTRY_CREATE) {
+                            final List<OutputUnit> outputUnits = hashCache.get(take);
+                            boolean found = false;
+                            for (final OutputUnit outputUnit : outputUnits) {
+                                if (fileName.matches(outputUnit.regex)) {
+                                    outputUnit.cache.put(fileName, outputUnit);
+                                    found = true;
+                                }
+                            }
+                            if (!found) {
+                                System.out.println("no regx found for" + fileName);
+                            }
+                        }
+                        if (kind == ENTRY_MODIFY) {
+                            cache.get(fileName);
+                        }
+                    }
+                    take.reset();
+                }
+            } catch (final ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

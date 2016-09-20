@@ -2,6 +2,8 @@ package com.flytxt.parser.processor;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.channels.OverlappingFileLockException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -60,7 +62,7 @@ public class FlyReader implements Callable<FlyReader> {
             }
         }
         logger.debug("Starting file reader @ " + folder);
-        final byte[] data = new byte[6024];
+        final ByteBuffer buf = ByteBuffer.allocate(6024);
         final MarkerFactory mf = new MarkerFactory();
         mf.setMaxListSize(lp.getMaxListSize());
         while (!stopRequested) {
@@ -70,13 +72,14 @@ public class FlyReader implements Callable<FlyReader> {
                     logger.debug("picked up " + path.toString());
                     try {
                         lp.setInputFileName(path.getFileName().toString());
-                        processFile(data, path, file, mf);
+                        processFile(buf, path, file.getChannel(), mf);
+                        buf.clear();
                         if (stopRequested) {
-                            logger.debug("shutting down Wroker @ :" + folder);
+                            logger.debug("shutting down Worker @ :" + folder);
                             break;
                         }
                     } catch (final OverlappingFileLockException e) {
-                        logger.error("Couldnot process " + path.toString(), e);
+                        logger.error("Could not process " + path.toString(), e);
                     } finally {
                         file.close();
                     }
@@ -88,51 +91,47 @@ public class FlyReader implements Callable<FlyReader> {
         logger.debug("Worker down " + folder);
     }
 
-    private void processFile(final byte[] data, final Path path, final RandomAccessFile file, final MarkerFactory mf) throws IOException {
-
-        readLines(file, data, mf);
+    private void processFile(final ByteBuffer buf, final Path path, final FileChannel file, final MarkerFactory mf) throws IOException {
+        final long t1 = System.nanoTime();
+        readLines(file, buf, mf);
         lp.done();
         file.close();
         Files.delete(path);
+        logger.debug("total time taken: " + (System.nanoTime() - t1));
+        mf.printStat();
     }
 
-    private final void readLines(final RandomAccessFile file, final byte[] data, final MarkerFactory mf) throws IOException {
-        boolean match = false;
-        int i = 0;
+    private final void readLines(final FileChannel file, final ByteBuffer buf, final MarkerFactory mf) throws IOException {
         int readCnt;
-        int j = 0;
-        final long t1 = System.currentTimeMillis();
-        do {
-            readCnt = file.read();
-            data[i] = (byte) readCnt;
-
-            if (j < eol.length && readCnt != -1 && (byte) readCnt == eol[j]) {
-
-                if (i == eol.length) {
-                    i = 0;
-                    mf.reclaim();
-                    continue;
-                }
-
-                match = true;
-                j++;
+        final byte[] data = buf.array();
+        buf.position(0);
+        while ((readCnt = file.read(buf)) > 0) {
+            long eolPosition;
+            long previousEolPosition = 0;
+            {
+                do {
+                    eolPosition = getEOLPosition(data, previousEolPosition + eol.length);
+                    if (eolPosition < 0) {
+                        if (previousEolPosition == 0) {
+                            logger.debug("Increase byte array size");
+                            System.exit(0); // or a better piece of code to exit the application
+                        }
+                        readLines(file.position(file.position()), (ByteBuffer) buf.limit((int) previousEolPosition + eol.length), mf); // total MESS
+                        continue;
+                    } else {
+                        try {
+                            final long T1 = System.nanoTime();
+                            lp.process(data, (int) previousEolPosition, (int) eolPosition, mf);
+                            logger.debug("Total: " + (System.nanoTime() - T1));
+                            mf.reclaim();
+                            previousEolPosition = eolPosition;
+                        } catch (final IndexOutOfBoundsException e) {
+                            logger.debug("could not process : " + new String(data, 0, (int) eolPosition) + " \n cause:" + e.getMessage());
+                        }
+                    }
+                } while (eolPosition > 0);
             }
-            if (eol.length == j && match) {
-                try {
-                    lp.process(data, i, mf);
-                } catch (final IndexOutOfBoundsException e) {
-                    logger.debug("could not process : " + new String(data, 0, i) + " \n cause:" + e.getMessage());
-                }
-                i = 0;
-                j = 0;
-                mf.reclaim();
-                continue;
-            }
-            i++;
-        } while (readCnt != -1);
-        final long t2 = System.currentTimeMillis();
-        mf.printStat();
-        logger.debug("total time taken: " + (t2 - t1));
+        }
     }
 
     @PreDestroy
@@ -158,5 +157,22 @@ public class FlyReader implements Callable<FlyReader> {
         } else {
             return false;
         }
+    }
+
+    public long getEOLPosition(final byte[] data, final long startIndex) {
+        try {
+            int tokenIndex, currentIndex = (int) startIndex;
+            while (currentIndex - startIndex <= data.length) {
+                for (tokenIndex = 0; tokenIndex < eol.length && eol[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++) { // loop to check if EOL is present at position currentIndex
+                    ;
+                }
+                if (tokenIndex == eol.length) {
+                    return currentIndex;
+                }
+                currentIndex++;
+            }
+        } catch (final Exception e) {
+        }
+        return -1;
     }
 }

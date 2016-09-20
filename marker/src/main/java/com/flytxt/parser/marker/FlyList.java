@@ -11,6 +11,7 @@ public class FlyList<T> implements List<T> {
 
     private int size;
 
+    @SuppressWarnings("unused")
     private FlyList() {
         array = null;
     }
@@ -72,6 +73,7 @@ public class FlyList<T> implements List<T> {
         return null;
     }
 
+    @SuppressWarnings("hiding")
     @Override
     public <T> T[] toArray(final T[] a) {
 

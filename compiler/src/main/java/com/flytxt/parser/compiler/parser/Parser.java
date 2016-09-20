@@ -42,7 +42,7 @@ public class Parser {
                 + "public  class " + processorName + " implements LineProcessor{\n" + sp.getMembers() + "\n" + lp.getMemberVar() + fp.getInput() + fp.getFileFilter()
                 + "public final  int getMaxListSize(){ return " + lp.getMaxVallue() + ";}\n" + "public final void done() throws IOException{" + sp.getDoneCode() + "}\n"
                 + "public final void setInputFileName(String currentFileName){ this.currentFileName = currentFileName;}\n"
-                + "public final void process(byte[] data, int lineSize, MarkerFactory mf) throws IOException{\n" + lp.getCode() + "\n" + sp.getCode() + "\n" + "}" + "}";
+                + "public final void process(byte[] data, int start, int lineSize, MarkerFactory mf) throws IOException{\n" + lp.getCode() + "\n" + sp.getCode() + "\n" + "}" + "}";
 
     }
 }
