@@ -35,12 +35,14 @@ public class ProxyScripts {
 
     public List<LineProcessor> getLPInstance() throws Exception {
         // URL url = new URL(remoteHost+getJar+"?host="+hostName);
-        final URL url = new URL("file:///tmp/jar/demo/demo.jar");
+    	ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+    	final URL url = new URL("file:///tmp/jar/demo/demo.jar");
         try (JarInputStream jIs = new JarInputStream(url.openStream())) {
             ZipEntry zipEntry;
             String aClass;
             final List<LineProcessor> lps = new ArrayList<LineProcessor>();
-            try (URLClassLoader loader = new URLClassLoader(new URL[] { url })) {
+          
+            try (URLClassLoader loader = new URLClassLoader(new URL[] { url },contextClassLoader)) {
                 while ((zipEntry = jIs.getNextEntry()) != null) {
                     if (!zipEntry.isDirectory()) {
                         aClass = zipEntry.getName().replaceAll("/", ".");
