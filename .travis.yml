@@ -1,0 +1,9 @@
+language: java
+jdk:
+  - oraclejdk8
+#sudo: required
+
+#services:
+#  - docker
+#sudo apt-get install jq
+#sudo apt-get make get-deps
