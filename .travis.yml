@@ -1,5 +1,6 @@
-language: java
-language: cpp
+language:
+  - java
+  - cpp
 jdk:
   - oraclejdk8
 script: mvn clean verify
