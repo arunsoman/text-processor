@@ -3,7 +3,6 @@
     <artifactId>compiler</artifactId>
     <packaging>jar</packaging>
     <name>compiler</name>
-    <url>http://maven.apache.org</url>
     <parent>
         <groupId>com.flytxt.parser</groupId>
         <artifactId>text-processor</artifactId>
@@ -43,6 +42,7 @@
         </dependency>
     </dependencies>
 	<build>
+	<finalName>compiler</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
