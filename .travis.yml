@@ -1,4 +1,5 @@
 language: java
+language: cpp
 jdk:
   - oraclejdk8
 script: mvn clean verify
@@ -12,4 +13,4 @@ before_install:
   - sudo apt-get make get-deps
   - git clone https://github.com/emc-advanced-dev/unik.git
   - cd unik
-  - make
+    make
