@@ -4,7 +4,11 @@ jdk:
 script: mvn clean verify
 #sudo: required
 
-#services:
-#  - docker
-#sudo apt-get install jq
-#sudo apt-get make get-deps
+services:
+  - docker
+before_install:
+  - sudo apt-get install jq
+  - sudo apt-get make get-deps
+  - git clone https://github.com/emc-advanced-dev/unik.git
+  - cd unik
+  - make
