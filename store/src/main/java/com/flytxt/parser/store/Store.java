@@ -25,7 +25,9 @@ public class Store {
     private final String fileName;
 
     private final String[] headers;
-    private ByteBuffer bBuff = ByteBuffer.allocateDirect(1024);
+
+    private final ByteBuffer bBuff = ByteBuffer.allocateDirect(1024);
+
     private IOException e;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -54,7 +56,7 @@ public class Store {
         fileNameP = Paths.get(name);
         try {
             channel = new RandomAccessFile(fileNameP.toString(), "rw");
-            
+
             for (final String aheader : headers) {
                 bBuff.put(aheader.getBytes());
                 bBuff.put(csv);
@@ -71,14 +73,15 @@ public class Store {
         }
     }
 
-    public void save(final byte[] data, final Marker... markers) throws IOException {
+    public void save(final byte[] data, final String fileName, final Marker... markers) throws IOException {
         if (status == -1) {
             throw e;
         }
         try {
+            bBuff.put(fileName.getBytes());
             for (final Marker aMarker : markers) {
-            	bBuff.put(data, aMarker.index, aMarker.length);
-            	bBuff.put(csv);
+                bBuff.put(csv);
+                bBuff.put(data, aMarker.index, aMarker.length);
             }
             bBuff.put(newLine);
             bBuff.flip();
@@ -86,7 +89,7 @@ public class Store {
             bBuff.clear();
         } catch (final IOException e) {
             createFile();
-            save(data, markers);
+            save(data, fileName, markers);
         }
     }
 

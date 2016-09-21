@@ -32,7 +32,7 @@ public class StoreUnitTest {
         final Marker aonM = ms.get(1);
         final Marker ageM = ms.get(2);
         try {
-            store.save(strB, aonM, ageM);
+            store.save(strB, "testFile", aonM, ageM);
             store.done();
         } catch (final IOException e) {
             fail(e.getMessage());
