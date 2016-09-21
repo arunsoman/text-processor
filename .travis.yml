@@ -1,0 +1,16 @@
+language:
+  - java
+  - cpp
+jdk:
+  - oraclejdk8
+script: mvn clean verify
+
+sudo: required
+install: make get-deps
+services:
+  - docker
+before_install:
+  - sudo apt-get install jq
+  - git clone https://github.com/emc-advanced-dev/unik.git
+  - cd unik
+  - make

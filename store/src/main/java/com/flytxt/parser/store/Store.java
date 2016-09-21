@@ -2,6 +2,7 @@ package com.flytxt.parser.store;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,7 +25,7 @@ public class Store {
     private final String fileName;
 
     private final String[] headers;
-
+    private ByteBuffer bBuff = ByteBuffer.allocateDirect(1024);
     private IOException e;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -53,11 +54,15 @@ public class Store {
         fileNameP = Paths.get(name);
         try {
             channel = new RandomAccessFile(fileNameP.toString(), "rw");
+            
             for (final String aheader : headers) {
-                channel.write(aheader.getBytes());
-                channel.write(csv);
+                bBuff.put(aheader.getBytes());
+                bBuff.put(csv);
             }
-            channel.write(newLine);
+            bBuff.put(newLine);
+            bBuff.flip();
+            channel.getChannel().write(bBuff);
+            bBuff.clear();
             logger.debug("file created @ " + fileNameP.toString());
         } catch (final IOException e) {
             logger.debug("could not create file @ " + fileNameP.toString(), e);
@@ -72,10 +77,13 @@ public class Store {
         }
         try {
             for (final Marker aMarker : markers) {
-                channel.write(data, aMarker.index, aMarker.length);
-                channel.write(csv);
+            	bBuff.put(data, aMarker.index, aMarker.length);
+            	bBuff.put(csv);
             }
-            channel.write(newLine);
+            bBuff.put(newLine);
+            bBuff.flip();
+            channel.getChannel().write(bBuff);
+            bBuff.clear();
         } catch (final IOException e) {
             createFile();
             save(data, markers);
