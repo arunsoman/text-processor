@@ -60,6 +60,7 @@ public class Store {
                 bBuff.put(csv);
             }
             bBuff.put(newLine);
+            bBuff.flip();
             channel.getChannel().write(bBuff);
             bBuff.clear();
             logger.debug("file created @ " + fileNameP.toString());
@@ -80,6 +81,7 @@ public class Store {
             	bBuff.put(csv);
             }
             bBuff.put(newLine);
+            bBuff.flip();
             channel.getChannel().write(bBuff);
             bBuff.clear();
         } catch (final IOException e) {
