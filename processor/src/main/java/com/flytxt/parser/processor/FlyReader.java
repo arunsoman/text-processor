@@ -92,37 +92,36 @@ public class FlyReader implements Callable<FlyReader> {
     }
 
     private void processFile(final ByteBuffer buf, final Path path, final FileChannel file, final MarkerFactory mf) throws IOException {
-        final long t1 = System.nanoTime();
+        final long t1 = System.currentTimeMillis();
         readLines(file, buf, mf);
         lp.done();
         file.close();
         Files.delete(path);
-        logger.debug("total time taken: " + (System.nanoTime() - t1));
+        logger.debug("total time taken: " + (System.currentTimeMillis() - t1));
         mf.printStat();
     }
 
     private final void readLines(final FileChannel file, final ByteBuffer buf, final MarkerFactory mf) throws IOException {
         int readCnt;
         final byte[] data = buf.array();
-        buf.position(0);
         while ((readCnt = file.read(buf)) > 0) {
             long eolPosition;
             long previousEolPosition = 0;
             {
                 do {
-                    eolPosition = getEOLPosition(data, previousEolPosition + eol.length);
+                    eolPosition = getEOLPosition(data, (int) previousEolPosition + eol.length, readCnt);
                     if (eolPosition < 0) {
                         if (previousEolPosition == 0) {
                             logger.debug("Increase byte array size");
                             System.exit(0); // or a better piece of code to exit the application
                         }
-                        readLines(file.position(file.position()), (ByteBuffer) buf.limit((int) previousEolPosition + eol.length), mf); // total MESS
+                        readLines(file.position(file.position() - (readCnt - previousEolPosition - eol.length)), (ByteBuffer) buf.clear(), mf);
                         continue;
                     } else {
                         try {
-                            final long T1 = System.nanoTime();
-                            lp.process(data, (int) previousEolPosition, (int) eolPosition, mf);
-                            logger.debug("Total: " + (System.nanoTime() - T1));
+                            // final long T1 = System.nanoTime();
+                            lp.process(data, previousEolPosition == 0 ? 0 : (int) previousEolPosition + eol.length, (int) eolPosition, mf);
+                            // logger.debug("Total: " + (System.nanoTime() - T1));
                             mf.reclaim();
                             previousEolPosition = eolPosition;
                         } catch (final IndexOutOfBoundsException e) {
@@ -159,10 +158,10 @@ public class FlyReader implements Callable<FlyReader> {
         }
     }
 
-    public long getEOLPosition(final byte[] data, final long startIndex) {
+    public long getEOLPosition(final byte[] data, final int startIndex, final int endIndex) {
         try {
-            int tokenIndex, currentIndex = (int) startIndex;
-            while (currentIndex - startIndex <= data.length) {
+            int tokenIndex, currentIndex = startIndex;
+            while (currentIndex <= endIndex) {
                 for (tokenIndex = 0; tokenIndex < eol.length && eol[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++) { // loop to check if EOL is present at position currentIndex
                     ;
                 }
