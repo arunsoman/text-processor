@@ -112,8 +112,8 @@ public class FlyReader implements Callable<FlyReader> {
                     eolPosition = getEOLPosition(data, (int) previousEolPosition + eol.length, readCnt);
                     if (eolPosition < 0) {
                         if (previousEolPosition == 0) {
-                            logger.debug("Increase byte array size");
-                            System.exit(0); // or a better piece of code to exit the application
+                            logger.error("Increase byte array size, current size :" +data.length);
+                            throw new IOException("cant' process "+ readCnt +" long line");//System.exit(0); // or a better piece of code to exit the application
                         }
                         readLines(file.position(file.position() - (readCnt - previousEolPosition - eol.length)), (ByteBuffer) buf.clear(), mf);
                         continue;
