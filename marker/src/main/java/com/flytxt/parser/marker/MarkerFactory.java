@@ -9,6 +9,10 @@ public class MarkerFactory {
 
     private final FlyPool<FlyList<Marker>> markerListPool = new FlyPool<FlyList<Marker>>();
 
+    private final FlyPool<ImmutableMarker> markerImmutablePool = new FlyPool<ImmutableMarker>();
+
+    private final FlyPool<FlyList<ImmutableMarker>> markerImmutableListPool = new FlyPool<FlyList<ImmutableMarker>>();
+
     private int reused;
 
     private int created;
@@ -38,6 +42,8 @@ public class MarkerFactory {
     public void reclaim() {
         markerPool.reset();
         markerListPool.reset();
+        markerImmutablePool.reset();
+        markerImmutableListPool.reset();
     }
 
     public void printStat() {
@@ -62,4 +68,19 @@ public class MarkerFactory {
         listSize = maxListSize;
 
     }
+
+	public Marker createImmutable(byte[] data, int lastIndex, int i) {
+		ImmutableMarker m = markerImmutablePool.peek();
+        if (m == null) {
+            m = new ImmutableMarker();
+            m.data = data;
+            markerImmutablePool.add(m);
+            created++;
+        } else {
+            reused++;
+        }
+        m.index = lastIndex;
+        m.length = i;
+        return m;
+	}
 }
