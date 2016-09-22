@@ -53,4 +53,7 @@ public class ImmutableMarker extends Marker {
 	        return markers;
 	    }
 
+    public byte[] getData(){
+    	return this.data;
+    }
 }
