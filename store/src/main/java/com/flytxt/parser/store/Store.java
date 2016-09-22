@@ -28,7 +28,7 @@ public class Store {
 
     private final String[] headers;
 
-    private final ByteBuffer bBuff = ByteBuffer.allocateDirect(1024);
+    private final ByteBuffer bBuff = ByteBuffer.allocateDirect(6024);
 
     private IOException e;
 
@@ -84,9 +84,9 @@ public class Store {
                 bBuff.put(csv);
             }
             bBuff.put(newLine);
-            bBuff.flip();
-            channel.getChannel().write(bBuff);
-            bBuff.clear();
+            	bBuff.flip();
+            	channel.getChannel().write(bBuff);
+            	bBuff.clear();
             logger.debug("file created @ " + fileNameP.toString());
         } catch (final IOException e) {
             logger.debug("could not create file @ " + fileNameP.toString(), e);
@@ -105,15 +105,20 @@ public class Store {
             throw e;
         }
         try {
+        	int delta = 0;
             bBuff.put(fileName.getBytes());
             for (final Marker aMarker : markers) {
                 bBuff.put(csv);
                 bBuff.put(data, aMarker.index, aMarker.length);
+                delta +=aMarker.length;
             }
+            delta *=2;
             bBuff.put(newLine);
+            if(bBuff.position()+ delta > bBuff.capacity()){
             bBuff.flip();
             channel.getChannel().write(bBuff);
             bBuff.clear();
+            }
         } catch (final IOException e) {
             createFile();
             save(data, fileName, markers);
@@ -121,6 +126,11 @@ public class Store {
     }
 
     public void done() throws IOException {
+    	if(bBuff.hasRemaining()){
+            	bBuff.flip();
+            	channel.getChannel().write(bBuff);
+            	bBuff.clear();
+    	}
         channel.close();
         final String[] tmp = fileName.split("\\.");
         final String doneFile = tmp[0] + System.currentTimeMillis() + "." + tmp[1];
