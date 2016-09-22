@@ -4,7 +4,7 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
-
+import static java.nio.file.StandardWatchEventKinds.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -25,14 +25,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
+import com.sun.nio.file.SensitivityWatchEventModifier;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import com.google.common.cache.CacheBuilder;
@@ -76,6 +73,7 @@ public class FolderEventListener {
 	@PostConstruct
 	public void start() {
 		try {
+		 
 			watcher = FileSystems.getDefault().newWatchService();
 			cache = CacheBuilder.newBuilder().maximumSize(Integer.MAX_VALUE)
 					.expireAfterAccess(expireTimeInMinutes, TimeUnit.MINUTES)
@@ -118,28 +116,30 @@ public class FolderEventListener {
 		private String outFolder;
 		private LoadingCache<String, OutputUnit> cache;
 		private Map<WatchKey, List<OutputUnit>> hashCache;
-		private String sourceFolder;
+		
 
 		public OutputUnit(String regex, String outFolder, LoadingCache<String, OutputUnit> cache,
-				Map<WatchKey, List<OutputUnit>> hCache, String sourceFolder) {
+				Map<WatchKey, List<OutputUnit>> hCache) {
 			super();
 			this.regex = regex;
 			this.outFolder = outFolder;
 			this.cache = cache;
 			this.hashCache = hCache;
-			this.sourceFolder = sourceFolder;
+			
 		}
 
 	}
 
 	public void attachFolder(String source, String regex, String outfolder) throws IOException {
-		WatchKey key = Paths.get(source).register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
+		WatchKey key = Paths.get(source).register(watcher,new WatchEvent.Kind[]{ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY},
+				SensitivityWatchEventModifier.HIGH);
 		List<OutputUnit> outputUnits = hashCache.get(key);
 		try {
-			outputUnits.add(new OutputUnit(regex, outfolder, cache, hashCache, source));
+			System.out.println(((Path)key.watchable()));
+			outputUnits.add(new OutputUnit(regex, outfolder, cache, hashCache));
 		} catch (NullPointerException e) {
 			outputUnits = new ArrayList<OutputUnit>();
-			outputUnits.add(new OutputUnit(regex, outfolder, cache, hashCache, source));
+			outputUnits.add(new OutputUnit(regex, outfolder, cache, hashCache));
 		}
 		hashCache.put(key, outputUnits);
 
@@ -174,8 +174,8 @@ public class FolderEventListener {
 		try {
 
 			raf = new RandomAccessFile(file, "rw");
-			Files.createSymbolicLink(Paths.get(outputUnit.outFolder.concat("/").concat(sourceFile)),
-					Paths.get(outputUnit.sourceFolder.concat("/").concat(sourceFile)));
+			Files.createSymbolicLink(Paths.get(outputUnit.outFolder.concat("/").concat(file.getName())),
+					Paths.get(sourceFile));
 		} catch (IOException e) {
 			if (file.exists()) {
 				outputUnit.cache.put(sourceFile, outputUnit);
@@ -202,27 +202,28 @@ public class FolderEventListener {
 				while (recursive.get()) {
 					try {
 						take = watcher.take();
+						
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-
+                     
 					for (WatchEvent<?> event : take.pollEvents()) {
 						WatchEvent.Kind kind = event.kind();
-
 						if (kind == OVERFLOW) {
 							continue;
 						}
+						Path source =(Path)take.watchable();
 						WatchEvent<Path> ev = cast(event);
 						Path file = ev.context();
 						String fileName = file.getFileName().toString();
 						System.out.format("%s: %s\n", event.kind().name(), fileName);
-
+						
 						if (kind == ENTRY_CREATE) {
 							List<OutputUnit> outputUnits = hashCache.get(take);
 							boolean found = false;
 							for (OutputUnit outputUnit : outputUnits) {
 								if (fileName.matches(outputUnit.regex)) {
-									outputUnit.cache.put(fileName, outputUnit);
+									outputUnit.cache.put(source.toString().concat("/").concat(fileName), outputUnit);
 									found = true;
 								}
 							}
@@ -231,7 +232,7 @@ public class FolderEventListener {
 							}
 						}
 						if (kind == ENTRY_MODIFY) {
-							cache.get(fileName);
+							cache.get(source.toString().concat("/").concat(fileName));
 						}
 					}
 					take.reset();
