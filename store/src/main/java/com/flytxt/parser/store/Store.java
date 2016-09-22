@@ -24,11 +24,13 @@ public class Store {
 
     private int status;
 
-    private final String fileName;
+    private final Path filePath;
 
     private final String[] headers;
 
-    private final ByteBuffer bBuff = ByteBuffer.allocateDirect(6024);
+    private final ByteBuffer bBuff = ByteBuffer.allocateDirect(6144);
+
+    private final ByteBuffer headBuff = ByteBuffer.allocateDirect(100);
 
     private IOException e;
 
@@ -37,7 +39,7 @@ public class Store {
     public final static String TMP = ".tmp";
 
     public Store(final String fileName, final String... headers) {
-        this.fileName = fileName;
+        this.filePath = Paths.get(fileName);
         this.headers = headers;
         deleteTempFile();
         createFile();
@@ -51,7 +53,7 @@ public class Store {
                 return entry.toFile().toString().endsWith(TMP);
             }
         };
-        final Path folder = Paths.get(fileName).getParent();
+        final Path folder = filePath.getParent();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(folder, filter)) {
             for (final Path entry : stream) {
                 entry.toFile().delete();
@@ -62,9 +64,8 @@ public class Store {
     }
 
     private void createFile() {
-        Path fileNameP = Paths.get(fileName);
-        if (!Files.exists(fileNameP)) {
-            final Path folder = fileNameP.getParent();
+        if (!Files.exists(filePath)) {
+            final Path folder = filePath.getParent();
             try {
                 Files.createDirectories(folder);
             } catch (final IOException e) {
@@ -74,19 +75,19 @@ public class Store {
                 return;
             }
         }
-        final String name = fileName + TMP;
-        fileNameP = Paths.get(name);
+        final String name = filePath + TMP;
+        final Path fileNameP = Paths.get(name);
         try {
             channel = new RandomAccessFile(fileNameP.toString(), "rw");
 
             for (final String aheader : headers) {
-                bBuff.put(aheader.getBytes());
-                bBuff.put(csv);
+                headBuff.put(aheader.getBytes());
+                headBuff.put(csv);
             }
-            bBuff.put(newLine);
-            	bBuff.flip();
-            	channel.getChannel().write(bBuff);
-            	bBuff.clear();
+            headBuff.put(newLine);
+            headBuff.flip();
+            channel.getChannel().write(headBuff);
+            headBuff.clear();
             logger.debug("file created @ " + fileNameP.toString());
         } catch (final IOException e) {
             logger.debug("could not create file @ " + fileNameP.toString(), e);
@@ -105,19 +106,19 @@ public class Store {
             throw e;
         }
         try {
-        	int delta = 0;
+            int delta = fileName.getBytes().length;
             bBuff.put(fileName.getBytes());
             for (final Marker aMarker : markers) {
                 bBuff.put(csv);
                 bBuff.put(data, aMarker.index, aMarker.length);
-                delta +=aMarker.length;
+                delta += aMarker.length;
             }
-            delta *=2;
+            delta *= 2;
             bBuff.put(newLine);
-            if(bBuff.position()+ delta > bBuff.capacity()){
-            bBuff.flip();
-            channel.getChannel().write(bBuff);
-            bBuff.clear();
+            if (bBuff.position() + delta > bBuff.limit()) {
+                bBuff.flip();
+                channel.getChannel().write(bBuff);
+                bBuff.clear();
             }
         } catch (final IOException e) {
             createFile();
@@ -126,14 +127,21 @@ public class Store {
     }
 
     public void done() throws IOException {
-    	if(bBuff.hasRemaining()){
-            	bBuff.flip();
-            	channel.getChannel().write(bBuff);
-            	bBuff.clear();
-    	}
+
+        if (bBuff.hasRemaining()) {
+            bBuff.flip();
+            try {
+                channel.getChannel().write(bBuff);
+            } catch (final IOException e) {
+                createFile();
+                channel.getChannel().write(bBuff);
+            }
+        }
+        bBuff.clear();
         channel.close();
-        final String[] tmp = fileName.split("\\.");
+        final String[] tmp = filePath.getFileName().toString().split("\\.");
         final String doneFile = tmp[0] + System.currentTimeMillis() + "." + tmp[1];
-        Files.move(Paths.get(fileName + TMP), Paths.get(doneFile));
+        Files.move(Paths.get(filePath.toAbsolutePath() + TMP), Paths.get(filePath.getParent() + "/" + doneFile));
+
     }
 }

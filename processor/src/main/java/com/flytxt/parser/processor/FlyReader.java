@@ -62,7 +62,7 @@ public class FlyReader implements Callable<FlyReader> {
             }
         }
         logger.debug("Starting file reader @ " + folder);
-        final ByteBuffer buf = ByteBuffer.allocate(6024);
+        final ByteBuffer buf = ByteBuffer.allocate(51200);
         final MarkerFactory mf = new MarkerFactory();
         mf.setMaxListSize(lp.getMaxListSize());
         while (!stopRequested) {
