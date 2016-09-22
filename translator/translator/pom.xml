@@ -13,4 +13,11 @@
 
 	<name>translator</name>
 
+	<dependencies>
+		<dependency>
+			<groupId>com.flytxt.parser</groupId>
+			<artifactId>marker</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+	</dependencies>
 </project>
