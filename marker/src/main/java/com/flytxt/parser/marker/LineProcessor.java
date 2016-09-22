@@ -8,7 +8,7 @@ public interface LineProcessor {
 
     void setInputFileName(String currentFileName);
 
-    void process(byte[] data, int readCnt, MarkerFactory mf) throws IOException;
+    void process(byte[] data, int startIndex, int readCnt, MarkerFactory mf) throws IOException;
 
     void done() throws IOException;
 

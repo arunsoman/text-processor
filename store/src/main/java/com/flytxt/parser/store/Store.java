@@ -2,6 +2,9 @@ package com.flytxt.parser.store;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.file.DirectoryStream;
+import java.nio.file.DirectoryStream.Filter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,14 +28,37 @@ public class Store {
 
     private final String[] headers;
 
+    private final ByteBuffer bBuff = ByteBuffer.allocateDirect(6024);
+
     private IOException e;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public Store(final String file, final String... headers) {
-        this.fileName = file;
+    public final static String TMP = ".tmp";
+
+    public Store(final String fileName, final String... headers) {
+        this.fileName = fileName;
         this.headers = headers;
+        deleteTempFile();
         createFile();
+    }
+
+    private void deleteTempFile() {
+        final Filter<Path> filter = new Filter<Path>() {
+
+            @Override
+            public boolean accept(final Path entry) throws IOException {
+                return entry.toFile().toString().endsWith(TMP);
+            }
+        };
+        final Path folder = Paths.get(fileName).getParent();
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(folder, filter)) {
+            for (final Path entry : stream) {
+                entry.toFile().delete();
+            }
+        } catch (final IOException ex) {
+
+        }
     }
 
     private void createFile() {
@@ -48,41 +74,66 @@ public class Store {
                 return;
             }
         }
-        final String[] tmp = fileName.split("\\.");
-        final String name = tmp[0] + System.currentTimeMillis() + "." + tmp[1];
+        final String name = fileName + TMP;
         fileNameP = Paths.get(name);
         try {
             channel = new RandomAccessFile(fileNameP.toString(), "rw");
+
             for (final String aheader : headers) {
-                channel.write(aheader.getBytes());
-                channel.write(csv);
+                bBuff.put(aheader.getBytes());
+                bBuff.put(csv);
             }
-            channel.write(newLine);
+            bBuff.put(newLine);
+            	bBuff.flip();
+            	channel.getChannel().write(bBuff);
+            	bBuff.clear();
             logger.debug("file created @ " + fileNameP.toString());
         } catch (final IOException e) {
             logger.debug("could not create file @ " + fileNameP.toString(), e);
             status = -1;
             this.e = e;
         }
+        // catch (final BufferOverflowException e) {
+        // logger.error("Increase byte buffer size, current size :" + bBuff.capacity());
+        // status = -1;
+        // TODO handle this
+        // }
     }
 
-    public void save(final byte[] data, final Marker... markers) throws IOException {
+    public void save(final byte[] data, final String fileName, final Marker... markers) throws IOException {
         if (status == -1) {
             throw e;
         }
         try {
+        	int delta = 0;
+            bBuff.put(fileName.getBytes());
             for (final Marker aMarker : markers) {
-                channel.write(data, aMarker.index, aMarker.length);
-                channel.write(csv);
+                bBuff.put(csv);
+                bBuff.put(data, aMarker.index, aMarker.length);
+                delta +=aMarker.length;
             }
-            channel.write(newLine);
+            delta *=2;
+            bBuff.put(newLine);
+            if(bBuff.position()+ delta > bBuff.capacity()){
+            bBuff.flip();
+            channel.getChannel().write(bBuff);
+            bBuff.clear();
+            }
         } catch (final IOException e) {
             createFile();
-            save(data, markers);
+            save(data, fileName, markers);
         }
     }
 
     public void done() throws IOException {
+    	if(bBuff.hasRemaining()){
+            	bBuff.flip();
+            	channel.getChannel().write(bBuff);
+            	bBuff.clear();
+    	}
         channel.close();
+        final String[] tmp = fileName.split("\\.");
+        final String doneFile = tmp[0] + System.currentTimeMillis() + "." + tmp[1];
+        Files.move(Paths.get(fileName + TMP), Paths.get(doneFile));
     }
 }

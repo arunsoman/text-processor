@@ -16,6 +16,6 @@ server:
 
 loc:
   jarHome: /tmp/jar/
-  scriptHame: /tmp/scripts/
-  javaHame: /tmp/java/
-  classHame: /tmp/class/
+  scriptHome: /tmp/scripts/
+  javaHome: /tmp/java/
+  classHome: /tmp/class/

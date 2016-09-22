@@ -9,7 +9,7 @@ public class LineParser extends ParserUtils {
     private final HashMap<String, String> tokenFucVarMap = new HashMap<String, String>();
 
     public LineParser() {
-        code.append("line.index = 0;\nline.length = lineSize;\n");
+        code.append("line.index = start;\nline.length = lineSize;\n");
     }
 
     public void process(final String line) {
@@ -92,7 +92,7 @@ public class LineParser extends ParserUtils {
         return sb.toString();
     }
 
-	public String getMaxVallue() {
-		return ""+ maxVal;
-	}
+    public String getMaxVallue() {
+        return "" + maxVal;
+    }
 }

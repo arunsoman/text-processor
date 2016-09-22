@@ -9,9 +9,8 @@ public class Marker {
     public Marker splitAndGetMarker(final byte[] data, final byte[] token, final int indexOfMarker, final MarkerFactory mf) {
 
         int count = 1, lastIndex = index, currentIndex = index, tokenIndex;
-
         while (currentIndex - index <= length) {
-            for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++) { // loop to check if token is present at position i
+            for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++) { // loop to check if token is present at position currentIndex
                 ;
             }
             if (tokenIndex == token.length) { // true if token found at currentIndex
@@ -36,9 +35,8 @@ public class Marker {
         final FlyList<Marker> markers = mf.getArrayList();
         int currentIndex = index, lastIndex = index, tokenIndex;
         boolean endReached = false;
-
         while (currentIndex - index <= length) {
-            for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++) { // loop to check if token is present at position i
+            for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++) { // loop to check if token is present at position currentIndex
                 ;
             }
             if (tokenIndex == token.length) {
