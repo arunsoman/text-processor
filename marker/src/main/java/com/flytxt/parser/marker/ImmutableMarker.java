@@ -2,6 +2,11 @@ package com.flytxt.parser.marker;
 
 public class ImmutableMarker extends Marker {
 	public byte[] data;
+	public ImmutableMarker(byte[] data){
+		this.data = data;
+		this.index  =0 ;
+		this.length = data.length;
+	}
 	   public Marker splitAndGetMarker(final byte[] data, final byte[] token, final int indexOfMarker, final MarkerFactory mf) {
 
 	        int count = 1, lastIndex = index, currentIndex = index, tokenIndex;

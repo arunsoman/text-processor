@@ -20,14 +20,14 @@ public class TpMath implements TpConstant {
 		return m.splitAndGetMarker(data, dotToken, m.index, mf);
 	}
 	
-	public boolean isNumber(byte[] data, Marker m, MarkerFactory mf){
+	public Marker isNumber(byte[] data, Marker m, MarkerFactory mf){
 		if(m.length> numberLen)
-			return false;
+			return booleanFalseMarker;
 		int eCounter = 0;
 		for(int i = m.index; i < m.length; i++){
 			if(data[i]-start> 9 || eCounter >1 || data[i] != exp )
-				return false;
+				return booleanFalseMarker;
 		}
-		return true;
+		return booleanTrueMarker;
 	}
 }

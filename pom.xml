@@ -61,5 +61,6 @@
         <module>store</module>
         <module>processor</module>
         <module>compiler</module>
+        <module>translator</module>
     </modules>
 </project>
