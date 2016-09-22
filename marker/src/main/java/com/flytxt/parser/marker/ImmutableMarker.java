@@ -7,7 +7,7 @@ public class ImmutableMarker extends Marker {
 		this.index  =0 ;
 		this.length = data.length;
 	}
-	   public Marker splitAndGetMarker(final byte[] data, final byte[] token, final int indexOfMarker, final MarkerFactory mf) {
+	   public Marker splitAndGetMarker(final byte[] dataNull, final byte[] token, final int indexOfMarker, final MarkerFactory mf) {
 
 	        int count = 1, lastIndex = index, currentIndex = index, tokenIndex;
 	        while (currentIndex - index <= length) {
@@ -31,7 +31,7 @@ public class ImmutableMarker extends Marker {
 	        return null;
 	    }
 
-	    public FlyList<Marker> splitAndGetMarkers(final byte[] data, final byte[] token, final MarkerFactory mf) {
+	    public FlyList<Marker> splitAndGetMarkers(final byte[] dataNull, final byte[] token, final MarkerFactory mf) {
 
 	        final FlyList<Marker> markers = mf.getArrayList();
 	        int currentIndex = index, lastIndex = index, tokenIndex;

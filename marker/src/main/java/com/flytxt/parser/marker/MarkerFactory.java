@@ -72,8 +72,7 @@ public class MarkerFactory {
 	public Marker createImmutable(byte[] data, int lastIndex, int i) {
 		ImmutableMarker m = markerImmutablePool.peek();
         if (m == null) {
-            m = new ImmutableMarker();
-            m.data = data;
+            m = new ImmutableMarker(data);
             markerImmutablePool.add(m);
             created++;
         } else {
