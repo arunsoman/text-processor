@@ -4,7 +4,7 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
-
+import static java.nio.file.StandardWatchEventKinds.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -26,7 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
+import com.sun.nio.file.SensitivityWatchEventModifier;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
@@ -128,15 +128,14 @@ public class FolderEventListener {
         @SuppressWarnings("unused")
         private final Map<WatchKey, List<OutputUnit>> hashCache;
 
-        private final String sourceFolder;
 
-        public OutputUnit(final String regex, final String outFolder, final LoadingCache<String, OutputUnit> cache, final Map<WatchKey, List<OutputUnit>> hCache, final String sourceFolder) {
+        public OutputUnit(final String regex, final String outFolder, final LoadingCache<String, OutputUnit> cache, final Map<WatchKey, List<OutputUnit>> hCache) {
             super();
             this.regex = regex;
             this.outFolder = outFolder;
             this.cache = cache;
             this.hashCache = hCache;
-            this.sourceFolder = sourceFolder;
+           
         }
 
     }
@@ -145,10 +144,10 @@ public class FolderEventListener {
         final WatchKey key = Paths.get(source).register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
         List<OutputUnit> outputUnits = hashCache.get(key);
         try {
-            outputUnits.add(new OutputUnit(regex, outfolder, cache, hashCache, source));
+            outputUnits.add(new OutputUnit(regex, outfolder, cache, hashCache));
         } catch (final NullPointerException e) {
             outputUnits = new ArrayList<OutputUnit>();
-            outputUnits.add(new OutputUnit(regex, outfolder, cache, hashCache, source));
+            outputUnits.add(new OutputUnit(regex, outfolder, cache, hashCache));
         }
         hashCache.put(key, outputUnits);
 
@@ -183,7 +182,8 @@ public class FolderEventListener {
         try {
 
             raf = new RandomAccessFile(file, "rw");
-            Files.createSymbolicLink(Paths.get(outputUnit.outFolder.concat("/").concat(sourceFile)), Paths.get(outputUnit.sourceFolder.concat("/").concat(sourceFile)));
+            Files.createSymbolicLink(Paths.get(outputUnit.outFolder.concat("/").concat(file.getName())),
+					Paths.get(sourceFile));
         } catch (final IOException e) {
             if (file.exists()) {
                 outputUnit.cache.put(sourceFile, outputUnit);
@@ -221,6 +221,7 @@ public class FolderEventListener {
                         if (kind == OVERFLOW) {
                             continue;
                         }
+                        Path source =(Path)take.watchable();
                         final WatchEvent<Path> ev = cast(event);
                         final Path file = ev.context();
                         final String fileName = file.getFileName().toString();
@@ -231,7 +232,7 @@ public class FolderEventListener {
                             boolean found = false;
                             for (final OutputUnit outputUnit : outputUnits) {
                                 if (fileName.matches(outputUnit.regex)) {
-                                    outputUnit.cache.put(fileName, outputUnit);
+                                	outputUnit.cache.put(source.toString().concat("/").concat(fileName), outputUnit);
                                     found = true;
                                 }
                             }
@@ -240,7 +241,7 @@ public class FolderEventListener {
                             }
                         }
                         if (kind == ENTRY_MODIFY) {
-                            cache.get(fileName);
+                        	cache.get(source.toString().concat("/").concat(fileName));
                         }
                     }
                     take.reset();
