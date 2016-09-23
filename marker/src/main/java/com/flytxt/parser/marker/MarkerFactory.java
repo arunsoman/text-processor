@@ -77,6 +77,7 @@ public class MarkerFactory {
             created++;
         } else {
             reused++;
+
         }
         m.index = lastIndex;
         m.length = i;
