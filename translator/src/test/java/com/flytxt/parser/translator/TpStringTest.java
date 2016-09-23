@@ -3,8 +3,6 @@ package com.flytxt.parser.translator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 
 import com.flytxt.parser.marker.Marker;
 
