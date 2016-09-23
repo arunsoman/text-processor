@@ -13,7 +13,7 @@ public class TpMath implements TpConstant {
 			byte[] b = new byte[m.length-1];
 			System.arraycopy(data, m.index+1, b, 0, m.length);
 		}
-		return mf.createImmutable(data,m, m.index, m.length);
+		return mf.createImmutable(data, m.index, m.length);
 	}
 	
 	public Marker extractDecimal(byte[] data, Marker m, MarkerFactory mf){
