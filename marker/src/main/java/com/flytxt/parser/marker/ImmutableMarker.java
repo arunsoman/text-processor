@@ -61,4 +61,8 @@ public class ImmutableMarker extends Marker {
     public byte[] getData(){
     	return this.data;
     }
+    
+    public String toString(byte[] data){
+    	return new String(this.data, this.index, this.length);
+    }
 }
