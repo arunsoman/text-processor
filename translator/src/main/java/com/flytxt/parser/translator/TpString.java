@@ -4,12 +4,19 @@ import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
 
 public class TpString {
+	private static final byte smallA = 'a';
+	private static final byte smallZ = 'z';
+	private static final byte capsA = 'A';
+	private static final byte capsZ = 'Z';
+	private static final byte space = ' ';
+	private static final byte deltaFromA2a = capsA-smallA;
+	
 	public int length(byte[] data, Marker m, MarkerFactory mf) {
 		return m.length; // will it come index-length
 	}
 
 	public boolean isNull(byte[] data, Marker m, MarkerFactory mf) {
-		return m.length == 0;
+		return m == null || m.length == 0;
 	}
 
 	public boolean startsWtih(byte[] data, int stIndex, byte[] token, int tokenStPtr, int tokenlength) {
@@ -20,90 +27,73 @@ public class TpString {
 		return true;
 	}
 
-	public byte[] toUpperCase(byte[] data, Marker m, MarkerFactory mf) {
-		if (isEmpty(data))
-			return data;
+	public Marker toUpperCase(byte[] data, Marker m, MarkerFactory mf) {
+		byte[] dest = new byte[m.length];
 		for (int i = m.index; i < m.length; i++) {
-			if (data[i] >= 'a' && data[i] <= 'z') {
-				data[i] -= 32;
+			if (data[i] >= smallA && data[i] <= smallZ) {
+				dest[i] = (byte) (data[i]+deltaFromA2a);
 			}
 		}
-
-		return data;
+		return mf.createImmutable(dest, 0, m.length);
 	}
 
-	public byte[] toLowerCase(byte[] data, Marker m, MarkerFactory mf) {
-		if (isEmpty(data))
-			return data;
+	public Marker toLowerCase(byte[] data, Marker m, MarkerFactory mf) {
+		byte[] dest = new byte[m.length];
 		for (int i = m.index; i < m.length; i++) {
-			if (data[i] >= 'A' && data[i] <= 'Z') {
-				data[i] += 32;
+			if (data[i] >= smallA && data[i] <= smallZ) {
+				dest[i] = (byte) (data[i]+deltaFromA2a);
 			}
 		}
-
-		return data;
+		return mf.createImmutable(dest, 0, m.length);
 	}
 
-	public byte[] toTitleCase(byte[] data, Marker m, MarkerFactory mf) {
-		if (isEmpty(data))
-			return data;
+	public Marker toTitleCase(byte[] data, Marker m, MarkerFactory mf) {
+		byte[] dest = new byte[m.length];
+		System.arraycopy(data, m.index, dest, 0, m.length);
 		if (data[m.index] >= 'a' && data[m.index] <= 'z')
-			data[m.index] -= 32;
-		return data;
+			dest[m.index] += deltaFromA2a;
+		return mf.createImmutable(dest, 0, m.length);
 	}
 	
 	public Marker lTrim(byte[] data, Marker m, MarkerFactory mf) {
-		if (isEmpty(data))
-			return m;
 		 int start= m.index;
-		 int end = m.length;
-		 while ((start < end) && (data[start] <= ' ')) {
+		 int end = start + m.length;
+		 while ((start < end) && (data[start] == space)) {
 			 start++; 
 		 }
-		 if(start>0 && start <m.length){
-			m.index=start;
-			m.length=m.length-start;
-		 }
-		
-		return m;
+		return mf.create(start, m.length);
 	}
 	
 	public Marker rTrim(byte[] data, Marker m, MarkerFactory mf) {
-		if (isEmpty(data))
-			return m;
-		 int start= m.length;
+		 int start= m.index+m.length;
 		 int end = m.index;
-		 while ((start < end) && (data[start] <= ' ')) {
+		 while ((start > end) && (data[start] == space)) {
 			 start--; 
 		 }
-		 if(start>0 && start <m.length){
-			m.index=start;
-			m.length=m.length-start;
-		 }
-		
-		return m;
-	}
-	public Marker trim(byte[] data, Marker m, MarkerFactory mf) {
-		
-		if (isEmpty(data))
-			return m;
-		 int start= m.index;
-		 int end = m.length;
-		 while ((start < end) && (data[start] <= ' ')) {
-			 start++; 
-		 }
-		 while ((start < end) && (data[end] <= ' ')) {
-			 end--; 
-		 }
-		 if(start>0 || end <m.length){
-			m.index=start;
-			m.length=end;
-		 }
-		
-		return m;
+		return mf.create(m.index, m.length-start);
 	}
 
-	private boolean isEmpty(byte[] array) {
-		return array == null || array.length == 0;
+	public Marker trim(byte[] data, Marker m, MarkerFactory mf) {
+		 int start= m.index;
+		 int end = start + m.length;
+		 int mid = (start +end)/2;
+		 boolean stopHead = false, stopTail = false;
+		 while (start < mid){
+			 if(!stopHead ){
+				 if(data[start] == space)
+					 start++;
+				 else
+					 stopHead = true;
+			 }
+			 if(!stopTail ){
+				 if(data[end] == space)
+					 end--;
+				 else
+					 stopTail = true;
+			 }
+			 if(data[end] == space)
+				 end--;
+		 }
+		return mf.create(start, end-start);
 	}
 }
