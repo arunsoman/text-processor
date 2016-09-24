@@ -12,10 +12,9 @@ public class TpMath extends Translator implements TpConstant {
 		if (m.getData() != null)
 			data = m.getData();
 		if (data[m.index] == negative) {
-			byte[] b = new byte[m.length - 1];
-			System.arraycopy(data, m.index + 1, b, 0, m.length);
+			return mf.create(m.index+1, m.length-1);
 		}
-		return mf.createImmutable(data, m.index, m.length);
+		return mf.create(m.index, m.length);
 	}
 
 	public boolean lessThan(byte[] d1, Marker m1, byte[] d2, Marker m2, MarkerFactory mf) {
@@ -113,15 +112,15 @@ public class TpMath extends Translator implements TpConstant {
 		throw new RuntimeException();
 	}
 
-	public Marker ceil(byte[] data, Marker m, int number, MarkerFactory mf) {
+	public Marker ceil(byte[] data, Marker m,  MarkerFactory mf) {
 		throw new RuntimeException();
 	}
 
-	public Marker floor(byte[] data, Marker m, int number, MarkerFactory mf) {
+	public Marker floor(byte[] data, Marker m, MarkerFactory mf) {
 		throw new RuntimeException();
 	}
 
-	public Marker round(byte[] data, Marker m, int number, MarkerFactory mf) {
+	public Marker round(byte[] data, Marker m, MarkerFactory mf) {
 		throw new RuntimeException();
 	}
 
@@ -147,14 +146,14 @@ public class TpMath extends Translator implements TpConstant {
 		return m.splitAndGetMarker(data, dotToken, 2, mf);
 	}
 
-	public Marker isNumber(byte[] data, Marker m, MarkerFactory mf) {
+	public boolean isNumber(byte[] data, Marker m, MarkerFactory mf) {
 		if (m.length > numberLen)
-			return booleanFalseMarker;
+			return false;
 		int eCounter = 0;
 		for (int i = m.index; i < m.length; i++) {
 			if (data[i] - start > 9 || eCounter > 1 || data[i] != exp)
-				return booleanFalseMarker;
+				return false;
 		}
-		return booleanTrueMarker;
+		return true;
 	}
 }
