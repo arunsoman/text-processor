@@ -81,7 +81,7 @@ public class TpString {
 		 int newStart = start;
 		 int dec = 0;
 		 boolean headFound =  false, tailFound = false;
-		 while(start < end && !headFound && !tailFound){
+		 while(start <= end){
 			 if(!headFound){
 				 if(data[start]== space){
 					 start++;
@@ -92,7 +92,7 @@ public class TpString {
 			 		headFound = true;
 			 	}
 			 }
-			 if(headFound && !tailFound){
+			 if(!tailFound){
 				 if(data[end]== space){
 					 end--;
 					 dec--;
@@ -101,7 +101,14 @@ public class TpString {
 			 		tailFound = true;
 			 	}
 			 }
+			 if(headFound && tailFound){
+				 break;
+			 }
+
 		 }
-		return mf.create(newStart, m.length-1+dec);
+		 int len = m.length+dec;
+		 if(len<0)
+			 len = 0;
+		return mf.create(newStart, len);
 	}
 }
