@@ -12,4 +12,5 @@ public interface TpConstant {
 	byte dot = (byte) (0x2e -start);
 	ImmutableMarker booleanTrueMarker = new ImmutableMarker("T".getBytes());
 	ImmutableMarker booleanFalseMarker = new ImmutableMarker("F".getBytes());
+	
 }
