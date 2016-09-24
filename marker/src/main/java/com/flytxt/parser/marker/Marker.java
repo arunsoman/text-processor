@@ -58,7 +58,7 @@ public class Marker {
     }
 
     public byte[] getData(){
-    	throw new RuntimeException("something is wrong, should have called on immutable");
+    	return null;
     }
     public String toString(final byte[] b) {
         return new String(b, index, length);
