@@ -5,6 +5,8 @@ import com.flytxt.parser.marker.Marker;
 public final class Translator implements TpConstant {
 	
 	public static final long asLong(byte[] data, Marker m){
+		if(m.getData() != null)
+			data = m.getData();
 		int stIndex = m.index;
 		int length = m.length;
 		length += stIndex;
@@ -24,6 +26,8 @@ public final class Translator implements TpConstant {
 		}
 	}
 	public static final double asDouble(byte[] data,Marker m){
+		if(m.getData() != null)
+			data = m.getData();
 		int stIndex = m.index;
 		int length = m.length;
 		length += stIndex;
