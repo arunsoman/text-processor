@@ -4,8 +4,8 @@ import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
 
 public class TpMath extends Translator implements TpConstant {
-	public final static byte dotToken[] = { 0x2E };
-	public final static byte dotByte = 0x2E;
+	public final static byte dotByte = '.';
+	public final static byte dotToken[] = { dotByte };
 	public final static int numberLen = String.valueOf(Long.MAX_VALUE).length();
 
 	public Marker abs(byte[] data, Marker m, MarkerFactory mf) {
@@ -18,41 +18,50 @@ public class TpMath extends Translator implements TpConstant {
 	}
 
 	public boolean lessThan(byte[] d1, Marker m1, byte[] d2, Marker m2, MarkerFactory mf) {
-		boolean isM1Long = false;
-		boolean isM2Long = false;
+		boolean isM1Double = false;
+		boolean isM2Double = false;
 		if (m1.getData() != null)
 			d1 = m1.getData();
 		if (m2.getData() != null)
 			d2 = m2.getData();
-		if (m1.splitAndGetMarker(d1, dotToken, 2, mf) == null) {
-			isM1Long = true;
+
+		for(byte b: d1){
+			if(b == dotByte)
+				isM1Double = true;
 		}
-		if (m2.splitAndGetMarker(d2, dotToken, 2, mf) == null) {
-			isM2Long = true;
+
+		for(byte b: d2){
+			if(b == dotByte)
+				isM2Double = true;
 		}
-		if (isM1Long & isM2Long) {
-			return asLong(d1, m1) < asLong(d2, m2);
+		if (isM1Double || isM2Double) {
+			return Double.parseDouble(m1.toString(d1)) <= Double.parseDouble(m2.toString(d2)) ;
 		}
-		return asDouble(d1, m1) < asDouble(d2, m2);
+		return Long.parseLong(m1.toString(d1)) <= Long.parseLong(m1.toString(d1));
+
 	}
 
 	public boolean lessEqThan(byte[] d1, Marker m1, byte[] d2, Marker m2, MarkerFactory mf) {
-		boolean isM1Long = false;
-		boolean isM2Long = false;
+		boolean isM1Double = false;
+		boolean isM2Double = false;
 		if (m1.getData() != null)
 			d1 = m1.getData();
 		if (m2.getData() != null)
 			d2 = m2.getData();
-		if (m1.splitAndGetMarker(d1, dotToken, 2, mf) == null) {
-			isM1Long = true;
+
+		for(byte b: d1){
+			if(b == dotByte)
+				isM1Double = true;
 		}
-		if (m2.splitAndGetMarker(d2, dotToken, 2, mf) == null) {
-			isM2Long = true;
+
+		for(byte b: d2){
+			if(b == dotByte)
+				isM2Double = true;
 		}
-		if (isM1Long & isM2Long) {
-			return asLong(d1, m1) <= asLong(d2, m2);
+		if (isM1Double || isM2Double) {
+			return Double.parseDouble(m1.toString(d1)) <= Double.parseDouble(m2.toString(d2)) ;
 		}
-		return asDouble(d1, m1) <= asDouble(d2, m2);
+		return Long.parseLong(m1.toString(d1)) <= Long.parseLong(m1.toString(d1));
 	}
 
 	public boolean greaterEqThan(byte[] d1, Marker m1, byte[] d2, Marker m2, MarkerFactory mf) {
@@ -99,7 +108,7 @@ public class TpMath extends Translator implements TpConstant {
 			d1 = m1.getData();
 		if (m2.getData() != null)
 			d2 = m2.getData();
-		double res = asDouble(d1, m1) - asDouble(d2, m2);
+		double res = asDouble(d1, m1) + asDouble(d2, m2);
 		byte[] resB = asByteArray(res);
 		return mf.createImmutable(resB, 0, resB.length);
 	}
@@ -143,15 +152,36 @@ public class TpMath extends Translator implements TpConstant {
 	}
 
 	public Marker extractDecimalFractionPart(byte[] data, Marker m, MarkerFactory mf) {
-		return m.splitAndGetMarker(data, dotToken, 2, mf);
+		if(m.getData() != null)
+			data = m.getData();
+		int index = m.index;
+		boolean found = false;
+		for(byte b: data){
+			if(b == dotByte){
+				found = true;
+				index++;
+				break;
+			}
+			index++;
+		}
+		if(!found)
+			return null;
+		if(m.getData() != null){
+			int size = m.length - index;
+			byte[] result = new byte[size];
+			System.arraycopy(data, index, result, 0, result.length);
+			return mf.createImmutable(result, 0, result.length);
+		}
+		return mf.create(index, m.length- index);
 	}
 
 	public boolean isNumber(byte[] data, Marker m, MarkerFactory mf) {
 		if (m.length > numberLen)
 			return false;
-		int eCounter = 0;
-		for (int i = m.index; i < m.length; i++) {
-			if (data[i] - start > 9 || eCounter > 1 || data[i] != exp)
+		if(data[m.index] != '-' && (data[m.index] <= start && data[m.index] >= end))
+			return false;
+		for (int i = m.index+1; i < m.length; i++) {
+			if( (data[m.index] <= start && data[m.index] >= end))
 				return false;
 		}
 		return true;
