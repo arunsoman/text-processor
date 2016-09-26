@@ -4,21 +4,57 @@ language:
 jdk:
   - oraclejdk8
 script: mvn clean verify
-
 sudo: required
-install: make get-deps
-services:
-  - docker
-before_install:
-#  - sudo apt-get install jq
-#  - git clone https://github.com/emc-advanced-dev/unik.git
-#  - cd unik
-#  - make
-#  - mv _build/unik /usr/local/bin/
-#  - unik build  --mountpoint /tmp --args="org.springframework.boot.loader.JarLauncher" --name processor --path /root/arunsoman/text-processor  --base rump-java  --language java --provider virtualbox
-  - git clone https://github.com/cloudius-systems/osv.git
-  - cd osv
-  - git submodule update --init --recursive
-  - sudo scripts/setup.py
-  - sudo make
-#  - sudo scripts/build
+dist: trusty
+language: generic
+cache:
+  directories:
+    - $HOME/.ccache
+install: bash -ex ./.travis-install.sh
+script: bash -ex ./.travis-script.sh
+
+env:
+  global:
+      - PATH="/usr/lib/ccache:$PATH"
+  matrix:
+ #   - PACKAGE=erlang
+  #  - PACKAGE=haproxy
+#    - PACKAGE=hiawatha
+#    - PACKAGE=leveldb
+#    - PACKAGE=libcurl
+#    - PACKAGE=libevent
+#    - PACKAGE=libressl
+#    - PACKAGE=libxml2
+#    - PACKAGE=mathopd
+#    - PACKAGE=memcached
+#    - PACKAGE=mpg123
+  # broken: issue #106
+  #  - PACKAGE=mysql
+ #   - PACKAGE=nanomsg
+ #   - PACKAGE=nginx
+ #   - PACKAGE=ngircd
+  #  - PACKAGE=nodejs
+  # broken: issue #92
+  #  - PACKAGE=openmp
+ #   - PACKAGE=pcre
+ #   - PACKAGE=php5
+#    - PACKAGE=php7
+#    - PACKAGE=python3
+#    - PACKAGE=redis
+  # Disabled, does not actually build anything interesting
+  #  - PACKAGE=roundcube
+ #   - PACKAGE=ruby
+  # Disabled, build takes several hours
+  #  - PACKAGE=rust
+#    - PACKAGE=sqlite
+#    - PACKAGE=tor
+#    - PACKAGE=apache2
+#    - PACKAGE=libffi
+    - PACKAGE=openjdk8
+
+notifications:
+  email:
+    recipients:
+      - aarunsoman@gmail.com
+    on_success: always
+    on_failure: always
