@@ -1,4 +1,7 @@
 #!/bin/bash
+git clone http://repo.rumpkernel.org/rumprun
+cd rumprun
+git submodule update --init
 # Builds one specific package, specified by $PACKAGE
 if [ -z "${PACKAGE}" ]; then
 	echo "PACKAGE is not set"
