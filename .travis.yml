@@ -21,4 +21,4 @@ before_install:
   - git submodule update --init --recursive
   - sudo scripts/setup.py
   - sudo make
-  - sudo scripts/build
+#  - sudo scripts/build
