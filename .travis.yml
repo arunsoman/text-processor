@@ -17,8 +17,8 @@ before_install:
 #  - mv _build/unik /usr/local/bin/
 #  - unik build  --mountpoint /tmp --args="org.springframework.boot.loader.JarLauncher" --name processor --path /root/arunsoman/text-processor  --base rump-java  --language java --provider virtualbox
   - git clone https://github.com/cloudius-systems/osv.git
-  - git submodule update --init --recursive
   - cd osv
+  - git submodule update --init --recursive
   - sudo scripts/setup.py
   - sudo make
   - sudo scripts/build
