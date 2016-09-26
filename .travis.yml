@@ -10,9 +10,12 @@ install: make get-deps
 services:
   - docker
 before_install:
-  - sudo apt-get install jq
-  - git clone https://github.com/emc-advanced-dev/unik.git
-  - cd unik
-  - make
-  - mv _build/unik /usr/local/bin/
-  - unik build  --mountpoint /tmp --args="org.springframework.boot.loader.JarLauncher" --name processor --path /root/arunsoman/text-processor  --base rump-java  --language java --provider virtualbox
+#  - sudo apt-get install jq
+#  - git clone https://github.com/emc-advanced-dev/unik.git
+#  - cd unik
+#  - make
+#  - mv _build/unik /usr/local/bin/
+#  - unik build  --mountpoint /tmp --args="org.springframework.boot.loader.JarLauncher" --name processor --path /root/arunsoman/text-processor  --base rump-java  --language java --provider virtualbox
+  - git clone https://github.com/cloudius-systems/osv.git
+  - cd osv
+  - scripts/setup.py
