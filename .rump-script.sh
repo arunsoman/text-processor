@@ -15,10 +15,7 @@ git submodule update --init
 ./build-rr.sh -o myobj -j16 -qq ${KERNONLY} ${PLATFORM} ${EXTRAFLAGS}
 cd ..
 
-PATH := $PATH:$HOME/text-processor/rumprun/./rumprun/bin
-export PATH
-echo -----------------------------
-echo -e $PATH
+export PATH := $PATH:$HOME/text-processor/rumprun/./rumprun/bin
 
 git clone https://github.com/arunsoman/rumprun-packages
 cd rumprun-packages
