@@ -14,4 +14,4 @@ env:
 cache:
   directories:
     - $HOME/.ccache
-install: sudo bash -ex ./.rump-script.sh.
+install: sudo bash -ex ./.rump-script.sh
