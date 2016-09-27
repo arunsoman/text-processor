@@ -17,16 +17,16 @@ before_script:
   - sudo apt-get install --only-upgrade binutils gcc -y
 
 env:
-  - PLATFORM=xen MACHINE=i486 ELF=elf TESTS=none EXTRAFLAGS='-- -F ACLFLAGS=-m32'
+  - PLATFORM=xen MACHINE=x86_64 TESTS=none EXTRAFLAGS=
 
 script:
   - git clone http://repo.rumpkernel.org/rumprun
   - cd rumprun
   - git submodule update --init
   - ./build-rr.sh -o myobj -j16 -qq ${KERNONLY} ${PLATFORM} ${EXTRAFLAGS}
-  - set PATH="${PATH}:${$HOME}/text-processor/rumprun/./rumprun/bin"
+  - export PATH=${PATH}:${$HOME}/text-processor/rumprun/./rumprun/bin
   - cd ..
-  - git clone https://github.com/rumpkernel/rumprun-packages.git
+  - git clone https://github.com/arunsoman/rumprun-packages.git
   - cd rumprun-packages
   - git submodule update --init
   - cd openjdk8
