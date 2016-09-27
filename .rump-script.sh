@@ -23,7 +23,8 @@ git submodule update --init
 # Builds one specific package, specified by $PACKAGE
 if [ -z "${PACKAGE}" ]; then
 	echo "PACKAGE is not set"
-	exit 1
+        echo "using openjdk8"
+        PACKAGE=openjdk8
 fi
 cd ${PACKAGE}
 # Openjdk make should not be used with option -j
