@@ -8,8 +8,7 @@ env:
   global:
       - PATH="$$HOME/text-processor/rumprun/./rumprun/bin:/usr/lib/ccache:$PATH"
 env:
-   - PLATFORM=hw MACHINE=x86_64 TESTS=qemu EXTRAFLAGS=
-   - RUMPRUN_TOOLCHAIN_TUPLE=x86_64-rumprun-netbsd
+   - RUMPRUN_TOOLCHAIN_TUPLE=x86_64-rumprun-netbsd PLATFORM=hw MACHINE=x86_64 TESTS=qemu EXTRAFLAGS=
 
 cache:
   directories:
