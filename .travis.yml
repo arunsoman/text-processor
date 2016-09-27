@@ -24,7 +24,7 @@ script:
   - cd rumprun
   - git submodule update --init
   - ./build-rr.sh -o myobj -j16 -qq ${KERNONLY} ${PLATFORM} ${EXTRAFLAGS}
-  - export PATH="${PATH}:${$HOME}/text-processor/rumprun/./rumprun/bin"
+  - set PATH="${PATH}:${$HOME}/text-processor/rumprun/./rumprun/bin"
   - cd ..
   - git clone https://github.com/rumpkernel/rumprun-packages.git
   - cd rumprun-packages
