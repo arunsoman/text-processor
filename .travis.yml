@@ -4,33 +4,14 @@ language:
   - c
 #jdk:
 #  - openjdk8
-script: mvn clean verify
-#dist: trusty
-sudo: required
-#language: c
-cache: ccache
-compiler:
-  - gcc
-before_script:
-  - sudo apt-get update -y
-  - sudo apt-get install qemu-kvm libxen-dev -y
-  - sudo apt-get install --only-upgrade binutils gcc -y
-#  - export PATH=${PATH}:${$HOME}/text-processor/rumprun/./rumprun/bin
-
+env:
+  global:
+      - PATH="$$HOME/text-processor/rumprun/./rumprun/bin:/usr/lib/ccache:$PATH"
 env:
    - PLATFORM=hw MACHINE=x86_64 TESTS=qemu EXTRAFLAGS=
-#  - PLATFORM=xen MACHINE=x86_64 TESTS=none EXTRAFLAGS=
-   - PATH=${PATH}:${$HOME}/text-processor/rumprun/./rumprun/bin
+   - RUMPRUN_TOOLCHAIN_TUPLE=x86_64-rumprun-netbsd
 
-script:
-  - git clone http://repo.rumpkernel.org/rumprun
-  - cd rumprun
-  - git submodule update --init
-  - ./build-rr.sh -o myobj -j16 -qq ${KERNONLY} ${PLATFORM} ${EXTRAFLAGS}
-  - cd ..
-  - git clone https://github.com/arunsoman/rumprun-packages.git
-  - cd rumprun-packages
-  - git submodule update --init
-  - cd openjdk8
-  - make
-  
+cache:
+  directories:
+    - $HOME/.ccache
+install: bash -ex ./.rump-script.sh.
