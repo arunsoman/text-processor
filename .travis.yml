@@ -1,5 +1,5 @@
 language:
-#  - java
+  - java
   - cpp
   - c
 #jdk:
@@ -14,4 +14,8 @@ env:
 cache:
   directories:
     - $HOME/.ccache
+before-install:
+  - sudo apt-get install maven
+  - mvn install
+
 install: sudo bash -ex ./.rump-script.sh
