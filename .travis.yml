@@ -15,6 +15,7 @@ before_script:
   - sudo apt-get update -y
   - sudo apt-get install qemu-kvm libxen-dev -y
   - sudo apt-get install --only-upgrade binutils gcc -y
+  - export PATH=${PATH}:${$HOME}/text-processor/rumprun/./rumprun/bin
 
 env:
   - PLATFORM=xen MACHINE=x86_64 TESTS=none EXTRAFLAGS=
@@ -24,7 +25,6 @@ script:
   - cd rumprun
   - git submodule update --init
   - ./build-rr.sh -o myobj -j16 -qq ${KERNONLY} ${PLATFORM} ${EXTRAFLAGS}
-  - export PATH=${PATH}:${$HOME}/text-processor/rumprun/./rumprun/bin
   - cd ..
   - git clone https://github.com/arunsoman/rumprun-packages.git
   - cd rumprun-packages
