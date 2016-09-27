@@ -1,60 +1,34 @@
 language:
   - java
   - cpp
+  - c
 jdk:
   - openjdk8
 script: mvn clean verify
+#dist: trusty
 sudo: required
-dist: trusty
-language: generic
-cache:
-  directories:
-    - $HOME/.ccache
-install: bash -ex ./.travis-install.sh
-script: bash -ex ./.travis-script.sh
+#language: c
+cache: ccache
+compiler:
+  - gcc
+
+before_script:
+  - sudo apt-get update -y
+  - sudo apt-get install qemu-kvm libxen-dev -y
+  - sudo apt-get install --only-upgrade binutils gcc -y
 
 env:
-  global:
-      - PATH="/usr/lib/ccache:$PATH"
-  matrix:
- #   - PACKAGE=erlang
-  #  - PACKAGE=haproxy
-#    - PACKAGE=hiawatha
-#    - PACKAGE=leveldb
-#    - PACKAGE=libcurl
-#    - PACKAGE=libevent
-#    - PACKAGE=libressl
-#    - PACKAGE=libxml2
-#    - PACKAGE=mathopd
-#    - PACKAGE=memcached
-#    - PACKAGE=mpg123
-  # broken: issue #106
-  #  - PACKAGE=mysql
- #   - PACKAGE=nanomsg
- #   - PACKAGE=nginx
- #   - PACKAGE=ngircd
-  #  - PACKAGE=nodejs
-  # broken: issue #92
-  #  - PACKAGE=openmp
- #   - PACKAGE=pcre
- #   - PACKAGE=php5
-#    - PACKAGE=php7
-#    - PACKAGE=python3
-#    - PACKAGE=redis
-  # Disabled, does not actually build anything interesting
-  #  - PACKAGE=roundcube
- #   - PACKAGE=ruby
-  # Disabled, build takes several hours
-  #  - PACKAGE=rust
-#    - PACKAGE=sqlite
-#    - PACKAGE=tor
-#    - PACKAGE=apache2
-#    - PACKAGE=libffi
-    - PACKAGE=openjdk8
+  - PLATFORM=hw MACHINE=x86_64 TESTS=qemu EXTRAFLAGS=
+  - PLATFORM=hw MACHINE=i486 ELF=elf TESTS=qemu EXTRAFLAGS='-- -F ACLFLAGS=-m32 -F ACLFLAGS=-march=i686'
+  - PLATFORM=xen MACHINE=x86_64 TESTS=none EXTRAFLAGS=
+  - PLATFORM=xen MACHINE=i486 ELF=elf TESTS=none EXTRAFLAGS='-- -F ACLFLAGS=-m32'
+  - PLATFORM=hw MACHINE=x86_64 TESTS=qemu EXTRAFLAGS= CXX='false'
+  - PLATFORM=hw MACHINE=x86_64 TESTS=none KERNONLY=-k EXTRAFLAGS= 
+  - PLATFORM=xen MACHINE=x86_64 TESTS=none KERNONLY=-k EXTRAFLAGS=
 
-notifications:
-  email:
-    recipients:
-      - aarunsoman@gmail.com
-    on_success: always
-    on_failure: always
+script:
+  - git submodule update --init
+  - ./build-rr.sh -o myobj -j16 -qq ${KERNONLY} ${PLATFORM} ${EXTRAFLAGS}
+  - . ./myobj/config
+  - ./tests/buildtests.sh ${KERNONLY}
+  - ./tests/runtests.sh ${TESTS}
