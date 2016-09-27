@@ -19,7 +19,7 @@ before_script:
 
 env:
   - PLATFORM=xen MACHINE=x86_64 TESTS=none EXTRAFLAGS=
-  - PATH=${PATH}:${$HOME}/text-processor/rumprun/./rumprun/bin
+#  - PATH=${PATH}:${$HOME}/text-processor/rumprun/./rumprun/bin
 
 script:
   - git clone http://repo.rumpkernel.org/rumprun
