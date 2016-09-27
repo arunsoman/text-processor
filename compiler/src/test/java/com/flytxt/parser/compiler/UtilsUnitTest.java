@@ -26,16 +26,16 @@ public class UtilsUnitTest {
     }
 
     @Test
-    public void testBadClass(){
+    public void testBadClass() {
         final Utils utils = new Utils();
         final String src = "src/test/resources/compiler/Bad.java";
         final String dest = "/tmp/";
         String res;
-		try {
-			res = utils.complie(src, dest);
-		} catch (Exception e) {
-			return;
-		}
+        try {
+            res = utils.complie(src, dest);
+        } catch (final Exception e) {
+            return;
+        }
         fail("Should have produced  error text");
     }
 
@@ -53,7 +53,7 @@ public class UtilsUnitTest {
 
     @Test
     public void testDirListing() {
-        final String loc = "/Users/arunsoman/git/text-processor/parser/target/classes";
+        final String loc = "/home/athul/git/text-processor/parser/target/classes";
         final Utils utils = new Utils();
         try {
             final FileOutputStream fout = new FileOutputStream("/tmp/test.jar");

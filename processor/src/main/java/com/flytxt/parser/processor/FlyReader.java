@@ -41,7 +41,9 @@ public class FlyReader implements Callable<FlyReader> {
     @Getter
     private Status status;
 
-    byte[] eol = System.lineSeparator().getBytes();
+    // byte[] eol = System.lineSeparator().getBytes();
+
+    byte[] eol = "\r\n".getBytes();
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -62,7 +64,7 @@ public class FlyReader implements Callable<FlyReader> {
             }
         }
         logger.debug("Starting file reader @ " + folder);
-        final ByteBuffer buf = ByteBuffer.allocate(51200);
+        final ByteBuffer buf = ByteBuffer.allocate(104000);
         final MarkerFactory mf = new MarkerFactory();
         mf.setMaxListSize(lp.getMaxListSize());
         while (!stopRequested) {
@@ -107,29 +109,30 @@ public class FlyReader implements Callable<FlyReader> {
         while ((readCnt = file.read(buf)) > 0) {
             long eolPosition;
             long previousEolPosition = 0;
-            {
-                do {
-                    eolPosition = getEOLPosition(data, (int) previousEolPosition + eol.length, readCnt);
-                    if (eolPosition < 0) {
-                        if (previousEolPosition == 0) {
-                            logger.error("Increase byte array size, current size :" + data.length);
-                            throw new IOException("can't process " + readCnt + " long line");
-                        }
-                        readLines(file.position(file.position() - (readCnt - previousEolPosition - eol.length)), (ByteBuffer) buf.clear(), mf);
-                        continue;
-                    } else {
-                        try {
-                            // final long T1 = System.nanoTime();
-                            lp.process(data, previousEolPosition == 0 ? 0 : (int) previousEolPosition + eol.length, (int) eolPosition, mf);
-                            // logger.debug("Total: " + (System.nanoTime() - T1));
-                            mf.reclaim();
-                            previousEolPosition = eolPosition;
-                        } catch (final IndexOutOfBoundsException e) {
-                            logger.debug("could not process : " + new String(data, 0, (int) eolPosition) + " \n cause:" + e.getMessage());
-                        }
+
+            do {
+                eolPosition = getEOLPosition(data, (int) previousEolPosition + eol.length, readCnt);
+                if (eolPosition < 0) {
+                    if (previousEolPosition == 0) {
+                        logger.error("Increase byte array size, current size :" + data.length);
+                        throw new IOException("can't process " + readCnt + " long line");
                     }
-                } while (eolPosition > 0);
-            }
+                    buf.clear();
+                    readLines(file.position(file.position() - (readCnt - previousEolPosition - eol.length)), buf, mf);
+                    continue;
+                } else {
+                    try {
+                        // final long T1 = System.nanoTime();
+                        final int startIndex = previousEolPosition == 0 ? 0 : (int) previousEolPosition + eol.length;
+                        lp.process(data, startIndex, (int) eolPosition, mf);
+                        // logger.debug("Total: " + (System.nanoTime() - T1));
+                        mf.reclaim();
+                        previousEolPosition = eolPosition;
+                    } catch (final IndexOutOfBoundsException e) {
+                        logger.debug("could not process : " + new String(data, 0, (int) eolPosition) + " \n cause:" + e.getMessage());
+                    }
+                }
+            } while (eolPosition > 0);
         }
     }
 
@@ -162,14 +165,14 @@ public class FlyReader implements Callable<FlyReader> {
         try {
             int tokenIndex, currentIndex = startIndex;
             while (currentIndex <= endIndex) {
-                for (tokenIndex = 0; tokenIndex < eol.length && eol[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++) { // loop to check if EOL is present at position currentIndex
-                    ;
+                for (tokenIndex = 0; tokenIndex < eol.length && (data[currentIndex + tokenIndex] == eol[tokenIndex]); tokenIndex++) {
                 }
                 if (tokenIndex == eol.length) {
                     return currentIndex;
                 }
                 currentIndex++;
             }
+
         } catch (final Exception e) {
         }
         return -1;
