@@ -1,6 +1,6 @@
 #!/bin/bash
-git clone http://repo.rumpkernel.org/rumprun
-cd rumprun
+git clone https://github.com/rumpkernel/rumprun-packages
+cd rumprun-packages
 git submodule update --init
 # Builds one specific package, specified by $PACKAGE
 if [ -z "${PACKAGE}" ]; then
