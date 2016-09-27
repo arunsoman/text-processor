@@ -4,6 +4,8 @@ language:
   - c
 #jdk:
 #  - openjdk8
+compiler:
+  - gcc
 env:
   global:
       - PATH="$$HOME/text-processor/rumprun/./rumprun/bin:/usr/lib/ccache:$PATH"
