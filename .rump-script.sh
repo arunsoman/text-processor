@@ -14,6 +14,9 @@ git clone http://repo.rumpkernel.org/rumprun
 cd rumprun
 git submodule update --init
 ./build-rr.sh -o myobj -j16 -qq ${KERNONLY} ${PLATFORM} ${EXTRAFLAGS}
+. ./myobj/config
+./tests/buildtests.sh ${KERNONLY}
+./tests/runtests.sh ${TESTS}
 cd ..
 
 export PATH=$PATH:/home/travis/build/arunsoman/text-processor/rumprun/./rumprun/bin
