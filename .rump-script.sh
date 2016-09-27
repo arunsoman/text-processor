@@ -8,6 +8,7 @@ fi
 sudo apt-get update -y
 sudo apt-get install qemu-kvm libxen-dev -y
 sudo apt-get install --only-upgrade binutils gcc -y
+sudo apt-get install build-essential
 
 git clone http://repo.rumpkernel.org/rumprun
 cd rumprun
