@@ -6,6 +6,8 @@ language:
 #  - openjdk8
 compiler:
   - gcc
+  - c++
+  
 env:
   global:
       - PATH="$$HOME/text-processor/rumprun/./rumprun/bin:/usr/lib/ccache:$PATH"
@@ -20,3 +22,11 @@ before-install:
   - mvn install
 
 install: sudo bash -ex ./.rump-script.sh
+
+deploy:
+  provider: releases
+  api_key: "aece193f19b53c2f405216468d019c3d4ba3826f"
+  file: "FILE TO UPLOAD"
+  skip_cleanup: true
+  on:
+    tags: true
