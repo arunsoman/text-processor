@@ -15,10 +15,11 @@ before_script:
   - sudo apt-get update -y
   - sudo apt-get install qemu-kvm libxen-dev -y
   - sudo apt-get install --only-upgrade binutils gcc -y
-  - export PATH=${PATH}:${$HOME}/text-processor/rumprun/./rumprun/bin
+#  - export PATH=${PATH}:${$HOME}/text-processor/rumprun/./rumprun/bin
 
 env:
   - PLATFORM=xen MACHINE=x86_64 TESTS=none EXTRAFLAGS=
+  - PATH=${PATH}:${$HOME}/text-processor/rumprun/./rumprun/bin
 
 script:
   - git clone http://repo.rumpkernel.org/rumprun
