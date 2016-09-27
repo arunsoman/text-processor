@@ -18,8 +18,9 @@ before_script:
 #  - export PATH=${PATH}:${$HOME}/text-processor/rumprun/./rumprun/bin
 
 env:
-  - PLATFORM=xen MACHINE=x86_64 TESTS=none EXTRAFLAGS=
-#  - PATH=${PATH}:${$HOME}/text-processor/rumprun/./rumprun/bin
+   - PLATFORM=hw MACHINE=x86_64 TESTS=qemu EXTRAFLAGS=
+#  - PLATFORM=xen MACHINE=x86_64 TESTS=none EXTRAFLAGS=
+   - PATH=${PATH}:${$HOME}/text-processor/rumprun/./rumprun/bin
 
 script:
   - git clone http://repo.rumpkernel.org/rumprun
