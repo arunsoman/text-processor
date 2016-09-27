@@ -11,12 +11,16 @@ sudo: required
 cache: ccache
 compiler:
   - gcc
-
 before_script:
   - sudo apt-get update -y
   - sudo apt-get install qemu-kvm libxen-dev -y
   - sudo apt-get install --only-upgrade binutils gcc -y
+
+env:
+  - PLATFORM=xen MACHINE=i486 ELF=elf TESTS=none EXTRAFLAGS='-- -F ACLFLAGS=-m32'
+
+script:
   - git clone http://repo.rumpkernel.org/rumprun
   - cd rumprun
   - git submodule update --init
-  - CC=cc ./build-rr.sh hw
+  - ./build-rr.sh -o myobj -j16 -qq ${KERNONLY} ${PLATFORM} ${EXTRAFLAGS}
