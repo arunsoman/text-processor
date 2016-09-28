@@ -12,56 +12,149 @@ public class TpMath extends Translator implements TpConstant {
 		if (m.getData() != null)
 			data = m.getData();
 		if (data[m.index] == negative) {
-			return mf.create(m.index+1, m.length-1);
+			return mf.create(m.index + 1, m.length - 1);
 		}
 		return mf.create(m.index, m.length);
 	}
 
 	public boolean lessThan(byte[] d1, Marker m1, byte[] d2, Marker m2, MarkerFactory mf) {
-		boolean isM1Double = false;
-		boolean isM2Double = false;
+
+		int d1DecimalIndex = Integer.MIN_VALUE;
+		int d2DecimalIndex = Integer.MIN_VALUE;
+
+		int startIndex = 0;
+		boolean isNegative = false;
+		if (d1[0] == negative) {
+
+			if (d2[0] != negative) {
+				return true;
+			}
+			startIndex = 1;
+			isNegative = true;
+		}
+
+		double m1DoubleValue = convertToNumber(d1[startIndex]);
+		double m2DoubleValue = convertToNumber(d2[startIndex]);
 		if (m1.getData() != null)
 			d1 = m1.getData();
 		if (m2.getData() != null)
 			d2 = m2.getData();
 
-		for(byte b: d1){
-			if(b == dotByte)
-				isM1Double = true;
-		}
+		int d1Lenght = d1.length;
 
-		for(byte b: d2){
-			if(b == dotByte)
-				isM2Double = true;
+		for (int i = 1 + startIndex; i < d1Lenght; i++) {
+
+			if (d1[i] == dotByte) {
+				d1DecimalIndex = i;
+			} else {
+				int d1Value = convertToNumber(d1[i]);
+				if (d1DecimalIndex > 0) {
+					m1DoubleValue = m1DoubleValue + Math.pow(10, d1DecimalIndex - i) * d1Value;
+				} else
+					m1DoubleValue = m1DoubleValue * Math.pow(10, i - startIndex) + d1Value;
+				if (d2.length <= i) {
+					if (isNegative) {
+						if (m1DoubleValue > m2DoubleValue)
+							return true;
+					} else if (m1DoubleValue < m2DoubleValue)
+						return true;
+					else
+						return false;
+				}
+			}
+			if (d2.length > i) {
+				if (d2[i] == dotByte) {
+					d2DecimalIndex = i;
+				} else {
+
+					int d2Value = convertToNumber(d2[i]);
+
+					if (d2DecimalIndex > 0) {
+						m2DoubleValue = m2DoubleValue + Math.pow(10, d2DecimalIndex - i) * d2Value;
+					} else
+						m2DoubleValue = m2DoubleValue * Math.pow(10, i - startIndex) + d2Value;
+				}
+			}
 		}
-		if (isM1Double || isM2Double) {
-			return Double.parseDouble(m1.toString(d1)) <= Double.parseDouble(m2.toString(d2)) ;
-		}
-		return Long.parseLong(m1.toString(d1)) <= Long.parseLong(m1.toString(d1));
+		if (isNegative) {
+			if (m1DoubleValue > m2DoubleValue)
+				return true;
+		} else if (m1DoubleValue < m2DoubleValue)
+			return true;
+		return false;
 
 	}
 
+	private int convertToNumber(byte d2) {
+		int number = d2 - '0';
+		if (number > 9)
+			throw new NumberFormatException("NOT A NUMBER");
+		return number;
+	}
+
 	public boolean lessEqThan(byte[] d1, Marker m1, byte[] d2, Marker m2, MarkerFactory mf) {
-		boolean isM1Double = false;
-		boolean isM2Double = false;
+
+		int d1DecimalPoint = Integer.MIN_VALUE;
+		int d2DecimalPoint = Integer.MIN_VALUE;
+
+		int startIndex = 0;
+		boolean isNegative = false;
+		if (d1[0] == negative) {
+
+			if (d2[0] != negative) {
+				return true;
+			}
+			startIndex = 1;
+			isNegative = true;
+		}
+
+		double m1DoubleValue = convertToNumber(d1[startIndex]);
+		double m2DoubleValue = convertToNumber(d2[startIndex]);
 		if (m1.getData() != null)
 			d1 = m1.getData();
 		if (m2.getData() != null)
 			d2 = m2.getData();
 
-		for(byte b: d1){
-			if(b == dotByte)
-				isM1Double = true;
-		}
+		int d1Lenght = d1.length;
 
-		for(byte b: d2){
-			if(b == dotByte)
-				isM2Double = true;
+		for (int i = 1 + startIndex; i < d1Lenght; i++) {
+
+			if (d1[i] == dotByte) {
+				d1DecimalPoint = i;
+			}
+			int d1Value = convertToNumber(d1[i]);
+			if (d1DecimalPoint > 0) {
+				m1DoubleValue = m1DoubleValue + Math.pow(10, d1DecimalPoint - i) * d1Value;
+			} else
+				m1DoubleValue = m1DoubleValue * Math.pow(10, i - startIndex) + d1Value;
+			if (d2.length <= i) {
+				if (isNegative) {
+					if (m1DoubleValue >= m2DoubleValue)
+						return true;
+				} else if (m1DoubleValue <= m2DoubleValue)
+					return true;
+				else
+					return false;
+			}
+			if (d2.length > i) {
+				if (d2[i] == dotByte) {
+					d2DecimalPoint = i;
+				}
+
+				int d2Value = convertToNumber(d2[i]);
+
+				if (d2DecimalPoint > 0) {
+					m2DoubleValue = m2DoubleValue + Math.pow(10, d2DecimalPoint - i) * d2Value;
+				} else
+					m2DoubleValue = m2DoubleValue * Math.pow(10, i - startIndex) + d2Value;
+			}
 		}
-		if (isM1Double || isM2Double) {
-			return Double.parseDouble(m1.toString(d1)) <= Double.parseDouble(m2.toString(d2)) ;
-		}
-		return Long.parseLong(m1.toString(d1)) <= Long.parseLong(m1.toString(d1));
+		if (isNegative) {
+			if (m1DoubleValue >= m2DoubleValue)
+				return true;
+		} else if (m1DoubleValue <= m2DoubleValue)
+			return true;
+		return false;
 	}
 
 	public boolean greaterEqThan(byte[] d1, Marker m1, byte[] d2, Marker m2, MarkerFactory mf) {
@@ -121,16 +214,41 @@ public class TpMath extends Translator implements TpConstant {
 		throw new RuntimeException();
 	}
 
-	public Marker ceil(byte[] data, Marker m,  MarkerFactory mf) {
-		throw new RuntimeException();
+	public Marker ceil(byte[] data, Marker m, MarkerFactory mf) {
+		int index = 0;
+		for (byte d : data) {
+			if (d == dotByte) {
+				if(data[index+1]>'0'){
+				data[index] = (byte) (data[index] + 1);
+				return mf.createImmutable(data, m.index, index);
+				}
+				break;
+			} else
+				index++;
+		}
+
+		return m;
 	}
 
 	public Marker floor(byte[] data, Marker m, MarkerFactory mf) {
-		throw new RuntimeException();
+		int index = 0;
+		for (byte d : data) {
+			if (d == dotByte) {
+				m.length=index;
+				return m;
+			} else
+				index++;
+		}
+		return m;
 	}
 
-	public Marker round(byte[] data, Marker m, MarkerFactory mf) {
-		throw new RuntimeException();
+	public Marker round(byte[] data, int index, Marker m, MarkerFactory mf) {
+		int  value = 0;
+		if(index >data.length)
+			return m;
+		data[index-1]=(byte) (data[index-1]+(data[index]-'0'+5)/10);
+
+		return mf.createImmutable(data, m.index, index);
 	}
 
 	public boolean eq(byte[] d1, Marker m1, byte[] d2, Marker m2, MarkerFactory mf) {
@@ -152,38 +270,49 @@ public class TpMath extends Translator implements TpConstant {
 	}
 
 	public Marker extractDecimalFractionPart(byte[] data, Marker m, MarkerFactory mf) {
-		if(m.getData() != null)
+		if (m.getData() != null)
 			data = m.getData();
 		int index = m.index;
 		boolean found = false;
-		for(byte b: data){
-			if(b == dotByte){
+		for (byte b : data) {
+			if (b == dotByte) {
 				found = true;
 				index++;
 				break;
 			}
 			index++;
 		}
-		if(!found)
+		if (!found)
 			return null;
-		if(m.getData() != null){
+		if (m.getData() != null) {
 			int size = m.length - index;
 			byte[] result = new byte[size];
 			System.arraycopy(data, index, result, 0, result.length);
 			return mf.createImmutable(result, 0, result.length);
 		}
-		return mf.create(index, m.length- index);
+		return mf.create(index, m.length - index);
 	}
 
 	public boolean isNumber(byte[] data, Marker m, MarkerFactory mf) {
 		if (m.length > numberLen)
 			return false;
-		if(data[m.index] != '-' && (data[m.index] <= start && data[m.index] >= end))
+		if (data[m.index] != '-' && (data[m.index] <= start && data[m.index] >= end))
 			return false;
-		for (int i = m.index+1; i < m.length; i++) {
-			if( (data[m.index] <= start && data[m.index] >= end))
+		for (int i = m.index + 1; i < m.length; i++) {
+			if ((data[m.index] <= start && data[m.index] >= end))
 				return false;
 		}
 		return true;
 	}
+	
+/*	private void addByte(byte[] A , byte[] B){
+		 List<Byte> array = new ArrayList<Byte>(A);
+		    for (int i = 0; i < B.length; i++)
+		        array = _add(array, B[i], i);
+
+	}
+	private void _add(byte[]  A, byte b,int idx){
+	
+
+	}*/
 }
