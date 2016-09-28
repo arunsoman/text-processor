@@ -112,9 +112,9 @@ public class TpString {
 		return mf.create(newStart, len);
 	}
 	
-	public Marker contains(byte[]d1, Marker m1, byte[]d2, Marker m2, MarkerFactory mf){throw new RuntimeException();}
+	public boolean contains(byte[]d1, Marker m1, byte[]d2, Marker m2, MarkerFactory mf){throw new RuntimeException();}
 	
-	public Marker containsIgnoreCase(byte[]d1, Marker m1, byte[]d2, Marker m2, MarkerFactory mf){
+	public boolean containsIgnoreCase(byte[]d1, Marker m1, byte[]d2, Marker m2, MarkerFactory mf){
 		Marker lowerCase = toLowerCase(d1, m1, mf);
 		Marker lowerCase2 = toLowerCase(d2, m2, mf);
 		return contains(lowerCase.getData(), lowerCase, lowerCase2.getData(), lowerCase2, mf);
