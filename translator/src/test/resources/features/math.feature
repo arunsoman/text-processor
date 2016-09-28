@@ -3,9 +3,9 @@ Feature: Math operation in bytes
 Scenario Outline: Check number is less than another number 
 	Given marker and math class 
 	When enter <number1> less than <number2> 
-	Then result will be true
+	Then result should be <status>
 	Examples: input values 
-		| number1 | number2 |
+		| number1 | number2 | status|
 		|  "78.9"     |  "96"     | 
 		 | "-99.78" | "-98.78" |
 		|  "12"     |  "14"     | 
@@ -17,14 +17,10 @@ Scenario Outline: Check number is less than another number
 Scenario Outline: Check number is less than or equal to another number
     Given marker and math class  
 	When enter <number1> less than equal <number2> 
-	Then result will be true
+	Then result should be <status>
 	Examples: input values 
-		| number1 | number2 |
-		 | "-99.78" | "-98.78" |
-		|  "12"     |  "12"     | 
-		|  "18.7"     |  "18.7"     | 
-		|  "36"     |  "56"     | 
-		|  "78.9"     |  "96"     | 
+		| number1 | number2 | status|
+		  
 		
 Scenario Outline: Absolute value of a number
     Given marker and math class  
@@ -135,7 +131,7 @@ Scenario Outline: round of a number in a given scale
 	Examples: input values 
 	  | number1 | scale | value | 
 	  
-Scenario Outline: check to number array are equal 
+Scenario Outline: check two number arrays are equal 
     Given marker and math class  
 	When enter two equal "<number1>" and "<number2>"  
 	Then result should be <value>	
