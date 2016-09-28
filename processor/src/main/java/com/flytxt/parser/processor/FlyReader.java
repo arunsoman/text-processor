@@ -41,9 +41,9 @@ public class FlyReader implements Callable<FlyReader> {
     @Getter
     private Status status;
 
-    // byte[] eol = System.lineSeparator().getBytes();
+    byte[] eol = System.lineSeparator().getBytes();
 
-    byte[] eol = "\r\n".getBytes();
+    // byte[] eol = "\r\n".getBytes();
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -64,7 +64,7 @@ public class FlyReader implements Callable<FlyReader> {
             }
         }
         logger.debug("Starting file reader @ " + folder);
-        final ByteBuffer buf = ByteBuffer.allocate(104000);
+        final ByteBuffer buf = ByteBuffer.allocate(3072);
         final MarkerFactory mf = new MarkerFactory();
         mf.setMaxListSize(lp.getMaxListSize());
         while (!stopRequested) {
@@ -111,7 +111,7 @@ public class FlyReader implements Callable<FlyReader> {
             long previousEolPosition = 0;
 
             do {
-                eolPosition = getEOLPosition(data, (int) previousEolPosition + eol.length, readCnt);
+                eolPosition = getEOLPosition(data, (int) previousEolPosition + eol.length, buf.position());
                 if (eolPosition < 0) {
                     if (previousEolPosition == 0) {
                         logger.error("Increase byte array size, current size :" + data.length);
@@ -162,12 +162,18 @@ public class FlyReader implements Callable<FlyReader> {
     }
 
     public long getEOLPosition(final byte[] data, final int startIndex, final int endIndex) {
+        int currentIndex = startIndex;
         try {
-            int tokenIndex, currentIndex = startIndex;
-            while (currentIndex <= endIndex) {
-                for (tokenIndex = 0; tokenIndex < eol.length && (data[currentIndex + tokenIndex] == eol[tokenIndex]); tokenIndex++) {
+            while (currentIndex < endIndex) {
+                boolean found = false;
+                int tokenIndex = 0;
+                while (data[currentIndex + tokenIndex] == eol[tokenIndex++]) {
+                    if (tokenIndex == eol.length) {
+                        found = true;
+                        break;
+                    }
                 }
-                if (tokenIndex == eol.length) {
+                if (found == true) {
                     return currentIndex;
                 }
                 currentIndex++;
