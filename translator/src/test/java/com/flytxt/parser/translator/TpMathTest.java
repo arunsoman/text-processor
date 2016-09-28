@@ -38,7 +38,7 @@ public class TpMathTest {
 		String str2 = "-99.78";
 		Marker m2 = getMarker(str2);
 		assertEquals(Double.parseDouble(str1)<Double.parseDouble(str2),
-				tpMath.lessEqThan(str1.getBytes(), m1, str2.getBytes(), m2, mf));
+				tpMath.lessThan(str1.getBytes(), m1, str2.getBytes(), m2, mf));
 	}
 
 	@Test
