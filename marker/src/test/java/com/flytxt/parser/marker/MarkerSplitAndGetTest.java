@@ -16,7 +16,7 @@ public class MarkerSplitAndGetTest {
         final int javaIndex = get - 1;
 
         final String str = ",";
-        final Marker line = mf.create(0, b.length - 1);
+        final Marker line = mf.create(0, b.length);
         final byte[] token = TokenFactory.create(str);
         final Marker ms = line.splitAndGetMarker(b, token, get, mf);
         final String splits[] = strb.split(str);
@@ -35,8 +35,9 @@ public class MarkerSplitAndGetTest {
         final int get = splits.length;
         final int javaIndex = get - 1;
 
-        final Marker line = mf.create(0, b.length - 1);
+        final Marker line = mf.create(0, b.length);
         final byte[] token = TokenFactory.create(str);
+        mf.setMaxListSize(splits.length);
         final Marker ms = line.splitAndGetMarker(b, token, get, mf);
 
         // for user index starts @ 1
@@ -54,7 +55,7 @@ public class MarkerSplitAndGetTest {
         final int get = 1;
         final int javaIndex = get - 1;
 
-        final Marker line = mf.create(0, b.length - 1);
+        final Marker line = mf.create(0, b.length);
         final byte[] token = TokenFactory.create(str);
         final Marker ms = line.splitAndGetMarker(b, token, get, mf);
 
@@ -73,7 +74,7 @@ public class MarkerSplitAndGetTest {
         final int get = splits.length;
         final int javaIndex = get - 1;
 
-        final Marker line = mf.create(0, b.length - 1);
+        final Marker line = mf.create(0, b.length);
         final byte[] token = TokenFactory.create(str);
         final Marker ms = line.splitAndGetMarker(b, token, get, mf);
 

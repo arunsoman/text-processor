@@ -15,7 +15,7 @@ public class MarkerFunctionalTest {
         final MarkerFactory mf = new MarkerFactory();
         final String str = "1,,1,1,,45,30,2011-11-11T12:00:00-05:00,False,,,,,False,False,1,0,,,,,,,,,,,1,1";
         final byte[] d = str.getBytes();
-        final Marker line = mf.create(0, d.length - 1);
+        final Marker line = mf.create(0, d.length);
 
         final byte[] t1 = TokenFactory.create(",Fa");
         final byte[] t2 = TokenFactory.create(",");
@@ -34,7 +34,7 @@ public class MarkerFunctionalTest {
         final MarkerFactory mf = new MarkerFactory();
         final String str = "a,{b|c},d";
         final byte[] d = str.getBytes();
-        final Marker line = mf.create(0, d.length - 1);
+        final Marker line = mf.create(0, d.length);
 
         final byte[] t1 = TokenFactory.create(",{");
         final byte[] t2 = TokenFactory.create("|");
@@ -53,7 +53,7 @@ public class MarkerFunctionalTest {
         final MarkerFactory mf = new MarkerFactory();
         final String str = ",False,,,,,,,,F,,,";
         final byte[] d = str.getBytes();
-        final Marker line = mf.create(0, d.length - 1);
+        final Marker line = mf.create(0, d.length);
 
         final byte[] t1 = TokenFactory.create(",F");
 

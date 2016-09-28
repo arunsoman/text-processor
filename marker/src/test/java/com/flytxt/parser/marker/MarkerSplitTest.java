@@ -19,7 +19,7 @@ public class MarkerSplitTest {
         final String str = ",1,";
         final String splits[] = strb.split(str);
         mf.setMaxListSize(splits.length);
-        final Marker line = mf.create(0, b.length - 1);
+        final Marker line = mf.create(0, b.length);
         final byte[] token = TokenFactory.create(str);
         final FlyList<Marker> ms = line.splitAndGetMarkers(b, token, mf);
         if (splits.length != ms.size()) {
@@ -43,7 +43,7 @@ public class MarkerSplitTest {
         final MarkerFactory mf = new MarkerFactory();
         final String splits[] = strb.split(str);
         mf.setMaxListSize(splits.length);
-        final Marker line = mf.create(0, b.length - 1);
+        final Marker line = mf.create(0, b.length);
         final byte[] token = TokenFactory.create(str);
         final FlyList<Marker> ms = line.splitAndGetMarkers(b, token, mf);
         if (splits.length != ms.size()) {
@@ -68,7 +68,7 @@ public class MarkerSplitTest {
         final MarkerFactory mf = new MarkerFactory();
         final String splits[] = strb.split(str);
         mf.setMaxListSize(splits.length);
-        final Marker line = mf.create(0, b.length - 1);
+        final Marker line = mf.create(0, b.length);
         final byte[] token = TokenFactory.create(str);
         final FlyList<Marker> ms = line.splitAndGetMarkers(b, token, mf);
         if (splits.length != ms.size()) {
@@ -92,7 +92,7 @@ public class MarkerSplitTest {
         final byte[] b = strb.getBytes();
         final MarkerFactory mf = new MarkerFactory();
         mf.setMaxListSize(splits.length);
-        final Marker line = mf.create(0, b.length - 1);
+        final Marker line = mf.create(0, b.length);
         final byte[] token = TokenFactory.create(str);
         final FlyList<Marker> ms = line.splitAndGetMarkers(b, token, mf);
         if (splits.length != ms.size()) {
