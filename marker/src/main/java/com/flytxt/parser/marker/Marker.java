@@ -9,7 +9,7 @@ public class Marker {
     public Marker splitAndGetMarker(final byte[] data, final byte[] token, final int indexOfMarker, final MarkerFactory mf) {
 
         int count = 1, lastIndex = index, currentIndex = index, tokenIndex;
-        while (currentIndex - index <= length) {
+        while (currentIndex < index + length) {
             for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++) { // loop to check if token is present at position currentIndex
                 ;
             }
@@ -25,7 +25,7 @@ public class Marker {
         }
 
         if (lastIndex < length + 1 && indexOfMarker == count) { // true if required marker is the last
-            return mf.create(lastIndex, this.length - (lastIndex - 1));
+            return mf.create(lastIndex, this.length - lastIndex);
         }
         return null;
     }
@@ -35,7 +35,7 @@ public class Marker {
         final FlyList<Marker> markers = mf.getArrayList();
         int currentIndex = index, lastIndex = index, tokenIndex;
         boolean endReached = false;
-        while (currentIndex - index <= length) {
+        while (currentIndex < index + length) {
             for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++) { // loop to check if token is present at position currentIndex
                 ;
             }
@@ -52,14 +52,15 @@ public class Marker {
             }
         }
         if (!endReached && lastIndex < length + 1) {
-            markers.add(mf.create(lastIndex, this.length - (lastIndex - 1)));
+            markers.add(mf.create(lastIndex, this.length - lastIndex));
         }
         return markers;
     }
 
-    public byte[] getData(){
-    	return null;
+    public byte[] getData() {
+        return null;
     }
+
     public String toString(final byte[] b) {
         return new String(b, index, length);
     }

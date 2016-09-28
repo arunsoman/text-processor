@@ -52,6 +52,7 @@ public class MarkerFeatureTest {
 	public void inTheInputDelimited(String arg1, String arg2) throws Throwable {
 		byte[] inputB = arg1.getBytes();
 		byte[] token = arg2.getBytes();
+		mf.setMaxListSize(arg1.split(arg2).length);
 		size = getMarker(arg1).splitAndGetMarkers(inputB, token, mf).size();
 	}
 
