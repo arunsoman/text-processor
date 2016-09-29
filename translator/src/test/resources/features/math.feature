@@ -3,7 +3,7 @@ Feature: Math operation in bytes
 Scenario Outline: Check number is less than another number 
 	Given marker and math class 
 	When enter number "<number1>" less than another number "<number2>" 
-	Then result should be "<status>"
+	Then for less than result should be "<status>"
 	Examples: input values 
 		| number1 | number2 | status |
 		|  78.9  |  96    | Y |
@@ -19,7 +19,7 @@ Scenario Outline: Check number is less than another number
 Scenario Outline: Check number is less than or equal to another number
     Given marker and math class  
 	When enter number "<number1>" less than equal to another number "<number2>" 
-	Then result should be "<status>"
+	Then for less than eq result should be "<status>"
 	Examples: input values 
 		| number1 | number2 | status |
 	    |  78.9  |  96    | Y |
@@ -34,8 +34,8 @@ Scenario Outline: Check number is less than or equal to another number
 		
 Scenario Outline: Absolute value of a number
     Given marker and math class  
-	When enter a negative number "<number1>"
-	Then result should be "<status>"	
+	When enter number to apply abs "<number1>"
+	Then after applying abs result should be "<status>"	
 	Examples: input values 
 	  | number1 | status  |
 	  | -99.78| 99.78 |
@@ -48,7 +48,7 @@ Scenario Outline: Absolute value of a number
 Scenario Outline: Check number is greater than or equal to another number
     Given marker and math class  
 	When enter number "<number1>" greater than equal to another number "<number2>" 
-	Then result should be "<status>"	
+	Then for greater than equal to result should be "<status>"	
 	Examples: input values 
 	  | number1 | number2 | status  |
 	  | 1     | 0     |    Y    |
@@ -62,8 +62,8 @@ Scenario Outline: Check number is greater than or equal to another number
 	  
 Scenario Outline: Check number is greater than another number
     Given marker and math class  
-	When enter number "<number1>" greater than equal to another number "<number2>" 
-	Then result should be "<status>"	
+	When enter number "<number1>" greater than  another number "<number2>" 
+	Then for greater than result should be "<status>"	
 	Examples: input values 
 	  | number1 | number2 | status  |
 	  | 1     | 0     |    Y    |
@@ -78,7 +78,7 @@ Scenario Outline: Check number is greater than another number
 Scenario Outline: Substract long numbers
     Given marker and math class  
 	When enter two long numbers "<number1>" "<number2>" for substraction
-	Then result should be "<subs>"	
+	Then after sub long result should be "<subs>"	
 	Examples: input values 
 	  | number1 | number2 |  subs  |
 	  |  4    | 2     |   2  |
@@ -92,7 +92,7 @@ Scenario Outline: Substract long numbers
 Scenario Outline: Substract float numbers 
     Given marker and math class  
 	When enter two float number "<number1>" "<number2>" for substraction
-	Then result should be "<subs>"	
+	Then after sub float result should be "<subs>"	
 	Examples: input values 
 	  | number1 | number2 | subs |
 	  |  3.14 | 1.96  |1.18  |
@@ -104,7 +104,7 @@ Scenario Outline: Substract float numbers
 Scenario Outline: Add long numbers 
     Given marker and math class  
 	When enter two long numbers "<number1>" "<number2>" for addition
-	Then result should be "<total>"	
+	Then after adding long result should be "<total>"	
 	Examples: input values 
 	  | number1 | number2 | total |
 	  |  4    | -2     |   2  |
@@ -119,7 +119,7 @@ Scenario Outline: Add long numbers
 Scenario Outline: Add float numbers 
     Given marker and math class  
 	When enter two float numbers "<number1>" "<number2>" for addition 
-	Then result should be "<subs>"	
+	Then after adding float result should be "<subs>"	
 	Examples: input values 
 	  | number1 | number2 | total |
 	  |  3.14 | -1.96  |1.18  |
@@ -129,40 +129,10 @@ Scenario Outline: Add float numbers
 	  |  0 | 0  |0  |
 	  
 
-Scenario Outline: Add two numbers 
-    Given marker and math class  
-	When enter two numbers "<number1>"  "<number2>" for addition
-	Then result should be "<total>"	
-	Examples: input values 
-	  | number1 | number2 | total |
-	  |  4    | -2     |   2  |
-	  |  4    | 2    |   6  |
-	  |  1    | -2     |   -1 |
-	  |  -18    | 22   |   4 |
-	  |  -4   | -2    |   -6 |
-	  |2147480| 1  |2147481  |
-	  |  –2147483000  | -648  |–2147483648 |
-	  |  0 | 0  | 0 |
-	  
-Scenario Outline: Substract two numbers
-    Given marker and math class  
-	When enter two numbers "<number1>" "<number2>" for substraction 
-	Then result should be "<total>"	
-	Examples: input values 
-	  | number1 | number2 | total |
-	  |  4    | 2     |   2  |
-	  |  4    | -2    |   6  |
-	  |  1    | 2     |   -1 |
-	  |  0    | 0   |   0 |
-	  |  -4   | -2    |   -2 |
-	  |2147483647| 1  |2147483646  |
-	  |  –2147483000  | 648  |–2147483648 |
-	  
-
 Scenario Outline: find the ceil of a number
     Given marker and math class  
 	When enter a number "<number1>" to find ceil
-	Then result should be "<value>"	
+	Then after ceil result should be "<value>"	
 	Examples: input values 
 	  | number1 | value | 
 	  | 0 | 0 |
@@ -174,7 +144,7 @@ Scenario Outline: find the ceil of a number
 Scenario Outline: find the floor of a number
     Given marker and math class  
 	When enter a number "<number1>" to find floor
-	Then result should be "<value>"
+	Then after floor result should be "<value>"
 	Examples: input values 
 	  | number1 | value | 
 	  | 0 | 0 |
@@ -186,7 +156,7 @@ Scenario Outline: find the floor of a number
 Scenario Outline: round of a number in a given scale
     Given marker and math class  
 	When enter a number "<number1>"  and the scale "<scale>"
-	Then result should be "<value>"	
+	Then after round result should be "<value>"	
 	Examples: input values 
 	  | number1 | scale | value | 
 	  | 0.456 | 2 | 0.46 |
@@ -201,7 +171,7 @@ Scenario Outline: round of a number in a given scale
 Scenario Outline: check to number array are equal 
     Given marker and math class  
 	When enter two equal numbers "<number1>"  "<number2>"  
-	Then result should be "<value>"	
+	Then after checking two number to be equal result should be "<value>"	
 	Examples: input values 
 	  | number1 | number2 | value | 
 	  | 3.14 | 3.14 | 3.14 |
@@ -212,7 +182,7 @@ Scenario Outline: check to number array are equal
 Scenario Outline: extract decimal part of a number  
     Given marker and math class  
 	When enter a decimal number "<number1>" to extract decimal part of the number
-	Then result should be "<value>"	
+	Then after extracting decimal result should be "<value>"	
 	Examples: input values 
 	  | number1 | value | 
 	  | 9.3146 | .3146 |
@@ -223,7 +193,7 @@ Scenario Outline: extract decimal part of a number
 Scenario Outline: extract integer part of a number  
     Given marker and math class  
 	When enter a decimal number "<number1>" to extract integer part of the number
-	Then result should be "<value>"	
+	Then after extracting integer result should be "<value>"	
 	Examples: input values 
 	  | number1 | value | 
 	  | 9.3146 | 9 |
@@ -234,7 +204,7 @@ Scenario Outline: extract integer part of a number
 Scenario Outline: check given string is a number  
     Given marker and math class  
 	When enter a number string "<number1>"
-	Then result should be "<status>"	
+	Then after checking a number to be strings result should be "<status>"	
 	Examples: input values 
 	  | number1 | status | 
 	  | 0.0541 | Y |
