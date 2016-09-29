@@ -2,4 +2,6 @@
 .project
 .classpath
 target
+bin
+log
 .DS_Store

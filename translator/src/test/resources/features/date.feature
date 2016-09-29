@@ -3,8 +3,8 @@ Feature: Date (ddmmyyyy HH:mm:ss ) operation in bytes
 
 Scenario Outline: After a given date 
     Given marker and tpdate class  
-	When enter  date "<date1>" after a new date "<date2>" 
-	Then result should be "<status>"	
+	When  "<date1>" after "<date2>" 
+	Then date1 after date2 returns "<status>"	
 	Examples: input values 
 	  | date1 | date2 | status |
 	  | 09091991 16:00:00 | 09091991 15:59:59 | Y |
@@ -16,8 +16,8 @@ Scenario Outline: After a given date
 	  
 Scenario Outline: Before a given date 
     Given marker and tpdate class  
-	When enter  date "<date1>" greater than new date "<date2>" 
-	Then result should be "<status>"	
+	When "<date1>" before "<date2>" 
+	Then date1 before date2 returns "<status>"	
 	Examples: input values 
 	  | date1 | date2 | status |
 	  | 09091991 16:00:00 | 09091991 15:59:59 | Y |
@@ -29,8 +29,8 @@ Scenario Outline: Before a given date
 	  
 Scenario Outline: Date difference in milliseconds 
     Given marker and tpdate class  
-	When enter a date "<date1>" and enter a new date "<date2>" to find the difference 
-	Then result should be "<value>"	
+	When "<date1>" minus "<date2>" 
+	Then  diff is "<value>"	
 	Examples: input values 
 	  | date1 | date2 | value |
 	  | 09091991 16:00:00 | 09091991 15:59:59 | 1000 |
