@@ -48,7 +48,8 @@ public class TpString {
 		
 		byte[] data1 = (dataMarker.getData() != null)? dataMarker.getData():data;
 		byte[] data2 = (prefixMarker.getData() != null)? prefixMarker.getData():prefix;
-			
+		if(dataMarker.length<prefixMarker.length)
+			return false;
 		int dataIndex = dataMarker.index + prefixMarker.length - 1;
 		int prefixIndex = prefixMarker.index + prefixMarker.length - 1;
 		for (int i = dataIndex; i > prefixMarker.index; i--) {
@@ -83,6 +84,8 @@ public class TpString {
 	}
 
 	public Marker toTitleCase(byte[] data, Marker m, MarkerFactory mf) {
+		if(m.length == 0)
+			return m;
 		byte[] data1 = m.getData()==null?data:m.getData();
 		byte[] dest = new byte[m.length];
 		System.arraycopy(data, m.index, dest, 0, m.length);
@@ -154,7 +157,17 @@ public class TpString {
 	public boolean contains(byte[]data1, Marker m1, byte[]data2, Marker m2, MarkerFactory mf){
 		byte[] d1 = m1.getData()==null?data1:m1.getData();
 		byte[] d2 = m2.getData()==null?data2:m2.getData();
-		throw new RuntimeException("method not implemented");
+		 for(int i = m1.index; i < m1.index+m1.length - m2.length+1; ++i) {
+		        boolean found = true;
+		        for(int j = m2.index; j < m2.index+m2.length; ++j) {
+		           if (d1[i+j] != d2[j]) {
+		               found = false;
+		               break;
+		           }
+		        }
+		        if (found) return true;//return i;
+		     }
+		   return false;//-1;  
 	}
 	
 	public boolean containsIgnoreCase(byte[]data1, Marker m1, byte[]data2, Marker m2, MarkerFactory mf){

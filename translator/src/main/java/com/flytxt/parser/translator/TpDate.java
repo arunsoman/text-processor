@@ -1,10 +1,14 @@
 package com.flytxt.parser.translator;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
 
 public class TpDate {
 	public static String flyDateFormat = "ddmmyyyy HH:mm:ss"; 
+	private static final SimpleDateFormat sdf = new SimpleDateFormat(flyDateFormat);
 	private static int[] yearArray = {4,5,6,7}; 
 	private static int[] dateArray = {0,1}; 
 	private static int[] monthArray = {2,3}; 
@@ -15,30 +19,54 @@ public class TpDate {
 	}
 	
 	public boolean after(byte[] data, Marker m, byte[] data2, Marker m2){
+		byte[] d1 = (m.getData() != null)? m.getData():data;
+		byte[] d2 = (m2.getData() != null)? m2.getData():data2;
+		int b;
+		int a= b = 1;
 		for(int i : yearArray){
-			if(data[m.index+i]> data2[m2.index+i])
-				return true;
+			a += d1[m.index+i];
+			a*=10;
+			b += d2[m2.index+i];
+			b*=10;
 		}
+		if(a != b)
+			return a>b;
+		a= b = 1;
 		for(int i : monthArray){
-			if(data[m.index+i]> data2[m2.index+i])
-				return true;
+			a += d1[m.index+i];
+			a*=10;
+			b += d2[m2.index+i];
+			b*=10;
 		}
+		if(a != b)
+			return a>b;
+		a= b = 1;
 		for(int i : dateArray){
-			if(data[m.index+i]> data2[m2.index+i])
-				return true;
+			a += d1[m.index+i];
+			a*=10;
+			b += d2[m2.index+i];
+			b*=10;
 		}
+		if(a != b)
+			return a>b;
+		a= b = 1;
 		for(int i : time){
-			if(data[m.index+i]> data2[m2.index+i])
-				return true;
+			a += d1[m.index+i];
+			a*=10;
+			b += d2[m2.index+i];
+			b*=10;
 		}
-		return false;
+		return a>b;
 	}
 
 	public boolean before(byte[] data, Marker m, byte[] data2, Marker m2){
-		return ! after(data, m, data2, m2);
+		byte[] d1 = (m.getData() != null)? m.getData():data;
+		byte[] d2 = (m2.getData() != null)? m2.getData():data2;
+		return ! after(d1, m, d2, m2);
 	}
-	public long differenceInMillis(byte[] data, Marker m, byte[] data2, Marker m2){
-		long diff = Translator.asLong(data2, m2)-Translator.asLong(data, m);
-		return diff;
+	public long differenceInMillis(byte[] data, Marker m, byte[] data2, Marker m2) throws ParseException{
+		byte[] d1 = (m.getData() != null)? m.getData():data;
+		byte[] d2 = (m2.getData() != null)? m2.getData():data2;
+		return sdf.parse(m.toString(d1)).getTime() - sdf.parse(m2.toString(d2)).getTime();
 	}
 }

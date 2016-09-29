@@ -45,7 +45,7 @@ public class TpMathFeature {
 
     @Then("^for less than eq result should be \"([^\"]*)\"$")
     public void forLessThanEqResultShouldBe(final String arg1) throws Throwable {
-        assertEquals(result, arg1.equals("Y"));
+    	assertEquals(arg1.equals("Y"), result);
     }
 
     @When("^enter number to apply abs \"([^\"]*)\"$")
@@ -60,27 +60,27 @@ public class TpMathFeature {
 
     @Then("^for greater than equal to result should be \"([^\"]*)\"$")
     public void forGreaterThanEqualToResultShouldBe(final String arg1) throws Throwable {
-        assertEquals(result, arg1.equals("Y"));
+    	assertEquals(arg1.equals("Y"), result);
     }
 
     @When("^enter number \"([^\"]*)\" greater than  another number \"([^\"]*)\"$")
     public void enterNumberGreaterThanAnotherNumber(final String arg1, final String arg2) throws Throwable {
-        assertEquals(result, arg1.equals("Y"));
+    	assertEquals(arg1.equals("Y"), result);
     }
 
     @Then("^for greater than result should be \"([^\"]*)\"$")
     public void forGreaterThanResultShouldBe(final String arg1) throws Throwable {
-        assertEquals(result, arg1.equals("Y"));
+    	assertEquals(arg1.equals("Y"), result);
     }
 
     @Then("^after sub long result should be \"([^\"]*)\"$")
     public void afterSubLongResultShouldBe(final String arg1) throws Throwable {
-        assertEquals(result, arg1.equals("Y"));
+    	assertEquals(arg1.equals("Y"), result);
     }
 
     @Then("^after sub float result should be \"([^\"]*)\"$")
     public void afterSubFloatResultShouldBe(final String arg1) throws Throwable {
-        assertEquals(result, arg1.equals("Y"));
+    	assertEquals(arg1.equals("Y"), result);
     }
 
     @Then("^after adding long result should be \"([^\"]*)\"$")
@@ -110,12 +110,12 @@ public class TpMathFeature {
 
     @Then("^after checking two number to be equal result should be \"([^\"]*)\"$")
     public void afterCheckingTwoNumberToBeEqualResultShouldBe(final String arg1) throws Throwable {
-        assertEquals(result, arg1.equals("Y"));
+    	assertEquals(arg1.equals("Y"), result);
     }
 
     @Then("^after extracting decimal result should be \"([^\"]*)\"$")
     public void afterExtractingDecimalResultShouldBe(final String arg1) throws Throwable {
-        assertEquals(resultStr, arg1);
+    	assertEquals(arg1, resultStr);
     }
 
     @Then("^after extracting integer result should be \"([^\"]*)\"$")
@@ -125,7 +125,7 @@ public class TpMathFeature {
 
     @Then("^after checking a number to be strings result should be \"([^\"]*)\"$")
     public void afterCheckingANumberToBeStringsResultShouldBe(final String arg1) throws Throwable {
-        assertEquals(result, arg1.equals("Y"));
+        assertEquals(arg1.equals("Y"), result);
     }
 
     @When("^enter number \"([^\"]*)\" less than another number \"([^\"]*)\"$")

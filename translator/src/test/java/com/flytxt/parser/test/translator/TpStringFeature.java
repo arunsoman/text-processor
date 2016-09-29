@@ -48,7 +48,7 @@ public class TpStringFeature {
 
 	@Then("^return true if string starts with prefix\"([^\"]*)\"$")
 	public void returnTrueIfStringStartsWithPrefix(String arg1) throws Throwable {
-		assertEquals(result, arg1.equals("Y"));
+		assertEquals(arg1.equals("Y"), result);
 	}
 
 	@When("^convert to upperCase\"([^\"]*)\"$")
@@ -58,7 +58,7 @@ public class TpStringFeature {
 
 	@Then("^returns upperCase \"([^\"]*)\"$")
 	public void returnsUpperCase(String arg1) throws Throwable {
-		assertEquals(result, arg1.equals("Y"));
+		assertEquals(arg1.equals("Y"), result);
 	}
 
 	@When("^convert to lowerCase \"([^\"]*)\"$")
@@ -68,7 +68,7 @@ public class TpStringFeature {
 
 	@Then("^returns lowerCase \"([^\"]*)\"$")
 	public void returnsLowerCase(String arg1) throws Throwable {
-		assertEquals(result, arg1.equals("Y"));
+		assertEquals(arg1.equals("Y"), result);
 	}
 
 	@When("^conver to titleCase\"([^\"]*)\"$")
@@ -78,7 +78,7 @@ public class TpStringFeature {
 
 	@Then("^returns titleCase \"([^\"]*)\"$")
 	public void returnsTitleCase(String arg1) throws Throwable {
-		assertEquals(result, arg1.equals("Y"));
+		assertEquals(arg1.equals("Y"), result);
 	}
 
 	@When("^\"([^\"]*)\" with leading whitespace is provided$")
@@ -119,7 +119,7 @@ public class TpStringFeature {
 
 	@Then("^return true if string contais subString\"([^\"]*)\"$")
 	public void returnTrueIfStringContaisSubString(String arg1) throws Throwable {
-		assertEquals(result, arg1.equals("Y"));
+		assertEquals(arg1.equals("Y"), result);
 	}
 
 	@When("^\"([^\"]*)\" contains \"([^\"]*)\" ignore case$")
@@ -130,7 +130,7 @@ public class TpStringFeature {
 
 	@Then("^return true if string contais subString ignoreCase \"([^\"]*)\"$")
 	public void returnTrueIfStringContaisSubStringIgnoreCase(String arg1) throws Throwable {
-		assertEquals(result, arg1.equals("Y"));
+		assertEquals(arg1.equals("Y"), result);
 	}
 
 }
