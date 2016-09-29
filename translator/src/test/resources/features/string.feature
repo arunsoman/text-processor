@@ -73,10 +73,10 @@ Feature: String operation in bytes
      Then returns string without leading whitespaces "<result>"
     Examples: input values 
       | string                      | result                   | 
-      | "   ABCd"                   | "ABCd"                   | 
-      | "   Negative    testing   " | "Negative    testing   " | 
-      | "I Am A Boy."               | "I Am A Boy."            | 
-      | "...   !!!"                 | "...   !!!"              | 
+      | '   ABCd'                   | 'ABCd'                   | 
+      | '   Negative    testing   ' | 'Negative    testing   ' | 
+      | 'I Am A Boy.'               | 'I Am A Boy.'            | 
+      | '...   !!!'                 | '...   !!!'              | 
   
   Scenario Outline: Right trim a string
     Given marker and tpstring class 
@@ -84,10 +84,10 @@ Feature: String operation in bytes
      Then return string without trailing whilespaces "<result>"
     Examples: input values 
     | string                      | result                   | 
-      | "ABCd   "                   | "ABCd"                   | 
-      | "   Negative    testing   " | "   Negative    testing" | 
-      | "I Am A Boy."               | "I Am A Boy."            | 
-      | "...   !!!"                 | "...   !!!"              | 
+      | 'ABCd   '                   | 'ABCd'                   | 
+      | '   Negative    testing   ' | '   Negative    testing' | 
+      | 'I Am A Boy.'               | 'I Am A Boy.'            | 
+      | '...   !!!'                 | '...   !!!'              | 
   
   Scenario Outline: Trim a string
     Given marker and tpstring class 
@@ -95,10 +95,10 @@ Feature: String operation in bytes
      Then return string with no whitespaces at start or end "<result>"
     Examples: input values 
      | string                      | result                | 
-      | "ABCd   "                   | "ABCd"                | 
-      | "   Negative    testing   " | "Negative    testing" | 
-      | " I Am A Boy. "             | "I Am A Boy."         | 
-      | "...   !!!"                 | "...   !!!"           | 
+      | 'ABCd   '                   | 'ABCd'                | 
+      | '   Negative    testing   ' | 'Negative    testing' | 
+      | ' I Am A Boy. '             | 'I Am A Boy.'         | 
+      | '...   !!!'                 | '...   !!!'           | 
   
   Scenario Outline: Substring search
     Given marker and tpstring class 

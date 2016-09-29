@@ -4,7 +4,7 @@ Feature: Date (ddmmyyyy HH:mm:ss ) operation in bytes
 Scenario Outline: After a given date 
     Given marker and tpdate class  
 	When  "<date1>" after "<date2>" 
-	Then date1 after date2 returns "<status>"	
+	Then date one after date two returns "<status>"	
 	Examples: input values 
 	  | date1 | date2 | status |
 	  | 09091991 16:00:00 | 09091991 15:59:59 | Y |
@@ -17,7 +17,7 @@ Scenario Outline: After a given date
 Scenario Outline: Before a given date 
     Given marker and tpdate class  
 	When "<date1>" before "<date2>" 
-	Then date1 before date2 returns "<status>"	
+	Then date one before date two returns "<status>"	
 	Examples: input values 
 	  | date1 | date2 | status |
 	  | 09091991 16:00:00 | 09091991 15:59:59 | Y |
