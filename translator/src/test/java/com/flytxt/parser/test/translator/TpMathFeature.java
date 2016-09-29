@@ -2,6 +2,7 @@ package com.flytxt.parser.test.translator;
 
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
+import com.flytxt.parser.translator.TpMath;
 
 import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
@@ -10,7 +11,7 @@ import cucumber.api.java.en.When;
 
 public class TpMathFeature {
 
-	TpMathFeature math = new TpMathFeature();
+	TpMath math = new TpMath();
 	Marker m1;
 	Marker m2;
 	MarkerFactory mf;
@@ -138,4 +139,9 @@ public class TpMathFeature {
 		throw new PendingException();
 	}
 
+	@Then("^result should be \"([^\"]*)\"$")
+	public void resultShouldBe(String arg1) throws Throwable {
+		// Write code here that turns the phrase above into concrete actions
+		throw new PendingException();
+	}
 }

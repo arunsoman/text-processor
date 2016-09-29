@@ -6,33 +6,45 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
 public class TpDateFeature {
-	
+
 	@Given("^marker and tpdate class$")
 	public void markerAndTpdateClass() throws Throwable {
 		// Write code here that turns the phrase above into concrete actions
 		throw new PendingException();
 	}
 
-	@When("^enter  date \"([^\"]*)\" after a new date \"([^\"]*)\"$")
-	public void enterDateAfterANewDate(String arg1, String arg2) throws Throwable {
+	@When("^\"([^\"]*)\" after \"([^\"]*)\"$")
+	public void after(String arg1, String arg2) throws Throwable {
 		// Write code here that turns the phrase above into concrete actions
 		throw new PendingException();
 	}
 
-	@When("^enter  date \"([^\"]*)\" greater than new date \"([^\"]*)\"$")
-	public void enterDateGreaterThanNewDate(String arg1, String arg2) throws Throwable {
+	@Then("^date(\\d+) after date(\\d+) returns \"([^\"]*)\"$")
+	public void dateAfterDateReturns(int arg1, int arg2, String arg3) throws Throwable {
 		// Write code here that turns the phrase above into concrete actions
 		throw new PendingException();
 	}
 
-	@When("^enter a date \"([^\"]*)\" and enter a new date \"([^\"]*)\" to find the difference$")
-	public void enterADateAndEnterANewDateToFindTheDifference(String arg1, String arg2) throws Throwable {
+	@When("^\"([^\"]*)\" before \"([^\"]*)\"$")
+	public void before(String arg1, String arg2) throws Throwable {
 		// Write code here that turns the phrase above into concrete actions
 		throw new PendingException();
 	}
 
-	@Then("^result should be \"([^\"]*)\"$")
-	public void resultShouldBe(String arg1) throws Throwable {
+	@Then("^date(\\d+) before date(\\d+) returns \"([^\"]*)\"$")
+	public void dateBeforeDateReturns(int arg1, int arg2, String arg3) throws Throwable {
+		// Write code here that turns the phrase above into concrete actions
+		throw new PendingException();
+	}
+
+	@When("^\"([^\"]*)\" minus \"([^\"]*)\"$")
+	public void minus(String arg1, String arg2) throws Throwable {
+		// Write code here that turns the phrase above into concrete actions
+		throw new PendingException();
+	}
+
+	@Then("^diff is \"([^\"]*)\"$")
+	public void diffIs(String arg1) throws Throwable {
 		// Write code here that turns the phrase above into concrete actions
 		throw new PendingException();
 	}
