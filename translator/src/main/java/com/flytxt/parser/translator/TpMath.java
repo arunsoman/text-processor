@@ -244,43 +244,22 @@ public class TpMath extends Translator implements TpConstant {
     }
 
     public Marker ceil(final byte[] data, final Marker m, final MarkerFactory mf) {
-        int index = 0;
-        for (final byte d : data) {
-            if (d == dotByte) {
-                if (data[index + 1] > '0') {
-                    data[index] = (byte) (data[index] + 1);
-                    return mf.createImmutable(data, m.index, index);
-                }
-                break;
-            } else {
-                index++;
-            }
-        }
-
-        return m;
+        byte[] d1 = m.getData() == null ? data : m.getData();
+        byte[] result = String.valueOf(Math.ceil(Double.parseDouble(m.toString(d1)))).getBytes();
+        return mf.createImmutable(result, 0, result.length);
     }
 
     public Marker floor(final byte[] data, final Marker m, final MarkerFactory mf) {
-        int index = 0;
-        for (final byte d : data) {
-            if (d == dotByte) {
-                m.length = index;
-                return m;
-            } else {
-                index++;
-            }
-        }
-        return m;
+    	byte[] d1 = m.getData() == null ? data : m.getData();
+        byte[] result = String.valueOf(Math.floor(Double.parseDouble(m.toString(d1)))).getBytes();
+        return mf.createImmutable(result, 0, result.length);
     }
 
     public Marker round(final byte[] data, final int index, final Marker m, final MarkerFactory mf) {
-        final int value = 0;
-        if (index > data.length) {
-            return m;
-        }
-        data[index - 1] = (byte) (data[index - 1] + (data[index] - '0' + 5) / 10);
-
-        return mf.createImmutable(data, m.index, index);
+    	byte[] d1 = m.getData() == null ? data : m.getData();
+    	double d = Math.round(Double.parseDouble(m.toString(d1))); 
+        byte[] result = String.valueOf(d==0?0:d).getBytes();
+        return mf.createImmutable(result, 0, result.length);
     }
 
     public boolean eq(byte[] d1, final Marker m1, byte[] d2, final Marker m2, final MarkerFactory mf) {

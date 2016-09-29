@@ -23,7 +23,7 @@ Feature: String operation in bytes
       | AAA                        | AAAA   | N    | 
       | 123fly123                  | 123    | Y    | 
       | 123fly123                  | fly    | N    | 
-      |  APPLE                     | APPLE  | N    | 
+      | ' APPLE'                     | APPLE  | N    | 
       | aPpLE                      | APp    | N    | 
   
   Scenario Outline: Convert to upper case string
@@ -152,14 +152,14 @@ Feature: String operation in bytes
  
  Scenario Outline: extract n chars from leading
     Given marker and tpstring class
-     When "<string>" is given and a number "<n>"
+     When "<string>" is given and "<n>" chars to be extracted from head
      Then return a marker with n chars from leading "<result>"
     Examples: input values
       | string                       | n | result |
 
 Scenario Outline: extract n chars from trailing
     Given marker and tpstring class
-     When "<string>" is given and a numner "<n>"
+     When "<string>" is given and "<n>" chars to be extracted from trail
      Then return a marker with n chars from trailing "<result>"
     Examples: input values
       | string                       | m | result |
@@ -167,7 +167,7 @@ Scenario Outline: extract n chars from trailing
  
 Scenario Outline: merge content of two markers
     Given marker and tpstring class
-     When two markers "<string1>" and "<string1>"
+     When two markers has to be merged "<string1>" and "<string1>"
      Then return a marker which contains chars from both markers "<result>"
     Examples: input values
       | string1                       | string2 | result |
