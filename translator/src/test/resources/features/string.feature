@@ -134,3 +134,40 @@ Feature: String operation in bytes
       | "aPpLE"                      | "APp"     | "Y"    | 
       | "s7s7s7s7"                   | "7s"      | "Y"    | 
       | "I Am A Boy."                | "m a"     | "Y"    | 
+
+  Scenario Outline: check if string ends with prefix
+    Given marker and tpstring class 
+     When "<string>" endsWith "<substring>"  
+     Then return true if string ends with subString "<result>"
+    Examples: input values 
+      | string                       | substring | result | 
+      
+  Scenario Outline: check if string ends with prefix
+    Given marker and tpstring class 
+     When "<string>" endsWith "<substring>" ignore case  
+     Then return true if string ends with subString ignoreCase "<result>"
+    Examples: input values 
+      | string                       | substring | result | 
+ 
+ 
+ Scenario Outline: extract n chars from leading
+    Given marker and tpstring class
+     When "<string>" is given and a number "<n>"
+     Then return a marker with n chars from leading "<result>"
+    Examples: input values
+      | string                       | n | result |
+
+Scenario Outline: extract n chars from trailing
+    Given marker and tpstring class
+     When "<string>" is given and a numner "<n>"
+     Then return a marker with n chars from trailing "<result>"
+    Examples: input values
+      | string                       | m | result |
+ 
+ 
+Scenario Outline: merge content of two markers
+    Given marker and tpstring class
+     When two markers "<string1>" and "<string1>"
+     Then return a marker which contains chars from both markers "<result>"
+    Examples: input values
+      | string1                       | string2 | result |
