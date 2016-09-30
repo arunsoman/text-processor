@@ -184,10 +184,10 @@ Scenario Outline: extract decimal part of a number
      Then after extracting decimal result should be "<value>" 
      Examples: input values 
           | number1 | value | 
-          | 9.3146 | 3146 |
-          | -9.3146 | 3146 |
-          | 0.003 | 003 |
-          | 9 | 0 |
+          | 9.3146 | .3146 |
+          | -9.3146 | .3146 |
+          | 0.003 | .003 |
+          | 9 | .0 |
           
 Scenario Outline: extract integer part of a number 
      Given marker and math class 
