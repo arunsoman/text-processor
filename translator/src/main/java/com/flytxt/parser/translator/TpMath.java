@@ -1,6 +1,10 @@
 package com.flytxt.parser.translator;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
+
+import org.apache.commons.math3.util.MathUtils;
+import org.apache.commons.math3.util.Precision;
 
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
@@ -114,13 +118,9 @@ public class TpMath extends Translator implements TpConstant {
 		return removeTrailingZeroz(result,mf);
 	}
 
-	public Marker round(final byte[] data, final int index, final Marker m, final MarkerFactory mf) {
+	public Marker round(final byte[] data, final int scale, final Marker m, final MarkerFactory mf) {
 		byte[] d1 = m.getData() == null ? data : m.getData();
-		int val = 1;
-		for (int i = 0; i < index; i++) {
-			val *= 10;
-		}
-		double d = ((double) Math.round(Double.parseDouble(m.toString(d1)) * val)) / val;
+		double d = Precision.round(Double.parseDouble(m.toString(d1)), scale, BigDecimal.ROUND_CEILING);
 		byte[] result = String.valueOf( d).getBytes();
 		return removeTrailingZeroz(result,mf);
 	}
