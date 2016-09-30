@@ -244,25 +244,25 @@ public class TpMath extends Translator implements TpConstant {
     }
 
     public Marker ceil(final byte[] data, final Marker m, final MarkerFactory mf) {
-        byte[] d1 = m.getData() == null ? data : m.getData();
-        byte[] result = String.valueOf(Math.ceil(Double.parseDouble(m.toString(d1)))).getBytes();
+        final byte[] d1 = m.getData() == null ? data : m.getData();
+        final byte[] result = String.valueOf(Math.ceil(Double.parseDouble(m.toString(d1)))).getBytes();
         return mf.createImmutable(result, 0, result.length);
     }
 
     public Marker floor(final byte[] data, final Marker m, final MarkerFactory mf) {
-    	byte[] d1 = m.getData() == null ? data : m.getData();
-        byte[] result = String.valueOf(Math.floor(Double.parseDouble(m.toString(d1)))).getBytes();
+        final byte[] d1 = m.getData() == null ? data : m.getData();
+        final byte[] result = String.valueOf(Math.floor(Double.parseDouble(m.toString(d1)))).getBytes();
         return mf.createImmutable(result, 0, result.length);
     }
 
     public Marker round(final byte[] data, final int index, final Marker m, final MarkerFactory mf) {
-    	byte[] d1 = m.getData() == null ? data : m.getData();
-    	int val = 1;
-    	for(int i = 0; i< index;i++){
-    		val*=10;
-    	}
-    	double d = Math.round(Double.parseDouble(m.toString(d1))*val)/val; 
-        byte[] result = String.valueOf(d==0?0:d).getBytes();
+        final byte[] d1 = m.getData() == null ? data : m.getData();
+        int val = 1;
+        for (int i = 0; i < index; i++) {
+            val *= 10;
+        }
+        final double d = Math.round(Double.parseDouble(m.toString(d1)) * val) / val;
+        final byte[] result = String.valueOf(d == 0 ? 0 : d).getBytes();
         return mf.createImmutable(result, 0, result.length);
     }
 
@@ -303,7 +303,7 @@ public class TpMath extends Translator implements TpConstant {
             index++;
         }
         if (!found) {
-            final byte[] result = ".0".getBytes();
+            final byte[] result = "0".getBytes();
             return mf.createImmutable(result, 0, result.length);
             // TODO not sure if this is right
         }
@@ -313,7 +313,7 @@ public class TpMath extends Translator implements TpConstant {
             System.arraycopy(data, index, result, 0, result.length);
             return mf.createImmutable(result, 0, result.length);
         }
-        return mf.create(index - 1, m.length - index + 1);
+        return mf.create(index, m.length - index);
     }
 
     public boolean isNumber(final byte[] data, final Marker m, final MarkerFactory mf) {
