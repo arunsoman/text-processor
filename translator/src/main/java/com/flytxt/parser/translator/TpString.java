@@ -25,16 +25,22 @@ public class TpString {
         return m == null || m.length == 0;
     }
 
-    public boolean endsWtihIgnore(final byte[] data, final Marker dataMarker, final byte[] prefix, final Marker prefixMarker, final MarkerFactory mf) {
+    public boolean endsWithIgnore(final byte[] data, final Marker dataMarker, final byte[] prefix, final Marker prefixMarker, final MarkerFactory mf) {
 
         final byte[] d1 = (dataMarker.getData() != null) ? dataMarker.getData() : data;
         final byte[] d2 = (prefixMarker.getData() != null) ? prefixMarker.getData() : prefix;
-        final Marker lowerCase = toLowerCase(d1, dataMarker, mf);
-        final Marker lowerCase2 = toLowerCase(d2, prefixMarker, mf);
-        return endsWtih(d1, lowerCase, d2, lowerCase2, mf);
+         int prefixPtr = prefixMarker.index;
+         int dataPtr = dataMarker.index+dataMarker.length-prefixMarker.length;
+         for(int i = dataPtr; i< dataMarker.index+dataMarker.length; i++ ){
+        	 int diff = d1[i]-d2[prefixPtr++];
+			if(diff !=0)
+				if(Math.abs(diff) != 32)
+        		 return false;
+         }
+         return true;
     }
 
-    public boolean endsWtih(final byte[] data, final Marker dataMarker, final byte[] prefix, final Marker prefixMarker, final MarkerFactory mf) {
+    public boolean endsWith(final byte[] data, final Marker dataMarker, final byte[] prefix, final Marker prefixMarker, final MarkerFactory mf) {
 
         final byte[] data1 = (dataMarker.getData() != null) ? dataMarker.getData() : data;
         final byte[] data2 = (prefixMarker.getData() != null) ? prefixMarker.getData() : prefix;
@@ -51,7 +57,7 @@ public class TpString {
         return true;
     }
 
-    public boolean startsWtih(final byte[] data, final Marker dataMarker, final byte[] prefix, final Marker prefixMarker) {
+    public boolean startsWith(final byte[] data, final Marker dataMarker, final byte[] prefix, final Marker prefixMarker) {
 
         final byte[] data1 = (dataMarker.getData() != null) ? dataMarker.getData() : data;
         final byte[] data2 = (prefixMarker.getData() != null) ? prefixMarker.getData() : prefix;
@@ -73,9 +79,12 @@ public class TpString {
     public Marker toUpperCase(final byte[] data, final Marker m, final MarkerFactory mf) {
         final byte[] data1 = m.getData() == null ? data : m.getData();
         final byte[] dest = new byte[m.length];
+        int index = 0;
         for (int i = m.index; i < m.length; i++) {
             if (data1[i] >= smallA && data1[i] <= smallZ) {
-                dest[i] = (byte) (data1[i] + deltaFromA2a);
+                dest[index++] = (byte) (data1[i] + deltaFromA2a);
+            }else{
+            	dest[index++] = data1[i];
             }
         }
         return mf.createImmutable(dest, 0, m.length);
@@ -84,11 +93,12 @@ public class TpString {
     public Marker toLowerCase(final byte[] data, final Marker m, final MarkerFactory mf) {
         final byte[] data1 = m.getData() == null ? data : m.getData();
         final byte[] dest = new byte[m.length];
+        int index = 0;
         for (int i = m.index; i < m.length; i++) {
             if (data1[i] >= capsA && data1[i] <= capsZ) {
-                dest[i] = (byte) (data1[i] - deltaFromA2a);
+                dest[index++] = (byte) (data1[i] - deltaFromA2a);
             } else {
-                dest[i] = data1[i];
+                dest[index++] = data1[i];
             }
         }
         return mf.createImmutable(dest, 0, m.length);
@@ -195,26 +205,40 @@ public class TpString {
     public boolean containsIgnoreCase(final byte[] data1, final Marker m1, final byte[] data2, final Marker m2, final MarkerFactory mf) {
         final byte[] d1 = m1.getData() == null ? data1 : m1.getData();
         final byte[] d2 = m2.getData() == null ? data2 : m2.getData();
-        final Marker lowerCase = toLowerCase(d1, m1, mf);
-        final Marker lowerCase2 = toLowerCase(d2, m2, mf);
-        return contains(lowerCase.getData(), lowerCase, lowerCase2.getData(), lowerCase2, mf);
+        for (int i = m1.index; i < m1.index + m1.length - m2.length + 1; ++i) {
+            boolean found = true;
+            for (int j = m2.index; j < m2.index + m2.length; ++j) {
+            	int diff = d1[i+j]-d2[j];
+    			if(diff !=0)
+    				if(Math.abs(diff) != 32){
+                    found = false;
+                    break;
+                }
+            }
+            if (found) {
+                return true;// return i;
+            }
+        }
+        return false;// -1;
     }
 
     public Marker extractLeading(final byte[] data, final Marker m1, final int extractCnt, final MarkerFactory mf) {
-        final byte[] data1 = (m1.getData() == null) ? data : m1.getData();
+        if(extractCnt <0) throw new RuntimeException("extractCnt should be greater than 0 current:"+extractCnt);
+    	final byte[] data1 = (m1.getData() == null) ? data : m1.getData();
         if (m1.getData() == null) {
-            return mf.create(m1.index + extractCnt, m1.length - extractCnt);
+            return mf.create(m1.index, extractCnt);
         } else {
-            return mf.createImmutable(data1, m1.index + extractCnt, m1.length - extractCnt);
+            return mf.createImmutable(data1, m1.index, extractCnt);
         }
     }
 
     public Marker extractTrailing(final byte[] data, final Marker m1, final int extractCnt, final MarkerFactory mf) {
-        final byte[] data1 = (m1.getData() == null) ? data : m1.getData();
+    	if(extractCnt <0) throw new RuntimeException("extractCnt should be greater than 0 current:"+extractCnt);
+    	final byte[] data1 = (m1.getData() == null) ? data : m1.getData();
         if (m1.getData() == null) {
-            return mf.create(m1.index + m1.length - extractCnt, m1.length - extractCnt);
+            return mf.create(m1.index + m1.length - extractCnt, extractCnt);
         } else {
-            return mf.createImmutable(data1, m1.index + m1.length - extractCnt, m1.length - extractCnt);
+            return mf.createImmutable(data1, m1.index + m1.length - extractCnt, extractCnt);
         }
     }
 
