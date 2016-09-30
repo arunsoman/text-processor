@@ -320,11 +320,11 @@ public class TpMath extends Translator implements TpConstant {
         if (m.length > numberLen) {
             return false;
         }
-        if (data[m.index] != '-' && (data[m.index] <= start && data[m.index] >= end)) {
+        if (data[m.index] != '-' && (data[m.index] <= start || data[m.index] >= end)) {
             return false;
         }
         for (int i = m.index + 1; i < m.length; i++) {
-            if ((data[m.index] <= start && data[m.index] >= end)) {
+            if ((data[m.index] >= start && data[m.index] <= end)) {
                 return false;
             }
         }
