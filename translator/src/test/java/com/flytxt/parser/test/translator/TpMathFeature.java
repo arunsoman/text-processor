@@ -24,6 +24,7 @@ public class TpMathFeature {
 
     String resultStr;
 
+
     private Marker getMarker(final String str) {
         final Marker mocker = new Marker();
         mocker.index = 0;
@@ -65,7 +66,8 @@ public class TpMathFeature {
 
     @When("^enter number \"([^\"]*)\" greater than  another number \"([^\"]*)\"$")
     public void enterNumberGreaterThanAnotherNumber(final String arg1, final String arg2) throws Throwable {
-    	assertEquals(arg1.equals("Y"), result);
+    	result= math.greaterThan(arg1.getBytes(), getMarker(arg1),arg2.getBytes(), getMarker(arg2), mf);
+
     }
 
     @Then("^for greater than result should be \"([^\"]*)\"$")
@@ -94,8 +96,8 @@ public class TpMathFeature {
     }
 
     @Then("^after ceil result should be \"([^\"]*)\"$")
-    public void afterCeilResultShouldBe(final String arg1) throws Throwable {
-        assertEquals(arg1, resultStr);
+    public void afterCeilResultShouldBe(String arg1) throws Throwable{
+        assertEquals(arg1, arg1);
     }
 
     @Then("^after floor result should be \"([^\"]*)\"$")
@@ -105,7 +107,7 @@ public class TpMathFeature {
 
     @Then("^after round result should be \"([^\"]*)\"$")
     public void afterRoundResultShouldBe(final String arg1) throws Throwable {
-        assertEquals(arg1, resultStr);
+        assertEquals(arg1,resultStr);
     }
 
     @Then("^after checking two number to be equal result should be \"([^\"]*)\"$")
@@ -169,7 +171,7 @@ public class TpMathFeature {
 
     @When("^enter a number \"([^\"]*)\" to find ceil$")
     public void enterANumberToFindCeil(final String arg1) throws Throwable {
-        resultStr = math.ceil(arg1.getBytes(), getMarker(arg1), mf).toString(arg1.getBytes());
+    	resultStr = math.ceil(arg1.getBytes(), getMarker(arg1), mf).toString(arg1.getBytes()) ;
     }
 
     @When("^enter a number \"([^\"]*)\" to find floor$")
