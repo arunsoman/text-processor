@@ -257,7 +257,11 @@ public class TpMath extends Translator implements TpConstant {
 
     public Marker round(final byte[] data, final int index, final Marker m, final MarkerFactory mf) {
     	byte[] d1 = m.getData() == null ? data : m.getData();
-    	double d = Math.round(Double.parseDouble(m.toString(d1))); 
+    	int val = 1;
+    	for(int i = 0; i< index;i++){
+    		val*=10;
+    	}
+    	double d = Math.round(Double.parseDouble(m.toString(d1))*val)/val; 
         byte[] result = String.valueOf(d==0?0:d).getBytes();
         return mf.createImmutable(result, 0, result.length);
     }

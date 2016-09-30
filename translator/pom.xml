@@ -32,5 +32,11 @@
 			<version>${cucumber.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-core</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>

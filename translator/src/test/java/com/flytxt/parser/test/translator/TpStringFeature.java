@@ -1,12 +1,15 @@
 package com.flytxt.parser.test.translator;
-
 import static org.junit.Assert.assertEquals;
 
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
+import com.flytxt.parser.test.translator.transformer.MarkerHelper;
+import com.flytxt.parser.test.translator.transformer.MarkerTransform;
+import com.flytxt.parser.test.translator.transformer.StringHelper;
+import com.flytxt.parser.test.translator.transformer.StringTransform;
 import com.flytxt.parser.translator.TpString;
 
-import cucumber.api.PendingException;
+import cucumber.api.Transform;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -32,8 +35,8 @@ public class TpStringFeature {
 	}
 
 	@When("^\"([^\"]*)\" provided$")
-	public void provided(String arg1) throws Throwable {
-		resultStr = ""+tpString.length(arg1.getBytes(), getMarker(arg1), mf);
+	public void provided(@Transform(MarkerTransform.class) MarkerHelper mh) throws Throwable {
+		resultStr = ""+tpString.length(mh.getBytes(), mh.getMarker(), mh.getMf());
 	}
 
 	@Then("^return length \"([^\"]*)\"$")
@@ -82,33 +85,33 @@ public class TpStringFeature {
 	}
 
 	@When("^\"([^\"]*)\" with leading whitespace is provided$")
-	public void withLeadingWhitespaceIsProvided(String arg1) throws Throwable {
-		resultStr = tpString.lTrim(arg1.getBytes(), getMarker(arg1), mf).toString(arg1.getBytes());
+	public void withLeadingWhitespaceIsProvided(@Transform(MarkerTransform.class) MarkerHelper mh) throws Throwable {
+		resultStr = tpString.lTrim(mh.getBytes(), mh.getMarker(), mh.getMf()).toString(mh.getBytes());
 	}
 
 	@Then("^returns string without leading whitespaces \"([^\"]*)\"$")
-	public void returnsStringWithoutLeadingWhitespaces(String arg1) throws Throwable {
-		assertEquals(arg1, resultStr);
+	public void returnsStringWithoutLeadingWhitespaces(@Transform(StringTransform.class)StringHelper arg1) throws Throwable {
+		assertEquals(arg1.getStr(), resultStr);
 	}
 
 	@When("^\"([^\"]*)\" with trailing whitespaces provided$")
-	public void withTrailingWhitespacesProvided(String arg1) throws Throwable {
-		resultStr = tpString.rTrim(arg1.getBytes(), getMarker(arg1), mf).toString(arg1.getBytes());
+	public void withTrailingWhitespacesProvided(@Transform(MarkerTransform.class) MarkerHelper mh) throws Throwable {
+		resultStr = tpString.rTrim(mh.getBytes(), mh.getMarker(), mh.getMf()).toString(mh.getBytes());
 	}
 
 	@Then("^return string without trailing whilespaces \"([^\"]*)\"$")
-	public void returnStringWithoutTrailingWhilespaces(String arg1) throws Throwable {
-		assertEquals(arg1, resultStr);
+	public void returnStringWithoutTrailingWhilespaces(@Transform(StringTransform.class)StringHelper arg1) throws Throwable {
+		assertEquals(arg1.getStr(), resultStr);
 	}
 
 	@When("^\"([^\"]*)\" with whitespace in beginning or end is provided$")
-	public void withWhitespaceInBeginningOrEndIsProvided(String arg1) throws Throwable {
-		resultStr = tpString.trim(arg1.getBytes(), getMarker(arg1), mf).toString(arg1.getBytes());
+	public void withWhitespaceInBeginningOrEndIsProvided(@Transform(MarkerTransform.class) MarkerHelper mh) throws Throwable {
+		resultStr = tpString.trim(mh.getBytes(), mh.getMarker(), mh.getMf()).toString(mh.getBytes());
 	}
 
 	@Then("^return string with no whitespaces at start or end \"([^\"]*)\"$")
-	public void returnStringWithNoWhitespacesAtStartOrEnd(String arg1) throws Throwable {
-		assertEquals(arg1, resultStr);
+	public void returnStringWithNoWhitespacesAtStartOrEnd(@Transform(StringTransform.class)StringHelper arg1) throws Throwable {
+		assertEquals(arg1.getStr(), resultStr);
 	}
 
 	@When("^\"([^\"]*)\" contains \"([^\"]*)\"$")
