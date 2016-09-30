@@ -104,6 +104,14 @@ public class TpString {
         if (data1[m.index] >= 'a' && data1[m.index] <= 'z') {
             dest[m.index] += deltaFromA2a;
         }
+
+        for (int i = 1; i < m.length; i++) {
+            if (dest[i] >= 'A' && dest[i] <= 'Z') {
+                dest[i] -= deltaFromA2a;
+            }
+
+        }
+
         return mf.createImmutable(dest, 0, m.length);
     }
 

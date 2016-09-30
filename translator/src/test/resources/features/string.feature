@@ -3,7 +3,7 @@ Feature: String operation in bytes
 Scenario Outline: get the length of string 
      Given marker and tpstring class 
      When "<string1>" provided 
-     Then return length "<result>" 
+     Then check string result "<result>" 
      Examples: input values 
           | string1 | result | 
           | hi      | 2      | 
@@ -11,7 +11,7 @@ Scenario Outline: get the length of string
 Scenario Outline: String starts with a 
      Given marker and tpstring class 
      When "<string1>" starts with prefix "<string2>" 
-     Then return true if string starts with prefix"<result>" 
+     Then check boolean result "<result>" 
      Examples: input values 
           | string1                      | string2  | result | 
           | string1                    | string | Y    | 
@@ -29,7 +29,7 @@ Scenario Outline: String starts with a
 Scenario Outline: Convert to upper case string 
      Given marker and tpstring class 
      When convert to upperCase"<string>" 
-     Then returns upperCase "<result>" 
+     Then check string result "<result>" 
      Examples: input values 
           | string        | result        | 
           | string      | STRING      | 
@@ -43,7 +43,7 @@ Scenario Outline: Convert to upper case string
 Scenario Outline: Convert to lower case string 
      Given marker and tpstring class 
      When convert to lowerCase "<string>" 
-     Then returns lowerCase "<result>" 
+     Then check string result "<result>" 
      Examples: input values 
           | string        | result        | 
           | string      | string      | 
@@ -57,7 +57,7 @@ Scenario Outline: Convert to lower case string
 Scenario Outline: Convert to title case string 
      Given marker and tpstring class 
      When conver to titleCase"<string>" 
-     Then returns titleCase "<result>" 
+     Then check string result "<result>" 
      Examples: input values 
           | string        | result        | 
           | string      | String      | 
@@ -70,7 +70,7 @@ Scenario Outline: Convert to title case string
 Scenario Outline: Left trim a string 
      Given marker and tpstring class 
      When "<string>" with leading whitespace is provided 
-     Then returns string without leading whitespaces "<result>" 
+     Then check string result "<result>" 
      Examples: input values 
           | string                      | result                   | 
           | '   ABCd'                   | 'ABCd'                   | 
@@ -81,7 +81,7 @@ Scenario Outline: Left trim a string
 Scenario Outline: Right trim a string 
      Given marker and tpstring class 
      When "<string>" with trailing whitespaces provided 
-     Then return string without trailing whilespaces "<result>" 
+     Then check string result "<result>" 
      Examples: input values 
           | string                      | result                   | 
           | 'ABCd   '                   | 'ABCd'                   | 
@@ -92,7 +92,7 @@ Scenario Outline: Right trim a string
 Scenario Outline: Trim a string 
      Given marker and tpstring class 
      When "<string>" with whitespace in beginning or end is provided 
-     Then return string with no whitespaces at start or end "<result>" 
+     Then check string result "<result>" 
      Examples: input values 
           | string                      | result                | 
           | 'ABCd   '                   | 'ABCd'                | 
@@ -103,7 +103,7 @@ Scenario Outline: Trim a string
 Scenario Outline: Substring search 
      Given marker and tpstring class 
      When "<string>" contains "<substring>" 
-     Then return true if string contais subString"<result>" 
+     Then check boolean result "<result>" 
      Examples: input values 
           | string                       | substring | result | 
           | string1                    | string  | Y    | 
@@ -120,7 +120,7 @@ Scenario Outline: Substring search
 Scenario Outline: Substring search ignore case 
      Given marker and tpstring class 
      When "<string>" contains "<substring>" ignore case 
-     Then return true if string contais subString ignoreCase "<result>" 
+     Then check boolean result "<result>" 
      Examples: input values 
           | string                       | substring | result | 
           | string1                    | string  | Y    | 
@@ -138,16 +138,17 @@ Scenario Outline: Substring search ignore case
 Scenario Outline: check if string ends with prefix 
      Given marker and tpstring class 
      When "<string>" endsWith "<substring>" 
-     Then return true if string ends with subString <result> 
+     Then check boolean result "<result>" 
      Examples: input values 
           | string                       | substring | result |
           |wallnut|nut|Y| 
           |wallnut|Nut|N|
           |wallnut|nuts|N|
+          
 Scenario Outline: check if string ends with prefix ignore case 
      Given marker and tpstring class 
      When "<string>" endsWith "<substring>" ignore case 
-     Then return true if string ends with subString ignoreCase "<result>" 
+     Then check boolean result "<result>" 
      Examples: input values 
           | string                       | substring | result | 
           |wallnut|nut|Y| 
@@ -157,17 +158,18 @@ Scenario Outline: check if string ends with prefix ignore case
 Scenario Outline: extract n chars from leading 
      Given marker and tpstring class 
      When "<string>" is given and "<n>" chars to be extracted from head 
-     Then return a marker with n chars from leading "<result>" 
+     Then check string result "<result>" 
      Examples: input values 
           | string                       | n | result |
-          |wallnut|3|wall| 
-          |wallnut|1|N|
+          |wallnut|3|wal| 
+          |wallnut|1|w|
           |wallnut|0||
           |wallnut|-1||
+          
 Scenario Outline: extract n chars from trailing 
      Given marker and tpstring class 
      When "<string>" is given and "<n>" chars to be extracted from trail 
-     Then return a marker with n chars from trailing "<result>" 
+     Then check string result "<result>" 
      Examples: input values 
           | string                       | m | result |
           |wallnut|3|nut| 
@@ -178,7 +180,7 @@ Scenario Outline: extract n chars from trailing
 Scenario Outline: merge content of two markers 
      Given marker and tpstring class 
      When two markers has to be merged "<string1>" and "<string1>" 
-     Then return a marker which contains chars from both markers "<result>" 
+     Then check string result "<result>" 
      Examples: input values 
           | string1                       | string2 | result |
           |wall|nut|wallnut|
