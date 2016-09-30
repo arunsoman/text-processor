@@ -15,7 +15,7 @@ public class TpString {
 
     private static final byte space = ' ';
 
-    private static final byte deltaFromA2a = smallA - capsA;
+    private static final byte deltaFromA2a = capsA - smallA;
 
     public int length(final byte[] data, final Marker m, final MarkerFactory mf) {
         return m.length; // will it come index-length
@@ -75,7 +75,7 @@ public class TpString {
         final byte[] dest = new byte[m.length];
         for (int i = m.index; i < m.length; i++) {
             if (data1[i] >= smallA && data1[i] <= smallZ) {
-                dest[i] = (byte) (data1[i] + deltaFromA2a);
+                dest[i] = (byte) (data1[i] - deltaFromA2a);
             }
         }
         return mf.createImmutable(dest, 0, m.length);
@@ -86,7 +86,7 @@ public class TpString {
         final byte[] dest = new byte[m.length];
         for (int i = m.index; i < m.length; i++) {
             if (data1[i] >= capsA && data1[i] <= capsZ) {
-                dest[i] = (byte) (data1[i] + deltaFromA2a);
+                dest[i] = (byte) (data1[i] - deltaFromA2a);
             } else {
                 dest[i] = data1[i];
             }
