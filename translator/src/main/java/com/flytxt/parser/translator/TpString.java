@@ -75,7 +75,7 @@ public class TpString {
         final byte[] dest = new byte[m.length];
         for (int i = m.index; i < m.length; i++) {
             if (data1[i] >= smallA && data1[i] <= smallZ) {
-                dest[i] = (byte) (data1[i] - deltaFromA2a);
+                dest[i] = (byte) (data1[i] + deltaFromA2a);
             }
         }
         return mf.createImmutable(dest, 0, m.length);
