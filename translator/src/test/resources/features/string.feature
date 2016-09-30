@@ -140,15 +140,19 @@ Scenario Outline: check if string ends with prefix
      When "<string>" endsWith "<substring>" 
      Then return true if string ends with subString <result> 
      Examples: input values 
-          | string                       | substring | result | 
-          
-Scenario Outline: check if string ends with prefix 
+          | string                       | substring | result |
+          |wallnut|nut|Y| 
+          |wallnut|Nut|N|
+          |wallnut|nuts|N|
+Scenario Outline: check if string ends with prefix ignore case 
      Given marker and tpstring class 
      When "<string>" endsWith "<substring>" ignore case 
      Then return true if string ends with subString ignoreCase "<result>" 
      Examples: input values 
           | string                       | substring | result | 
-          
+          |wallnut|nut|Y| 
+          |wallnut|Nut|Y|
+          |wallnut|nuts|N|
           
 Scenario Outline: extract n chars from leading 
      Given marker and tpstring class 
@@ -156,14 +160,20 @@ Scenario Outline: extract n chars from leading
      Then return a marker with n chars from leading "<result>" 
      Examples: input values 
           | string                       | n | result |
-          
+          |wallnut|3|wall| 
+          |wallnut|1|N|
+          |wallnut|0||
+          |wallnut|-1||
 Scenario Outline: extract n chars from trailing 
      Given marker and tpstring class 
      When "<string>" is given and "<n>" chars to be extracted from trail 
      Then return a marker with n chars from trailing "<result>" 
      Examples: input values 
           | string                       | m | result |
-          
+          |wallnut|3|nut| 
+          |wallnut|1|t|
+          |wallnut|0||
+          |wallnut|-1||
           
 Scenario Outline: merge content of two markers 
      Given marker and tpstring class 
@@ -171,3 +181,4 @@ Scenario Outline: merge content of two markers
      Then return a marker which contains chars from both markers "<result>" 
      Examples: input values 
           | string1                       | string2 | result |
+          |wall|nut|wallnut|
