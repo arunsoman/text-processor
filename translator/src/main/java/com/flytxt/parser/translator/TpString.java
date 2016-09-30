@@ -52,7 +52,7 @@ public class TpString {
 			return false;
 		int dataIndex = dataMarker.index + prefixMarker.length - 1;
 		int prefixIndex = prefixMarker.index + prefixMarker.length - 1;
-		for (int i = dataIndex; i > prefixMarker.index; i--) {
+		for (int i = dataIndex; i >= prefixMarker.index; i--) {
 			if (data1[dataIndex] != data2[prefixIndex])
 				return false;
 			dataIndex--;
