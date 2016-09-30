@@ -103,7 +103,7 @@ public class TpMath extends Translator implements TpConstant {
 	public Marker ceil(final byte[] data, final Marker m, final MarkerFactory mf) {
 		byte[] d1 = m.getData() == null ? data : m.getData();
 		double ceil = Math.ceil(Double.parseDouble(m.toString(d1)));
-		byte[] result = String.valueOf(ceil == 0 ? 0 : ceil).getBytes();
+		byte[] result = String.valueOf(ceil).getBytes();
 		return removeTrailingZeroz(result,mf);
 	}
 
@@ -168,9 +168,9 @@ public class TpMath extends Translator implements TpConstant {
 		}
 		if (m.getData() != null) {
 			final int size = m.length - index;
-			final byte[] result = new byte[size];
-			System.arraycopy(data, index, result, 0, result.length);
-			return mf.createImmutable(result, 0, result.length);
+			//final byte[] result = new byte[size];
+			//System.arraycopy(data, index, result, 0, result.length);
+			return mf.createImmutable(data, 0, size);
 		}
 		return mf.create(index - 1, m.length - index + 1);
 	}
@@ -196,23 +196,19 @@ public class TpMath extends Translator implements TpConstant {
 	}
 
 	private Marker removeTrailingZeroz(byte[] result, final MarkerFactory mf) {
-		int trailingZeros=0;
-		boolean remove=false,increment=true;
-		for(int i=result.length-1;i>=0;i--){
-			if(result[i]==start && increment){
-				trailingZeros++;
-			}else { 
-			   if(result[i] == '.'){
-				   if(result[result.length-trailingZeros]==result[i])
-					   trailingZeros++;
-			 	remove=true;	
-			  }
-				increment=false;
+		int ptr = result.length;
+		boolean dotFound = false;
+		while(--ptr >= 0){
+			if(result[ptr] == dotByte){
+				dotFound = true;
+				break;
 			}
 		}
-		if(remove)
-			return mf.createImmutable(result, 0,result.length-trailingZeros);
-		return mf.createImmutable(result, 0,result.length);
-		
+		if(!dotFound)
+			return mf.createImmutable(result, 0,result.length);
+		int ptr2 = result.length;
+		while(--ptr2>ptr && result[ptr2]== start)
+			;
+		return mf.createImmutable(result, 0,ptr2);
 	}
 }
