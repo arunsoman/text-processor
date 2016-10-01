@@ -195,6 +195,12 @@ public class TpMath extends Translator implements TpConstant {
 		return true;
 	}
 
+	public Marker min(byte[]d1, Marker m1, byte[]d2, Marker m2, MarkerFactory mf){
+		return lessEqThan(d1, m1, d2, m2, mf)? m1:m2;
+	}
+	public Marker max(byte[]d1, Marker m1, byte[]d2, Marker m2, MarkerFactory mf){
+		return greaterEqThan(d1, m1, d2, m2, mf)? m1:m2;
+	}
 	private Marker removeTrailingZeroz(byte[] result, final MarkerFactory mf) {
 		int ptr = result.length;
 		boolean dotFound = false;
