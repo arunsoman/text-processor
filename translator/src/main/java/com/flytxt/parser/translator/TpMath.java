@@ -96,12 +96,14 @@ public class TpMath extends Translator implements TpConstant {
 		return mf.createImmutable(resB, 0, resB.length);
 	}
 
-	public Marker sub(final byte[] data, final Marker m, final int number, final MarkerFactory mf) {
-		throw new RuntimeException();
+	public Marker toMarker(double d, final MarkerFactory mf) {
+		byte[] data = String.valueOf(d).getBytes();
+		return mf.createImmutable(data, 0, data.length);
 	}
 
-	public Marker add(final byte[] data, final Marker m, final int number, final MarkerFactory mf) {
-		throw new RuntimeException();
+	public Marker toMarker(long d, final MarkerFactory mf) {
+		byte[] data = String.valueOf(d).getBytes();
+		return mf.createImmutable(data, 0, data.length);
 	}
 
 	public Marker ceil(final byte[] data, final Marker m, final MarkerFactory mf) {
