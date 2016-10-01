@@ -185,6 +185,9 @@ public class TpString {
     }
 
     public boolean contains(final byte[] data1, final Marker m1, final byte[] data2, final Marker m2, final MarkerFactory mf) {
+    	return indexOf(data1, m1, data2, m2, mf)> -1; 
+    }
+    public int indexOf(final byte[] data1, final Marker m1, final byte[] data2, final Marker m2, final MarkerFactory mf) {
         final byte[] d1 = m1.getData() == null ? data1 : m1.getData();
         final byte[] d2 = m2.getData() == null ? data2 : m2.getData();
         for (int i = m1.index; i < m1.index + m1.length - m2.length + 1; ++i) {
@@ -196,13 +199,17 @@ public class TpString {
                 }
             }
             if (found) {
-                return true;// return i;
+                return i;
             }
         }
-        return false;// -1;
+        return -1;
     }
 
     public boolean containsIgnoreCase(final byte[] data1, final Marker m1, final byte[] data2, final Marker m2, final MarkerFactory mf) {
+    	return indexOIgnoreCase(data1, m1, data2, m2, mf)> -1;
+    }
+    
+    public int indexOIgnoreCase(final byte[] data1, final Marker m1, final byte[] data2, final Marker m2, final MarkerFactory mf) {
         final byte[] d1 = m1.getData() == null ? data1 : m1.getData();
         final byte[] d2 = m2.getData() == null ? data2 : m2.getData();
         for (int i = m1.index; i < m1.index + m1.length - m2.length + 1; ++i) {
@@ -216,10 +223,10 @@ public class TpString {
                 }
             }
             if (found) {
-                return true;// return i;
+                return i;
             }
         }
-        return false;// -1;
+        return -1;
     }
 
     public Marker extractLeading(final byte[] data, final Marker m1, final int extractCnt, final MarkerFactory mf) {
