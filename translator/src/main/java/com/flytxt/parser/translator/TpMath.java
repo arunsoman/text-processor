@@ -203,7 +203,7 @@ public class TpMath extends Translator implements TpConstant {
 				trailingZeros++;
 			}else { 
 			   if(result[i] == '.'){
-				   if(result[result.length-trailingZeros]==result[i])
+				   if(result.length-trailingZeros-1==i)
 					   trailingZeros++;
 			 	remove=true;	
 			  }
