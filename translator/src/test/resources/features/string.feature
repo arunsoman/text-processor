@@ -64,13 +64,13 @@ Scenario Outline: Convert to title case string
           | aPpLE       | Apple       | 
           | APPLE       | Apple       | 
           | AB12!@CDDD  | Ab12!@cddd  | 
-          | i am a boy. | I Am A Boy. | 
+          | i am a boy. | I am a boy. | 
           |             |             | 
           
 Scenario Outline: Left trim a string 
      Given marker and tpstring class 
      When "<string>" with leading whitespace is provided 
-     Then check string result "<result>" 
+     Then trimmed string "<result>" 
      Examples: input values 
           | string                      | result                   | 
           | '   ABCd'                   | 'ABCd'                   | 
@@ -81,7 +81,7 @@ Scenario Outline: Left trim a string
 Scenario Outline: Right trim a string 
      Given marker and tpstring class 
      When "<string>" with trailing whitespaces provided 
-     Then check string result "<result>" 
+     Then trimmed string "<result>" 
      Examples: input values 
           | string                      | result                   | 
           | 'ABCd   '                   | 'ABCd'                   | 
@@ -92,7 +92,7 @@ Scenario Outline: Right trim a string
 Scenario Outline: Trim a string 
      Given marker and tpstring class 
      When "<string>" with whitespace in beginning or end is provided 
-     Then check string result "<result>" 
+     Then trimmed string "<result>" 
      Examples: input values 
           | string                      | result                | 
           | 'ABCd   '                   | 'ABCd'                | 
@@ -171,7 +171,7 @@ Scenario Outline: extract n chars from trailing
      When "<string>" is given and "<n>" chars to be extracted from trail 
      Then check string result "<result>" 
      Examples: input values 
-          | string                       | m | result |
+          | string                       | n | result |
           |wallnut|3|nut| 
           |wallnut|1|t|
           |wallnut|0||
@@ -179,7 +179,7 @@ Scenario Outline: extract n chars from trailing
           
 Scenario Outline: merge content of two markers 
      Given marker and tpstring class 
-     When two markers has to be merged "<string1>" and "<string1>" 
+     When two markers has to be merged "<string1>" and "<string2>" 
      Then check string result "<result>" 
      Examples: input values 
           | string1                       | string2 | result |

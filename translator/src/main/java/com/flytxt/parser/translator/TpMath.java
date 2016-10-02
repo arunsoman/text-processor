@@ -1,6 +1,10 @@
 package com.flytxt.parser.translator;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
+
+import org.apache.commons.math3.util.MathUtils;
+import org.apache.commons.math3.util.Precision;
 
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
@@ -92,18 +96,20 @@ public class TpMath extends Translator implements TpConstant {
 		return mf.createImmutable(resB, 0, resB.length);
 	}
 
-	public Marker sub(final byte[] data, final Marker m, final int number, final MarkerFactory mf) {
-		throw new RuntimeException();
+	public Marker toMarker(double d, final MarkerFactory mf) {
+		byte[] data = String.valueOf(d).getBytes();
+		return mf.createImmutable(data, 0, data.length);
 	}
 
-	public Marker add(final byte[] data, final Marker m, final int number, final MarkerFactory mf) {
-		throw new RuntimeException();
+	public Marker toMarker(long d, final MarkerFactory mf) {
+		byte[] data = String.valueOf(d).getBytes();
+		return mf.createImmutable(data, 0, data.length);
 	}
 
 	public Marker ceil(final byte[] data, final Marker m, final MarkerFactory mf) {
 		byte[] d1 = m.getData() == null ? data : m.getData();
 		double ceil = Math.ceil(Double.parseDouble(m.toString(d1)));
-		byte[] result = String.valueOf(ceil == 0 ? 0 : ceil).getBytes();
+		byte[] result = String.valueOf(ceil).getBytes();
 		return removeTrailingZeroz(result,mf);
 	}
 
@@ -114,13 +120,9 @@ public class TpMath extends Translator implements TpConstant {
 		return removeTrailingZeroz(result,mf);
 	}
 
-	public Marker round(final byte[] data, final int index, final Marker m, final MarkerFactory mf) {
+	public Marker round(final byte[] data, final int scale, final Marker m, final MarkerFactory mf) {
 		byte[] d1 = m.getData() == null ? data : m.getData();
-		int val = 1;
-		for (int i = 0; i < index; i++) {
-			val *= 10;
-		}
-		double d = ((double) Math.round(Double.parseDouble(m.toString(d1)) * val)) / val;
+		double d = Precision.round(Double.parseDouble(m.toString(d1)), scale, BigDecimal.ROUND_CEILING);
 		byte[] result = String.valueOf( d).getBytes();
 		return removeTrailingZeroz(result,mf);
 	}
@@ -168,9 +170,9 @@ public class TpMath extends Translator implements TpConstant {
 		}
 		if (m.getData() != null) {
 			final int size = m.length - index;
-			final byte[] result = new byte[size];
-			System.arraycopy(data, index, result, 0, result.length);
-			return mf.createImmutable(result, 0, result.length);
+			//final byte[] result = new byte[size];
+			//System.arraycopy(data, index, result, 0, result.length);
+			return mf.createImmutable(data, 0, size);
 		}
 		return mf.create(index - 1, m.length - index + 1);
 	}
@@ -195,24 +197,26 @@ public class TpMath extends Translator implements TpConstant {
 		return true;
 	}
 
+	public Marker min(byte[]d1, Marker m1, byte[]d2, Marker m2, MarkerFactory mf){
+		return lessEqThan(d1, m1, d2, m2, mf)? m1:m2;
+	}
+	public Marker max(byte[]d1, Marker m1, byte[]d2, Marker m2, MarkerFactory mf){
+		return greaterEqThan(d1, m1, d2, m2, mf)? m1:m2;
+	}
 	private Marker removeTrailingZeroz(byte[] result, final MarkerFactory mf) {
-		int trailingZeros=0;
-		boolean remove=false,increment=true;
-		for(int i=result.length-1;i>=0;i--){
-			if(result[i]==start && increment){
-				trailingZeros++;
-			}else { 
-			   if(result[i] == '.'){
-				   if(result.length-trailingZeros-1==i)
-					   trailingZeros++;
-			 	remove=true;	
-			  }
-				increment=false;
+		int ptr = result.length;
+		boolean dotFound = false;
+		while(--ptr >= 0){
+			if(result[ptr] == dotByte){
+				dotFound = true;
+				break;
 			}
 		}
-		if(remove)
-			return mf.createImmutable(result, 0,result.length-trailingZeros);
-		return mf.createImmutable(result, 0,result.length);
-		
+		if(!dotFound)
+			return mf.createImmutable(result, 0,result.length);
+		int ptr2 = result.length;
+		while(--ptr2>ptr && result[ptr2]== start)
+			;
+		return mf.createImmutable(result, 0,ptr2);
 	}
 }
