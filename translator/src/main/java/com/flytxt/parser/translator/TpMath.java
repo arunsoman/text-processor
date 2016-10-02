@@ -122,7 +122,7 @@ public class TpMath extends Translator implements TpConstant {
 
 	public Marker round(final byte[] data, final int scale, final Marker m, final MarkerFactory mf) {
 		byte[] d1 = m.getData() == null ? data : m.getData();
-		double d = Precision.round(Double.parseDouble(m.toString(d1)), scale, BigDecimal.ROUND_CEILING);
+		double d = Precision.round(Double.parseDouble(m.toString(d1)), scale, BigDecimal.ROUND_HALF_EVEN);
 		byte[] result = String.valueOf( d).getBytes();
 		return removeTrailingZeroz(result,mf);
 	}
@@ -215,8 +215,8 @@ public class TpMath extends Translator implements TpConstant {
 		if(!dotFound)
 			return mf.createImmutable(result, 0,result.length);
 		int ptr2 = result.length;
-		while(--ptr2>ptr && result[ptr2]== start)
+		while(--ptr2>=ptr && (result[ptr2]== start || result[ptr2]== dotByte))
 			;
-		return mf.createImmutable(result, 0,ptr2);
+		return mf.createImmutable(result, 0,ptr2+1);
 	}
 }
