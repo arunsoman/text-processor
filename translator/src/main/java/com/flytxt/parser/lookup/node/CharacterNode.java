@@ -4,22 +4,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CharacterNode<T> {
-	public final Character aChar;
-	private final List<CharPath<T>> paths = new ArrayList<CharPath<T>>();
-	
-	public CharacterNode(Character aChar) {
-		super();
-		this.aChar = aChar;
-	}
-	public void addPath(CharPath<T> charPath){
-		paths.add(charPath);
-	}
-	public T getValue(byte[] search){
-		for(CharPath<T> aPath: paths){
-			if(aPath.match(search)> 0)
-				return aPath.value;
-		}
-		return null;
-	}
-	
+
+    public final Character aChar;
+
+    private final List<CharPath<T>> paths = new ArrayList<>();
+
+    public CharacterNode(final Character aChar) {
+        super();
+        this.aChar = aChar;
+    }
+
+    public void addPath(final CharPath<T> charPath) {
+        paths.add(charPath);
+    }
+
+    public T getValue(final byte[] search) {
+        int maxMatch = 0;
+        CharPath<T> maxPath = null;
+        for (final CharPath<T> aPath : paths) {
+            final int currentMatch = aPath.match(search);
+            if (currentMatch > maxMatch) {
+                maxMatch = currentMatch;
+                maxPath = aPath;
+            }
+        }
+        return maxPath.value;
+    }
 }
