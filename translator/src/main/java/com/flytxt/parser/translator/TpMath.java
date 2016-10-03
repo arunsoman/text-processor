@@ -122,7 +122,7 @@ public class TpMath extends Translator implements TpConstant {
 
 	public Marker round(final byte[] data, final int scale, final Marker m, final MarkerFactory mf) {
 		byte[] d1 = m.getData() == null ? data : m.getData();
-		double d = Precision.round(Double.parseDouble(m.toString(d1)), scale, BigDecimal.ROUND_CEILING);
+		double d = Precision.round(Double.parseDouble(m.toString(d1)), scale, BigDecimal.ROUND_HALF_EVEN);
 		byte[] result = String.valueOf( d).getBytes();
 		return removeTrailingZeroz(result,mf);
 	}
@@ -158,30 +158,30 @@ public class TpMath extends Translator implements TpConstant {
 		for (final byte b : data) {
 			if (b == dotByte) {
 				found = true;
-				index++;
 				break;
 			}
 			index++;
 		}
 		if (!found) {
-			final byte[] result = ".0".getBytes();
+			final byte[] result = "0.0".getBytes();
 			return mf.createImmutable(result, 0, result.length);
 			// TODO not sure if this is right
 		}
+		data[index-1]=start;
 		if (m.getData() != null) {
-			final int size = m.length - index;
+			final int size = m.length - index+1;
 			//final byte[] result = new byte[size];
 			//System.arraycopy(data, index, result, 0, result.length);
 			return mf.createImmutable(data, 0, size);
 		}
-		return mf.create(index - 1, m.length - index + 1);
+		return mf.createImmutable(data, index-1, m.length - index+1);
 	}
 
 	public boolean isNumber(final byte[] data, final Marker m, final MarkerFactory mf) {
 		if (m.length > numberLen) {
 			return false;
 		}
-		if (data[m.index] != '-' && (data[m.index] < start || data[m.index] >= end)) {
+		if (data[m.index] != '-' && (data[m.index] < start || data[m.index] > end)) {
 			return false;
 		}
 		boolean decimalSeperatorFound = false;
@@ -215,8 +215,8 @@ public class TpMath extends Translator implements TpConstant {
 		if(!dotFound)
 			return mf.createImmutable(result, 0,result.length);
 		int ptr2 = result.length;
-		while(--ptr2>ptr && result[ptr2]== start)
+		while(--ptr2>=ptr && (result[ptr2]== start || result[ptr2]== dotByte))
 			;
-		return mf.createImmutable(result, 0,ptr2);
+		return mf.createImmutable(result, 0,ptr2+1);
 	}
 }
