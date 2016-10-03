@@ -203,4 +203,37 @@ public class TpMathFeature {
     public void enterANumberString(final String arg1) throws Throwable {
         result = math.isNumber(arg1.getBytes(), getMarker(arg1), mf);
     }
+    
+    @When("^min of \"([^\"]*)\"  \"([^\"]*)\"$")
+    public void minOf(String arg1, String arg2) throws Throwable {
+    	Marker m1 = getMarker(arg1);
+    	Marker m2 = getMarker(arg2);
+    	Marker min = math.min(arg1.getBytes(), m1, arg2.getBytes(), m2, mf);
+    	if(min == m1){
+    		resultStr =m1.toString(arg1.getBytes());	
+    	}else if (min == m2){
+    		resultStr =m2.toString(arg2.getBytes());	
+    	}
+    }
+
+    @Then("^min number is \"([^\"]*)\"$")
+    public void minNumberIs(String arg1) throws Throwable {
+    	 assertEquals(arg1,resultStr);
+    }
+
+    @When("^max of \"([^\"]*)\"  \"([^\"]*)\"$")
+    public void maxOf(String arg1, String arg2) throws Throwable {
+    	Marker m1 = getMarker(arg1);
+    	Marker m2 = getMarker(arg2);
+    	Marker max = math.max(arg1.getBytes(), m1, arg2.getBytes(), m2, mf);
+    	if(max == m1){
+    		resultStr =m1.toString(arg1.getBytes());	
+    	}else if (max == m2){
+    		resultStr =m2.toString(arg2.getBytes());	
+    	}    }
+
+    @Then("^max number is \"([^\"]*)\"$")
+    public void maxNumberIs(String arg1) throws Throwable {
+    	  assertEquals(arg1,resultStr);
+    }
 }

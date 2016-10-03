@@ -212,4 +212,24 @@ Scenario Outline: check given string is a number
           | -960.0541 | Y |
           | $%^& | N |
           
+Scenario Outline: find min 
+     Given marker and math class 
+     When min of "<number1>"  "<number2>" 
+     Then min number is "<value>" 
+     Examples: input values 
+          | number1 | number2 | value | 
+          | 12      | 13      | 12 |
+          | 13      | 9 | 9 |
+          | 4.5 | 2.4 | 2.4 |
+          
+Scenario Outline: find max 
+     Given marker and math class 
+     When max of "<number1>"  "<number2>" 
+     Then max number is "<value>" 
+     Examples: input values 
+          | number1 | number2 | value | 
+          | 12      | 13      | 13 |
+          | 13      | 9 | 13 |
+          | 4.5 | 2.4 | 4.5 |
+          
 	  
