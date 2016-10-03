@@ -162,7 +162,7 @@ Scenario Outline: round of a number in a given scale
           | 0.456 | 2 | 0.46 |
           | 4.456 | 2 | 4.46 |
           | 9.8009 | 3 | 9.801 |
-          | 94.05 | 1 | 94.1 |
+          | 94.05 | 1 | 94  |
           | 0     | 1  | 0   |
           
           
