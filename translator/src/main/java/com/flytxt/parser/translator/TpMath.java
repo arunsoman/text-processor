@@ -181,7 +181,7 @@ public class TpMath extends Translator implements TpConstant {
 		if (m.length > numberLen) {
 			return false;
 		}
-		if (data[m.index] != '-' && (data[m.index] < start || data[m.index] >= end)) {
+		if (data[m.index] != '-' && (data[m.index] < start || data[m.index] > end)) {
 			return false;
 		}
 		boolean decimalSeperatorFound = false;
