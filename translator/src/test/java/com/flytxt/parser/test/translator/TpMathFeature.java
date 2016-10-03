@@ -4,8 +4,11 @@ import static org.junit.Assert.assertEquals;
 
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
+import com.flytxt.parser.test.translator.transformer.MarkerHelper;
+import com.flytxt.parser.test.translator.transformer.MarkerTransform;
 import com.flytxt.parser.translator.TpMath;
 
+import cucumber.api.Transform;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -202,5 +205,38 @@ public class TpMathFeature {
     @When("^enter a number string \"([^\"]*)\"$")
     public void enterANumberString(final String arg1) throws Throwable {
         result = math.isNumber(arg1.getBytes(), getMarker(arg1), mf);
+    }
+    
+    @When("^min of \"([^\"]*)\"  \"([^\"]*)\"$")
+    public void minOf(@Transform(MarkerTransform.class) final MarkerHelper arg1, @Transform(MarkerTransform.class) final MarkerHelper arg2) throws Throwable {   
+    	Marker m1 = arg1.getMarker();
+    	Marker m2=arg2.getMarker();
+    	Marker min = math.min(arg1.getBytes(), m1, arg2.getBytes(), m2, mf);
+    	if(min == m1){
+    		resultStr =m1.toString(arg1.getBytes());	
+    	}else if (min == m2){
+    		resultStr =m2.toString(arg2.getBytes());	
+    	}
+    }
+
+    @Then("^min number is \"([^\"]*)\"$")
+    public void minNumberIs(String arg1) throws Throwable {
+    	 assertEquals(arg1,resultStr);
+    }
+
+    @When("^max of \"([^\"]*)\"  \"([^\"]*)\"$")
+    public void maxOf(@Transform(MarkerTransform.class) final MarkerHelper arg1, @Transform(MarkerTransform.class) final MarkerHelper arg2) throws Throwable {
+    	Marker m1 = arg1.getMarker();
+    	Marker m2=arg2.getMarker();
+    	Marker max = math.max(arg1.getBytes(), m1, arg2.getBytes(), m2, mf);
+    	if(max == m1){
+    		resultStr =m1.toString(arg1.getBytes());	
+    	}else if (max == m2){
+    		resultStr =m2.toString(arg2.getBytes());	
+    	}    }
+
+    @Then("^max number is \"([^\"]*)\"$")
+    public void maxNumberIs(String arg1) throws Throwable {
+    	  assertEquals(arg1,resultStr);
     }
 }
