@@ -4,8 +4,11 @@ import static org.junit.Assert.assertEquals;
 
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
+import com.flytxt.parser.test.translator.transformer.MarkerHelper;
+import com.flytxt.parser.test.translator.transformer.MarkerTransform;
 import com.flytxt.parser.translator.TpMath;
 
+import cucumber.api.Transform;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -205,9 +208,9 @@ public class TpMathFeature {
     }
     
     @When("^min of \"([^\"]*)\"  \"([^\"]*)\"$")
-    public void minOf(String arg1, String arg2) throws Throwable {
-    	Marker m1 = getMarker(arg1);
-    	Marker m2 = getMarker(arg2);
+    public void minOf(@Transform(MarkerTransform.class) final MarkerHelper arg1, @Transform(MarkerTransform.class) final MarkerHelper arg2) throws Throwable {   
+    	Marker m1 = arg1.getMarker();
+    	Marker m2=arg2.getMarker();
     	Marker min = math.min(arg1.getBytes(), m1, arg2.getBytes(), m2, mf);
     	if(min == m1){
     		resultStr =m1.toString(arg1.getBytes());	
@@ -222,9 +225,9 @@ public class TpMathFeature {
     }
 
     @When("^max of \"([^\"]*)\"  \"([^\"]*)\"$")
-    public void maxOf(String arg1, String arg2) throws Throwable {
-    	Marker m1 = getMarker(arg1);
-    	Marker m2 = getMarker(arg2);
+    public void maxOf(@Transform(MarkerTransform.class) final MarkerHelper arg1, @Transform(MarkerTransform.class) final MarkerHelper arg2) throws Throwable {
+    	Marker m1 = arg1.getMarker();
+    	Marker m2=arg2.getMarker();
     	Marker max = math.max(arg1.getBytes(), m1, arg2.getBytes(), m2, mf);
     	if(max == m1){
     		resultStr =m1.toString(arg1.getBytes());	

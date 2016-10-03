@@ -158,23 +158,23 @@ public class TpMath extends Translator implements TpConstant {
 		for (final byte b : data) {
 			if (b == dotByte) {
 				found = true;
-				index++;
 				break;
 			}
 			index++;
 		}
 		if (!found) {
-			final byte[] result = ".0".getBytes();
+			final byte[] result = "0.0".getBytes();
 			return mf.createImmutable(result, 0, result.length);
 			// TODO not sure if this is right
 		}
+		data[index-1]=start;
 		if (m.getData() != null) {
-			final int size = m.length - index;
+			final int size = m.length - index+1;
 			//final byte[] result = new byte[size];
 			//System.arraycopy(data, index, result, 0, result.length);
 			return mf.createImmutable(data, 0, size);
 		}
-		return mf.create(index - 1, m.length - index + 1);
+		return mf.createImmutable(data, index-1, m.length - index+1);
 	}
 
 	public boolean isNumber(final byte[] data, final Marker m, final MarkerFactory mf) {
