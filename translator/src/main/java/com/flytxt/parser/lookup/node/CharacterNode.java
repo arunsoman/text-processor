@@ -21,8 +21,9 @@ public class CharacterNode<T> {
     public T getValue(final byte[] search) {
         int maxMatch = 0;
         CharPath<T> maxPath = null;
+        int currentMatch;
         for (final CharPath<T> aPath : paths) {
-            final int currentMatch = aPath.match(search);
+            currentMatch = aPath.match(search);
             if (currentMatch > maxMatch) {
                 maxMatch = currentMatch;
                 maxPath = aPath;

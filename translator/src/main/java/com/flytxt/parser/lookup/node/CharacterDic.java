@@ -7,13 +7,12 @@ public class CharacterDic<T> {
 
     Map<Character, CharacterNode<T>> charList = new HashMap<>();
 
-    public CharacterNode<T> getCharNode(final byte aChar) {
+    public CharacterNode<T> getCharNode(final byte aByte) {
+    	char aChar = (char)aByte;
         CharacterNode<T> node;
-        if (charList.containsKey((char) aChar)) {
-            node = charList.get((char) aChar);
-        } else {
-            node = new CharacterNode<>((char) aChar);
-            charList.put((char) aChar, node);
+        if ((node = charList.get(aChar)) == null) {
+            node = new CharacterNode<>(aChar);
+            charList.put(aChar, node);
         }
         return node;
     }
