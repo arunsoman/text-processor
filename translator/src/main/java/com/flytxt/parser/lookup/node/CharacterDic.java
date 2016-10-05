@@ -8,7 +8,7 @@ public class CharacterDic<T> {
     Map<Character, CharacterNode<T>> charList = new HashMap<>();
 
     public CharacterNode<T> getCharNode(final byte aByte) {
-    	char aChar = (char)aByte;
+        final char aChar = (char) aByte;
         CharacterNode<T> node;
         if ((node = charList.get(aChar)) == null) {
             node = new CharacterNode<>(aChar);

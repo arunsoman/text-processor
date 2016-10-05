@@ -16,12 +16,9 @@ public class CharPath<T> {
     }
 
     public int match(final byte[] search) {
-        if (search.length > key.length - charPos) {
-            return -1;
-        }
         int matchCnt = 0;
         for (final byte element : search) {
-            if (key[charPos + matchCnt] == element) {
+            if (charPos + matchCnt < key.length && key[charPos + matchCnt] == element) {
                 matchCnt++;
             } else {
                 return matchCnt;
