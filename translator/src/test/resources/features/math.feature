@@ -162,7 +162,7 @@ Scenario Outline: round of a number in a given scale
           | 0.456 | 2 | 0.46 |
           | 4.456 | 2 | 4.46 |
           | 9.8009 | 3 | 9.801 |
-          | 94.05 | 1 | 94.1 |
+          | 94.05 | 1 | 94  |
           | 0     | 1  | 0   |
           
           
@@ -184,10 +184,10 @@ Scenario Outline: extract decimal part of a number
      Then after extracting decimal result should be "<value>" 
      Examples: input values 
           | number1 | value | 
-          | 9.3146 | .3146 |
-          | -9.3146 | .3146 |
-          | 0.003 | .003 |
-          | 9 | .0 |
+          | 9.3146 | 0.3146 |
+          | -9.3146 | 0.3146 |
+          | 0.003 | 0.003 |
+          | 9 | 0.0 |
           
 Scenario Outline: extract integer part of a number 
      Given marker and math class 
@@ -211,5 +211,25 @@ Scenario Outline: check given string is a number
           | hi | N |
           | -960.0541 | Y |
           | $%^& | N |
+          
+Scenario Outline: find min 
+     Given marker and math class 
+     When min of "<number1>"  "<number2>" 
+     Then min number is "<value>" 
+     Examples: input values 
+          | number1 | number2 | value | 
+          | 12      | 13      | 12 |
+          | 13      | 9 | 9 |
+          | 4.5 | 2.4 | 2.4 |
+          
+Scenario Outline: find max 
+     Given marker and math class 
+     When max of "<number1>"  "<number2>" 
+     Then max number is "<value>" 
+     Examples: input values 
+          | number1 | number2 | value | 
+          | 12      | 13      | 13 |
+          | 13      | 9 | 13 |
+          | 4.5 | 2.4 | 4.5 |
           
 	  
