@@ -32,6 +32,18 @@ public class ParserController {
         return "Script.pl";
     }
 
+    @RequestMapping(path = "/compileNtest", method = RequestMethod.POST)
+    public @ResponseBody String compileNtest(
+    		@RequestParam("name") final String name,
+    		@RequestParam("absProcessor") final String absProcessor,
+    		@RequestParam("extract") final String extract,
+    		@RequestParam("store") final String store,
+    		@RequestParam("type") final String type, //single,hybrid
+    		@RequestParam("sample") final String sampleData
+    		) {
+    	
+    	return null;
+    }
     @RequestMapping(path = "/submit", method = RequestMethod.GET)
     public @ResponseBody String submitScript(@RequestParam("host") final String host, @RequestParam("script") final String script, @RequestParam("scriptName") final String scriptName) {
         if (!Character.isUpperCase(scriptName.charAt(0)) || !scriptName.endsWith(".pl")) {
