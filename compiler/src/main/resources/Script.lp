@@ -1,11 +1,57 @@
-folder('/tmp/') -> nameFilter('regex')-> createLink('/home/dk/')
+package com.processor;
 
-inputFolder('home/dk')
+import com.flytxt.parser.marker.*;
+import com.flytxt.parser.store.*;
+import com.flytxt.parser.translator.*;
 
-line->split(',') => slices
-slices -> element(2) -> split('|') -> element(1) => aon
-line->split('*') => newslices
-newslices -> element(1) -> split('*') -> element(1) => mou
+import java.io.IOException;
 
-[aon,mou]  -> store('/tmp/out/script.out')
-currentFile -> delete()
+import com.flytxt.parser.lookup.*;
+public class {0} implements LineProcessor{
+	private String currentFileName;
+	private Marker fileName;
+	private String folderName;
+	private MarkerFactory mf;
+	//\n{1}
+	
+	public String getFolder(){
+		return folderName;
+	}
+	public void setMarkerFactory(MarkerFactory mf){
+		this.mf = mf;
+	}
+	public void setInputFileName(String currentFileName){
+		this.currentFileName = currentFileName;
+		byte[] tt = currentFileName.getBytes();
+		this.fileName = mf.createImmutable(tt, 0. tt.length);
+	}
+
+	public void process(byte[] data, int startIndex, int readCnt, MarkerFactory mf) throws IOException{
+		process();
+		translate();
+		store();
+	}
+
+	public void done() throws IOException{
+		//TODO
+	}
+
+	public String getFilter(){
+		//TODO
+		return null;
+	}
+
+	public int getMaxListSize(){
+		//TODO
+		return 10000;
+	}
+	public void process(){
+		{2}
+	}
+	public void translate(){
+		{3}
+	}
+	public void store(){
+		{4}
+	}
+}
