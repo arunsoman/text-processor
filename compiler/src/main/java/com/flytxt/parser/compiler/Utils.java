@@ -2,11 +2,13 @@ package com.flytxt.parser.compiler;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
@@ -34,6 +36,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
 import com.flytxt.parser.compiler.parser.Parser;
+import com.flytxt.parser.marker.LineProcessor;
+import com.flytxt.parser.marker.MarkerFactory;
 
 @Component
 @ComponentScan
@@ -57,6 +61,17 @@ public class Utils {
             Files.createDirectories(folder);
         }
         return folder;
+    }
+
+    public LineProcessor loadClass(String dir, String className) throws MalformedURLException, Exception{
+		File file = new File(dir);
+		URL url = file.toURI().toURL();
+		URL[] urls = new URL[]{url};
+		URLClassLoader loader = new URLClassLoader(urls);
+       final Class<LineProcessor> loadClass = (Class<LineProcessor>) loader.loadClass(className);
+        LineProcessor lp = loadClass.newInstance();
+        loader.close();
+        return lp;
     }
 
     public String complie(final String src, final String dest) throws Exception {
@@ -157,6 +172,14 @@ public class Utils {
         }    	
         reader.close();
         singleVmString = content.toString();
-
+    }
+    
+    public String testRunLp(LineProcessor lp, String[] data) throws IOException{
+    	MarkerFactory mf = new MarkerFactory();
+    	for(String line:data){
+    		byte[] datum = line.getBytes();
+    		lp.process(datum, 0, datum.length, mf);
+    	}
+    	return lp.done();
     }
 }
