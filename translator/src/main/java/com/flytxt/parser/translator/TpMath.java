@@ -3,6 +3,7 @@ package com.flytxt.parser.translator;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
+import org.apache.commons.math3.util.FastMath;
 import org.apache.commons.math3.util.MathUtils;
 import org.apache.commons.math3.util.Precision;
 
@@ -108,14 +109,14 @@ public class TpMath extends Translator implements TpConstant {
 
 	public Marker ceil(final byte[] data, final Marker m, final MarkerFactory mf) {
 		byte[] d1 = m.getData() == null ? data : m.getData();
-		double ceil = Math.ceil(Double.parseDouble(m.toString(d1)));
+		double ceil = FastMath.ceil(Double.parseDouble(m.toString(d1)));
 		byte[] result = String.valueOf(ceil).getBytes();
 		return removeTrailingZeroz(result,mf);
 	}
 
 	public Marker floor(final byte[] data, final Marker m, final MarkerFactory mf) {
 		byte[] d1 = m.getData() == null ? data : m.getData();
-		double floor = Math.floor(Double.parseDouble(m.toString(d1)));
+		double floor = FastMath.floor(Double.parseDouble(m.toString(d1)));
 		byte[] result = String.valueOf(floor == 0 ? 0 : floor).getBytes();
 		return removeTrailingZeroz(result,mf);
 	}
