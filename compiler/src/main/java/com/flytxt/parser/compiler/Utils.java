@@ -159,9 +159,9 @@ public class Utils {
         }
     }
     
-    public void createSingleVM() throws IOException{
-    	if(singleVmString == null)
-    		return;
+    public String createSingleVM() throws IOException{
+    	if(singleVmString != null)
+    		return singleVmString.toString();
     	ClassLoader classLoader = getClass().getClassLoader();
     	File file = new File(classLoader.getResource("Script.lp").getFile());
     	BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -172,6 +172,7 @@ public class Utils {
         }    	
         reader.close();
         singleVmString = content.toString();
+        return singleVmString.toString();
     }
     
     public String testRunLp(LineProcessor lp, String[] data) throws IOException{

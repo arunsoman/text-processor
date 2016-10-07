@@ -4,7 +4,11 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.commons.lang3.text.StrSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.core.io.InputStreamResource;
@@ -33,7 +37,7 @@ public class ParserController {
     }
 
     @RequestMapping(path = "/compileNtest", method = RequestMethod.POST)
-    public @ResponseBody String compileNtest(
+    public @ResponseBody ResponseEntity<InputStreamResource> compileNtest(
     		@RequestParam("name") final String name,
     		@RequestParam("absProcessor") final String absProcessor,
     		@RequestParam("extract") final String extract,
@@ -41,8 +45,28 @@ public class ParserController {
     		@RequestParam("type") final String type, //single,hybrid
     		@RequestParam("sample") final String sampleData
     		) {
-    	
-    	return null;
+    	Map<String, String> values = new HashMap<String, String>();
+		values.put("name", name);
+		values.put("absProcessor", absProcessor);
+		values.put("extract", extract);
+		values.put("store", store);
+		values.put("type", type); //single,hybrid
+		values.put("sample", sampleData);
+    	StrSubstitutor sub = new StrSubstitutor(values, "%(", ")");
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+    	try {
+			String result = sub.replace(utils.createSingleVM());
+			utils.createFile(loc.javaHome, result, name+".java");
+			utils.complie(loc.getJarHome(), loc.getClassDumpLoc("demo"));
+			String output = utils.testRunLp(utils.loadClass(loc.getClassDumpLoc("demo"), name), sampleData.split("\n"));
+            return ResponseEntity.ok().headers(headers).contentType(MediaType.parseMediaType("application/octet-stream"))
+                    .body(new InputStreamResource(new ByteArrayInputStream((output).getBytes())));
+    	} catch (Exception e) {
+            return ResponseEntity.ok().headers(headers).contentType(MediaType.parseMediaType("application/octet-stream"))
+                    .body(new InputStreamResource(new ByteArrayInputStream((e.getMessage()).getBytes())));
+		}
     }
     @RequestMapping(path = "/submit", method = RequestMethod.GET)
     public @ResponseBody String submitScript(@RequestParam("host") final String host, @RequestParam("script") final String script, @RequestParam("scriptName") final String scriptName) {
