@@ -2,7 +2,6 @@ package com.flytxt.parser.compiler;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -40,7 +39,8 @@ import com.flytxt.parser.compiler.parser.Parser;
 public class Utils {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	private Object singleVmString;
+
+    private String singleVmString;
 
     public String createFile(final String loc, final String content, final String fileName) throws IOException {
         logger.debug("createFile(loc=" + loc + "fileName=" + fileName + ")");
@@ -70,7 +70,7 @@ public class Utils {
         final StandardJavaFileManager sjfm = javaCompiler.getStandardFileManager(null, null, null);
         final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
 
-        final List<String> optionList = new ArrayList<String>();
+        final List<String> optionList = new ArrayList<>();
         // set compiler's classpath to be same as the runtime's
         optionList.addAll(Arrays.asList("-classpath", System.getProperty("java.class.path")));
         optionList.addAll(Arrays.asList("-d", dest));
@@ -107,7 +107,7 @@ public class Utils {
     }
 
     public void createJar(final String loc, final String dest) throws IOException {
-	logger.debug("create jar---"+loc+" : "+dest); 
+        logger.debug("create jar---" + loc + " : " + dest);
         final Path destP = Paths.get(dest).getParent();
         if (!Files.exists(destP)) {
             Files.createDirectories(destP);
@@ -131,32 +131,33 @@ public class Utils {
                 }
                 final String folderName = entry.getParent().toString().substring(root);
                 if (isDirectory) {
-//	            	logger.debug("zip ; "+folderName+"/");
+                    // logger.debug("zip ; "+folderName+"/");
                     jarOut.putNextEntry(new ZipEntry(folderName + "/"));
                 } else {
-//	            	logger.debug("zip ; "+entry.toString().substring(root));
+                    // logger.debug("zip ; "+entry.toString().substring(root));
                     jarOut.putNextEntry(new ZipEntry(entry.toString().substring(root)));
-//	            	logger.debug("read ; "+entry.toString());
+                    // logger.debug("read ; "+entry.toString());
                     jarOut.write(Files.readAllBytes(entry));
                     jarOut.closeEntry();
                 }
             }
         }
     }
-    
-    public void createSingleVM() throws IOException{
-    	if(singleVmString == null)
-    		return;
-    	ClassLoader classLoader = getClass().getClassLoader();
-    	File file = new File(classLoader.getResource("Script.lp").getFile());
-    	BufferedReader reader = new BufferedReader(new FileReader(file));
-        StringBuilder content = new StringBuilder();
+
+    public String createSingleVM() throws IOException {
+        if (singleVmString != null) {
+            return singleVmString;
+        }
+        final ClassLoader classLoader = getClass().getClassLoader();
+        final File file = new File(classLoader.getResource("Script.lp").getFile());
+        final BufferedReader reader = new BufferedReader(new FileReader(file));
+        final StringBuilder content = new StringBuilder();
         String line = null;
         while ((line = reader.readLine()) != null) {
-            content.append(line).append("/n");
-        }    	
+            content.append(line).append("\n");
+        }
         reader.close();
         singleVmString = content.toString();
-
+        return singleVmString;
     }
 }

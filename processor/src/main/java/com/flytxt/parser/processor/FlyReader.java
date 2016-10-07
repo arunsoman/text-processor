@@ -14,8 +14,6 @@ import java.util.regex.Pattern;
 
 import javax.annotation.PreDestroy;
 
-import lombok.Getter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -23,6 +21,8 @@ import org.springframework.stereotype.Component;
 
 import com.flytxt.parser.marker.LineProcessor;
 import com.flytxt.parser.marker.MarkerFactory;
+
+import lombok.Getter;
 
 @Component
 @Scope("prototype")
