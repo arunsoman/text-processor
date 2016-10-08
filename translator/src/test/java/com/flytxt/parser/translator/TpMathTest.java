@@ -163,7 +163,7 @@ public class TpMathTest {
 	@Test
 	public final void testExtractDecimalFractionPart() {
 		String str1 = "98.78";
-		String str2="0.78";
+		String str2=".78";
 		Marker m1 = getMarker(str1);
 		Marker res = tpMath.extractDecimalFractionPart(str1.getBytes(), m1, mf);
 		assertEquals(str2, res.toString(str1.getBytes()));

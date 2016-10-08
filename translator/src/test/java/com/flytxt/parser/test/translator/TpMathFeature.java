@@ -179,12 +179,14 @@ public class TpMathFeature {
 
     @When("^enter a number \"([^\"]*)\" to find floor$")
     public void enterANumberToFindFloor(final String arg1) throws Throwable {
-        resultStr = math.floor(arg1.getBytes(), getMarker(arg1), mf).toString(arg1.getBytes());
+        Marker floor = math.floor(arg1.getBytes(), getMarker(arg1), mf);
+        resultStr = floor.toString(floor.getData());
     }
 
     @When("^enter a number \"([^\"]*)\"  and the scale \"([^\"]*)\"$")
     public void enterANumberAndTheScale(final String arg1, final String arg2) throws Throwable {
-        resultStr = math.round(arg1.getBytes(), Integer.parseInt(arg2), getMarker(arg1), mf).toString(arg1.getBytes());
+        Marker round = math.round(arg1.getBytes(), Integer.parseInt(arg2), getMarker(arg1), mf);
+        resultStr = round.toString(round.getData());
     }
 
     @When("^enter two equal numbers \"([^\"]*)\"  \"([^\"]*)\"$")
@@ -194,7 +196,9 @@ public class TpMathFeature {
 
     @When("^enter a decimal number \"([^\"]*)\" to extract decimal part of the number$")
     public void enterADecimalNumberToExtractDecimalPartOfTheNumber(final String arg1) throws Throwable {
-        resultStr = math.extractDecimalFractionPart(arg1.getBytes(), getMarker(arg1), mf).toString(arg1.getBytes());
+         Marker decimal = math.extractDecimalFractionPart(arg1.getBytes(), getMarker(arg1), mf);
+         byte[] data = (decimal.getData() == null)?arg1.getBytes():decimal.getData();
+         resultStr = decimal.toString(data);
     }
 
     @When("^enter a decimal number \"([^\"]*)\" to extract integer part of the number$")

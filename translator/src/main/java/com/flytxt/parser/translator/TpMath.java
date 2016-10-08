@@ -17,6 +17,7 @@ public class TpMath extends Translator implements TpConstant {
 	public final static byte dotToken[] = { dotByte };
 
 	public final static int numberLen = String.valueOf(Long.MAX_VALUE).length();
+	public final byte[] doubleZero = ".0".getBytes();
 
 	public Marker abs(byte[] data, final Marker m, final MarkerFactory mf) {
 		if (m.getData() != null) {
@@ -151,8 +152,10 @@ public class TpMath extends Translator implements TpConstant {
 	}
 
 	public Marker extractDecimalFractionPart(byte[] data, final Marker m, final MarkerFactory mf) {
+		boolean createImmutable = false;
 		if (m.getData() != null) {
 			data = m.getData();
+			createImmutable = true;
 		}
 		int index = m.index;
 		boolean found = false;
@@ -164,18 +167,17 @@ public class TpMath extends Translator implements TpConstant {
 			index++;
 		}
 		if (!found) {
-			final byte[] result = "0.0".getBytes();
-			return mf.createImmutable(result, 0, result.length);
-			// TODO not sure if this is right
+			return mf.createImmutable(doubleZero, 0, doubleZero.length);
 		}
-		data[index-1]=start;
-		if (m.getData() != null) {
+		if(createImmutable){
 			final int size = m.length - index+1;
-			//final byte[] result = new byte[size];
-			//System.arraycopy(data, index, result, 0, result.length);
+			final byte[] result = new byte[size];
+			System.arraycopy(data, index, result, 0, result.length);
 			return mf.createImmutable(data, 0, size);
 		}
-		return mf.createImmutable(data, index-1, m.length - index+1);
+		else{
+			return mf.create(index, m.length-index);
+		}
 	}
 
 	public boolean isNumber(final byte[] data, final Marker m, final MarkerFactory mf) {
