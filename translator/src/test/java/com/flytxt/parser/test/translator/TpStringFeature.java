@@ -67,17 +67,21 @@ public class TpStringFeature {
 
 	@When("^convert to upperCase\"([^\"]*)\"$")
 	public void convertToUpperCase(final String arg1) throws Throwable {
-		resultStr = tpString.toUpperCase(arg1.getBytes(), getMarker(arg1), mf).toString(arg1.getBytes());
+		Marker upperCase = tpString.toUpperCase(arg1.getBytes(), getMarker(arg1), mf);
+		resultStr = upperCase.toString(upperCase.getData());
 	}
 
 	@When("^convert to lowerCase \"([^\"]*)\"$")
 	public void convertToLowerCase(final String arg1) throws Throwable {
-		resultStr = tpString.toLowerCase(arg1.getBytes(), getMarker(arg1), mf).toString(arg1.getBytes());
+		Marker upperCase = tpString.toLowerCase(arg1.getBytes(), getMarker(arg1), mf);
+		resultStr = upperCase.toString(upperCase.getData());
 	}
 
 	@When("^conver to titleCase\"([^\"]*)\"$")
 	public void converToTitleCase(final String arg1) throws Throwable {
-		resultStr = tpString.toTitleCase(arg1.getBytes(), getMarker(arg1), mf).toString(arg1.getBytes());
+		Marker upperCase = tpString.toTitleCase(arg1.getBytes(), getMarker(arg1), mf);
+		byte[] data = (upperCase.getData()==null)?arg1.getBytes():upperCase.getData();
+		resultStr = upperCase.toString(data);
 	}
 
 	@When("^\"([^\"]*)\" with leading whitespace is provided$")
