@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class SearchLookupPerfTest {
 
-    @Test
+    //@Test
     public void perfTest() {
     	class Datum{
     		byte[] key;
@@ -40,8 +40,6 @@ public class SearchLookupPerfTest {
 				}
 			}
 			fileReader.close();
-			System.out.println("Contents of file:");
-			System.out.println(stringBuffer.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -58,7 +56,6 @@ public class SearchLookupPerfTest {
     	String str;
     	for (Datum d: data) {				
 			str = search.get(d.key);
-			System.out.println(str);
     	}
     	end = System.currentTimeMillis();
     	System.out.println("total time:"+(end - start)+

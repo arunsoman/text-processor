@@ -25,6 +25,6 @@ public class MatchTest {
         System.out.println((marker == null)? "null":marker.toString(marker.getData()));
         
         marker = object.get("Hell".getBytes());
-        System.out.println(marker.toString(marker.getData()));
+        //TODO System.out.println(marker.toString(marker.getData()));
     }
 }
