@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
-import com.flytxt.parser.compiler.parser.Parser;
 import com.flytxt.parser.marker.LineProcessor;
 import com.flytxt.parser.marker.MarkerFactory;
 
@@ -112,13 +111,6 @@ public class Utils {
             throw new Exception(msg.toString() + "\n" + bos.toString());
         }
         return null;
-    }
-
-    public String createJavaContent(final String script) {
-        final Parser p = new Parser();
-        new ScriptReader().read(script, p);
-        final String javaContent = p.createProcessClass();
-        return javaContent;
     }
 
     public void createJar(final String loc, final String dest) throws IOException {
