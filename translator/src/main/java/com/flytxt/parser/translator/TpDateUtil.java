@@ -37,7 +37,7 @@ Z	Time zone	RFC 822 time zone	-0800
 X	Time zone	ISO 8601 time zone	-08; -0800; -08:00
      */
 	
-    public static final String flyDateFormat = "ddMMyyyyHHmmss";
+    public static final String flyDateFormat = "ddMMyyyy HH:mm:ss";
     private static final SimpleDateFormat sdf = new SimpleDateFormat(flyDateFormat);
     public static final int flyDateFormatSize = flyDateFormat.length();
     public static HashMap<Integer, Integer> validChars = new HashMap<>();
@@ -91,15 +91,15 @@ X	Time zone	ISO 8601 time zone	-08; -0800; -08:00
     			throw new ParseException(null, 0);
     		}
     		else{
-    			//"ddMMyyyyHHmmss"
-    			//"01234567890123"
+    			//"ddMMyyyy HH:mm:ss"
+    			//"01234567890123456"
     			switch(aChar){
     			case 'd': desLoc = 0;break;
     			case 'M': desLoc = 2;break;
     			case 'y': desLoc = 4;break;
-    			case 'H': desLoc = 8;break;
-    			case 'm': desLoc = 10;break;
-    			case 's': desLoc = 12;break;
+    			case 'H': desLoc = 9;break;
+    			case 'm': desLoc = 12;break;
+    			case 's': desLoc = 15;break;
     			default: return;
     			}
     		}
