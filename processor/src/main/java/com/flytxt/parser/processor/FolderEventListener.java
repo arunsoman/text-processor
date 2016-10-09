@@ -32,6 +32,7 @@ import javax.annotation.PreDestroy;
 
 import lombok.Data;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -61,7 +62,8 @@ public class FolderEventListener {
 
     private int expireTimeInMinutes;
 
-    private List<Watch> watch;
+    @Autowired
+    private ProxyScripts ps;
 
     @Data
     public static class Watch {
@@ -107,7 +109,7 @@ public class FolderEventListener {
 
         }, 0, cacheCleanUpTime); // every 30s cache clean up will happen
 
-        for (final Watch w : watch) {
+        for (final Watch w : ps.getFolderWatch()) {
             try {
                 attachFolder(w.source, w.regex, w.destination);
             } catch (final IOException e) {
