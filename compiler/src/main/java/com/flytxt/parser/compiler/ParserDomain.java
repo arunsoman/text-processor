@@ -62,6 +62,10 @@ public class ParserDomain {
 
     public File getJar(@RequestParam("host") final String host) {
 
+    	//load from db all scripts for this host
+    	//compile each of them
+    	//form a jar
+    	//transfer the jar
     	return null;
     }
 
