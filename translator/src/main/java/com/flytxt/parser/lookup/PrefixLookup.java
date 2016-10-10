@@ -5,7 +5,9 @@ import java.util.Map;
 
 import org.apache.commons.collections4.trie.PatriciaTrie;
 import org.apache.commons.collections4.trie.UnmodifiableTrie;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PrefixLookup<T> extends Lookup<T> {
 
     private final Map<String, T> map = new HashMap<>();
@@ -22,11 +24,14 @@ public class PrefixLookup<T> extends Lookup<T> {
         map.put(new String(key), val);
     }
 
+    @Override
     public void bake() {
         fMap = new UnmodifiableTrie<>(new PatriciaTrie<>(map));
     }
 
-    public T get(final String key) {
-        return fMap.get(key);
+    @Override
+    public T get(byte[] key) {
+        return fMap.get(new String(key));
     }
+
 }
