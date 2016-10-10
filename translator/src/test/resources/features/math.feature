@@ -124,8 +124,8 @@ Scenario Outline: Add float numbers
           | number1 | number2 | total |
           |  3.14 | -1.96  |1.18  |
           |  1.7  | -1.96  |-0.26 |
-          |  -0.000000006  | 0.000000006  |0.0 |
-          |  64568.0004181616  | 684641.3546464  |749209.355065 |
+          |  -0.0006  | 0.0006  |0.0 |
+          |  64568.004  | 684641.354  |749209.358 |
           |  0 | 0  |0.0  |
           
           
@@ -135,7 +135,7 @@ Scenario Outline: find the ceil of a number
      Then after ceil result should be "<value>" 
      Examples: input values 
           | number1 | value | 
-          | 0 | 0 |
+          | 0 | 0.0 |
           | 0.003 | 1 |
           | 2.9987 | 3 |
           | -1.5 | -1 |
@@ -160,24 +160,23 @@ Scenario Outline: round of a number in a given scale
      Examples: input values 
           | number1 | scale | value | 
           | 0.456 | 2 | 0.46 |
-          | 4.456 | 2 | 4.5 |
-          | 9.8009 | 3 | 9.80 |
-          | 9405 | 3 | 941 |
-          | 134.9 | 1 | 100 |
-          | 8800 | 1 | 9000 |
+          | 4.456 | 2 | 4.46 |
+          | 9.8009 | 3 | 9.801 |
+          | 94.05 | 1 | 94  |
+          | 0     | 1  | 0   |
           
           
           
-Scenario Outline: check to number array are equal 
+Scenario Outline: check two number array are equal 
      Given marker and math class 
      When enter two equal numbers "<number1>"  "<number2>" 
      Then after checking two number to be equal result should be "<value>" 
      Examples: input values 
           | number1 | number2 | value | 
-          | 3.14 | 3.14 | 3.14 |
-          | -3.14 | 3.14 |  |
-          |  969.36659 | 963.3666  |  |
-          |  0 | 0  | 0 |
+          | 3.14 | 3.14 | Y |
+          | -3.14 | 3.14 | N |
+          |  969.36659 | 963.3666  | N |
+          |  0 | 0  | Y |
           
 Scenario Outline: extract decimal part of a number 
      Given marker and math class 
@@ -185,10 +184,10 @@ Scenario Outline: extract decimal part of a number
      Then after extracting decimal result should be "<value>" 
      Examples: input values 
           | number1 | value | 
-          | 9.3146 | 3146 |
-          | -9.3146 | 3146 |
-          | 0.003 | 003 |
-          | 9 | 0 |
+          | 9.3146 | .3146 |
+          | -9.3146 | .3146 |
+          | 0.003 | .003 |
+          | 9 | .0 |
           
 Scenario Outline: extract integer part of a number 
      Given marker and math class 
@@ -212,5 +211,25 @@ Scenario Outline: check given string is a number
           | hi | N |
           | -960.0541 | Y |
           | $%^& | N |
+          
+Scenario Outline: find min 
+     Given marker and math class 
+     When min of "<number1>"  "<number2>" 
+     Then min number is "<value>" 
+     Examples: input values 
+          | number1 | number2 | value | 
+          | 12      | 13      | 12 |
+          | 13      | 9 | 9 |
+          | 4.5 | 2.4 | 2.4 |
+          
+Scenario Outline: find max 
+     Given marker and math class 
+     When max of "<number1>"  "<number2>" 
+     Then max number is "<value>" 
+     Examples: input values 
+          | number1 | number2 | value | 
+          | 12      | 13      | 13 |
+          | 13      | 9 | 13 |
+          | 4.5 | 2.4 | 4.5 |
           
 	  

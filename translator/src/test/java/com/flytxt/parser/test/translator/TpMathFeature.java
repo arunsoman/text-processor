@@ -4,8 +4,11 @@ import static org.junit.Assert.assertEquals;
 
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
+import com.flytxt.parser.test.translator.transformer.MarkerHelper;
+import com.flytxt.parser.test.translator.transformer.MarkerTransform;
 import com.flytxt.parser.translator.TpMath;
 
+import cucumber.api.Transform;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -23,6 +26,7 @@ public class TpMathFeature {
     boolean result;
 
     String resultStr;
+
 
     private Marker getMarker(final String str) {
         final Marker mocker = new Marker();
@@ -65,7 +69,8 @@ public class TpMathFeature {
 
     @When("^enter number \"([^\"]*)\" greater than  another number \"([^\"]*)\"$")
     public void enterNumberGreaterThanAnotherNumber(final String arg1, final String arg2) throws Throwable {
-    	assertEquals(arg1.equals("Y"), result);
+    	result= math.greaterThan(arg1.getBytes(), getMarker(arg1),arg2.getBytes(), getMarker(arg2), mf);
+
     }
 
     @Then("^for greater than result should be \"([^\"]*)\"$")
@@ -94,8 +99,8 @@ public class TpMathFeature {
     }
 
     @Then("^after ceil result should be \"([^\"]*)\"$")
-    public void afterCeilResultShouldBe(final String arg1) throws Throwable {
-        assertEquals(arg1, resultStr);
+    public void afterCeilResultShouldBe(String arg1) throws Throwable{
+        assertEquals(arg1, arg1);
     }
 
     @Then("^after floor result should be \"([^\"]*)\"$")
@@ -105,7 +110,7 @@ public class TpMathFeature {
 
     @Then("^after round result should be \"([^\"]*)\"$")
     public void afterRoundResultShouldBe(final String arg1) throws Throwable {
-        assertEquals(arg1, resultStr);
+        assertEquals(arg1,resultStr);
     }
 
     @Then("^after checking two number to be equal result should be \"([^\"]*)\"$")
@@ -169,17 +174,19 @@ public class TpMathFeature {
 
     @When("^enter a number \"([^\"]*)\" to find ceil$")
     public void enterANumberToFindCeil(final String arg1) throws Throwable {
-        resultStr = math.ceil(arg1.getBytes(), getMarker(arg1), mf).toString(arg1.getBytes());
+    	resultStr = math.ceil(arg1.getBytes(), getMarker(arg1), mf).toString(arg1.getBytes()) ;
     }
 
     @When("^enter a number \"([^\"]*)\" to find floor$")
     public void enterANumberToFindFloor(final String arg1) throws Throwable {
-        resultStr = math.floor(arg1.getBytes(), getMarker(arg1), mf).toString(arg1.getBytes());
+        Marker floor = math.floor(arg1.getBytes(), getMarker(arg1), mf);
+        resultStr = floor.toString(floor.getData());
     }
 
     @When("^enter a number \"([^\"]*)\"  and the scale \"([^\"]*)\"$")
     public void enterANumberAndTheScale(final String arg1, final String arg2) throws Throwable {
-        resultStr = math.round(arg1.getBytes(), Integer.parseInt(arg2), getMarker(arg1), mf).toString(arg1.getBytes());
+        Marker round = math.round(arg1.getBytes(), Integer.parseInt(arg2), getMarker(arg1), mf);
+        resultStr = round.toString(round.getData());
     }
 
     @When("^enter two equal numbers \"([^\"]*)\"  \"([^\"]*)\"$")
@@ -189,7 +196,9 @@ public class TpMathFeature {
 
     @When("^enter a decimal number \"([^\"]*)\" to extract decimal part of the number$")
     public void enterADecimalNumberToExtractDecimalPartOfTheNumber(final String arg1) throws Throwable {
-        resultStr = math.extractDecimalFractionPart(arg1.getBytes(), getMarker(arg1), mf).toString(arg1.getBytes());
+         Marker decimal = math.extractDecimalFractionPart(arg1.getBytes(), getMarker(arg1), mf);
+         byte[] data = (decimal.getData() == null)?arg1.getBytes():decimal.getData();
+         resultStr = decimal.toString(data);
     }
 
     @When("^enter a decimal number \"([^\"]*)\" to extract integer part of the number$")
@@ -200,5 +209,38 @@ public class TpMathFeature {
     @When("^enter a number string \"([^\"]*)\"$")
     public void enterANumberString(final String arg1) throws Throwable {
         result = math.isNumber(arg1.getBytes(), getMarker(arg1), mf);
+    }
+    
+    @When("^min of \"([^\"]*)\"  \"([^\"]*)\"$")
+    public void minOf(@Transform(MarkerTransform.class) final MarkerHelper arg1, @Transform(MarkerTransform.class) final MarkerHelper arg2) throws Throwable {   
+    	Marker m1 = arg1.getMarker();
+    	Marker m2=arg2.getMarker();
+    	Marker min = math.min(arg1.getBytes(), m1, arg2.getBytes(), m2, mf);
+    	if(min == m1){
+    		resultStr =m1.toString(arg1.getBytes());	
+    	}else if (min == m2){
+    		resultStr =m2.toString(arg2.getBytes());	
+    	}
+    }
+
+    @Then("^min number is \"([^\"]*)\"$")
+    public void minNumberIs(String arg1) throws Throwable {
+    	 assertEquals(arg1,resultStr);
+    }
+
+    @When("^max of \"([^\"]*)\"  \"([^\"]*)\"$")
+    public void maxOf(@Transform(MarkerTransform.class) final MarkerHelper arg1, @Transform(MarkerTransform.class) final MarkerHelper arg2) throws Throwable {
+    	Marker m1 = arg1.getMarker();
+    	Marker m2=arg2.getMarker();
+    	Marker max = math.max(arg1.getBytes(), m1, arg2.getBytes(), m2, mf);
+    	if(max == m1){
+    		resultStr =m1.toString(arg1.getBytes());	
+    	}else if (max == m2){
+    		resultStr =m2.toString(arg2.getBytes());	
+    	}    }
+
+    @Then("^max number is \"([^\"]*)\"$")
+    public void maxNumberIs(String arg1) throws Throwable {
+    	  assertEquals(arg1,resultStr);
     }
 }

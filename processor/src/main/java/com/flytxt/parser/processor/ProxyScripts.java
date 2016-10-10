@@ -1,11 +1,14 @@
 package com.flytxt.parser.processor;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarInputStream;
 import java.util.zip.ZipEntry;
+
+import javax.annotation.PostConstruct;
 
 import lombok.Data;
 
@@ -16,6 +19,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 
 import com.flytxt.parser.marker.LineProcessor;
+import com.flytxt.parser.processor.FolderEventListener.Watch;
 
 @Configuration
 @EnableConfigurationProperties
@@ -31,9 +35,17 @@ public class ProxyScripts {
 
     public String hostName;
 
+    private List<LineProcessor> lps;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public List<LineProcessor> getLPInstance() throws Exception {
+	private Class<?> folderListener;
+
+    public List<LineProcessor> getLPInstance(){
+    	return lps;
+    }
+    
+    @PostConstruct
+    public void init() throws Exception {
         final URL url = new URL(remoteHost + getJar + "?host=" + hostName);
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         // final URL url = new URL("file:///tmp/jar/demo/demo.jar");
@@ -48,16 +60,34 @@ public class ProxyScripts {
                         aClass = zipEntry.getName().replaceAll("/", ".");
                         aClass = aClass.substring(0, aClass.length() - ".class".length());
                         logger.debug("loading class:" + aClass);
-                        @SuppressWarnings("unchecked")
-                        final Class<LineProcessor> loadClass = (Class<LineProcessor>) loader.loadClass(aClass);
-                        lps.add(loadClass.newInstance());
+                        //@SuppressWarnings("unchecked")
+                        if(loader.loadClass(aClass).getName().contains("FolderListener")){
+                        	folderListener = loader.loadClass(aClass);
+                        }
+                        else{
+                        	final Class<LineProcessor> loadClass = (Class<LineProcessor>) loader.loadClass(aClass);
+                        	lps.add(loadClass.newInstance());
+                        }
                     }
                 }
-                return lps;
+                return;
             }
         } catch (final Exception e) {
             logger.error("can't load classes ", e);
             throw e;
         }
     }
+    
+    class FolderWatch{}
+
+	public List<com.flytxt.parser.processor.FolderEventListener.Watch> getFolderWatch() {
+		try {
+			return (List<Watch>) folderListener.getMethod("getList", null).invoke(null, null);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+				| SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

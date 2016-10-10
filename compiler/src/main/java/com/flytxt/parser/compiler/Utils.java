@@ -1,9 +1,14 @@
 package com.flytxt.parser.compiler;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
@@ -30,13 +35,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
-import com.flytxt.parser.compiler.parser.Parser;
+import com.flytxt.parser.marker.LineProcessor;
+import com.flytxt.parser.marker.MarkerFactory;
 
 @Component
 @ComponentScan
 public class Utils {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private Object singleVmString;
 
     public String createFile(final String loc, final String content, final String fileName) throws IOException {
         logger.debug("createFile(loc=" + loc + "fileName=" + fileName + ")");
@@ -53,6 +60,17 @@ public class Utils {
             Files.createDirectories(folder);
         }
         return folder;
+    }
+
+    public LineProcessor loadClass(String dir, String className) throws MalformedURLException, Exception{
+		File file = new File(dir);
+		URL url = file.toURI().toURL();
+		URL[] urls = new URL[]{url};
+		URLClassLoader loader = new URLClassLoader(urls);
+       final Class<LineProcessor> loadClass = (Class<LineProcessor>) loader.loadClass(className);
+        LineProcessor lp = loadClass.newInstance();
+        loader.close();
+        return lp;
     }
 
     public String complie(final String src, final String dest) throws Exception {
@@ -95,13 +113,6 @@ public class Utils {
         return null;
     }
 
-    public String createJavaContent(final String script) {
-        final Parser p = new Parser();
-        new ScriptReader().read(script, p);
-        final String javaContent = p.createProcessClass();
-        return javaContent;
-    }
-
     public void createJar(final String loc, final String dest) throws IOException {
 	logger.debug("create jar---"+loc+" : "+dest); 
         final Path destP = Paths.get(dest).getParent();
@@ -138,5 +149,30 @@ public class Utils {
                 }
             }
         }
+    }
+    
+    public String createSingleVM() throws IOException{
+    	if(singleVmString != null)
+    		return singleVmString.toString();
+    	ClassLoader classLoader = getClass().getClassLoader();
+    	File file = new File(classLoader.getResource("Script.lp").getFile());
+    	BufferedReader reader = new BufferedReader(new FileReader(file));
+        StringBuilder content = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            content.append(line).append("/n");
+        }    	
+        reader.close();
+        singleVmString = content.toString();
+        return singleVmString.toString();
+    }
+    
+    public String testRunLp(LineProcessor lp, String[] data) throws IOException{
+    	MarkerFactory mf = new MarkerFactory();
+    	for(String line:data){
+    		byte[] datum = line.getBytes();
+    		lp.process(datum, 0, datum.length, mf);
+    	}
+    	return lp.done();
     }
 }
