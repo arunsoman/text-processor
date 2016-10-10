@@ -6,18 +6,17 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
 
-import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
 
-@ComponentScan
+@Component
 public abstract class Lookup<T> {
 
     protected String fileName;
 
     @Autowired
-    private MarkerFactory mf;
+    protected MarkerFactory mf;
 
     @SuppressWarnings("unchecked")
     protected void loadFromFile() {
@@ -32,9 +31,8 @@ public abstract class Lookup<T> {
                 final String value = line.substring(key.length(), line.length() - 1);
                 final byte[] valueByteArray = value.getBytes();
 
-                if (!key.isEmpty()) {
+                if (!key.isEmpty())
                     this.load(key.getBytes(), (T) mf.createImmutable(valueByteArray, 0, valueByteArray.length));
-                }
             }
             fileReader.close();
         } catch (final IOException e) {
@@ -46,5 +44,5 @@ public abstract class Lookup<T> {
 
     public abstract void bake();
 
-    public abstract Marker get(byte[] bytes);
+    public abstract T get(byte[] bytes);
 }
