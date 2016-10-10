@@ -14,7 +14,7 @@ public class SearchLookupTest {
     @Test
     public void basicTest() {
         final String[][] data = { { "Hello World", "World" }, { "Wallnut", "fruit" } };
-        final Search<Marker> object = new Search<>();
+        final Search<Marker> object = new Search<>("");
         mf.setMaxListSize(100);
 
         for (final String[] datum : data) {
@@ -27,7 +27,7 @@ public class SearchLookupTest {
     @Test
     public void biggerSearch() {
         final String[][] data = { { "98744", "test" }, { "99478", "fruit" }, { "99477", "World" } };
-        final Search<Marker> search = new Search<>();
+        final Search<Marker> search = new Search<>("");
 
         for (final String[] datum : data) {
             search.load(datum[0].getBytes(), mf.createImmutable(datum[1].getBytes(), 0, datum[1].getBytes().length));
