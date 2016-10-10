@@ -6,14 +6,20 @@ import java.util.Map;
 import org.apache.commons.collections4.trie.PatriciaTrie;
 import org.apache.commons.collections4.trie.UnmodifiableTrie;
 
-public class PrefixLookup<T> extends Lookup {
+public class PrefixLookup<T> extends Lookup<T> {
 
     private final Map<String, T> map = new HashMap<>();
 
     private UnmodifiableTrie<String, T> fMap;
 
-    public void load(final String key, final T val) {
-        map.put(key, val);
+    public PrefixLookup(final String file) {
+        this.fileName = file;
+        loadFromFile();
+    }
+
+    @Override
+    public void load(final byte[] key, final T val) {
+        map.put(new String(key), val);
     }
 
     public void bake() {

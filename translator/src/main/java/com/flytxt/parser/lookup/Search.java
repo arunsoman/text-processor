@@ -3,10 +3,16 @@ package com.flytxt.parser.lookup;
 import com.flytxt.parser.lookup.node.CharPath;
 import com.flytxt.parser.lookup.node.CharacterDic;
 
-public class Search<T> extends Lookup {
+public class Search<T> extends Lookup<T> {
 
     private final CharacterDic<T> dictionary = new CharacterDic<>();
 
+    public Search(final String file) {
+        this.fileName = file;
+        loadFromFile();
+    }
+
+    @Override
     public void load(final byte[] key, final T val) {
         for (int i = 0; i < key.length; i++) {
             final CharPath<T> path = new CharPath<>(key, i, val);

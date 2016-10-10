@@ -24,6 +24,15 @@ public class %(name) implements LineProcessor{
 	%(absProcessor)
 	
 	public void init(){
+	this.mf = mf;
+        String classVariables = "%(absProcessor)";
+        int count = 0;
+        for (String line : classVariables.split("\n")){
+            if (line.contains(" Marker ")){
+                count++;
+                }
+                }
+       this.mf.setMaxListSize(count);
      %(init)    
 	}
 	
@@ -31,8 +40,7 @@ public class %(name) implements LineProcessor{
 		return folderName;
 	}
 	
-	public void setMarkerFactory(MarkerFactory mf){
-		this.mf = mf;
+	public void initPerFile(MarkerFactory mf){
 	}
 	
 	public void setInputFileName(String currentFileName){
@@ -42,6 +50,7 @@ public class %(name) implements LineProcessor{
 	}
 	     
 	public void process(byte[] data, int startIndex, int readCnt, MarkerFactory mf) throws IOException{
+		line = mf.create(startIndex, readCnt);
 		process(data);
 		translate(data);
 		store(data);

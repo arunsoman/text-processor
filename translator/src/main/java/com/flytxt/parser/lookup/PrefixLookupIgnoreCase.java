@@ -10,35 +10,49 @@ import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
 import com.flytxt.parser.translator.TpString;
 
-public class PrefixLookupIgnoreCase extends Lookup {
-	private Map<byte[], Marker> map = new HashMap<byte[], Marker>();
-	private UnmodifiableTrie<byte[], Marker> fMap;
-	private MarkerFactory mf = new MarkerFactory();
-	private TpString tpString = new TpString();
-	private byte capsA = 'A';
-	private byte capsZ = 'Z';
-	
-	private byte[] toLower(byte[] data1){
-		final byte[] dest = new byte[data1.length];
+public class PrefixLookupIgnoreCase<T> extends Lookup<T> {
+
+    private final Map<byte[], T> map = new HashMap<>();
+
+    private UnmodifiableTrie<byte[], Marker> fMap;
+
+    private final MarkerFactory mf = new MarkerFactory();
+
+    private final TpString tpString = new TpString();
+
+    private final byte capsA = 'A';
+
+    private final byte capsZ = 'Z';
+
+    public PrefixLookupIgnoreCase(final String file) {
+        this.fileName = file;
+        loadFromFile();
+    }
+
+    private byte[] toLower(final byte[] data1) {
+        final byte[] dest = new byte[data1.length];
         int index = 0;
-        for (int i = 0; i < data1.length; i++) {
-            if (data1[i] >= capsA && data1[i] <= capsZ) {
-                dest[index++] = (byte) (data1[i] - 'A'-'a');
+        for (final byte element : data1) {
+            if (element >= capsA && element <= capsZ) {
+                dest[index++] = (byte) (element - 'A' - 'a');
             } else {
-                dest[index++] = data1[i];
+                dest[index++] = element;
             }
         }
         return dest;
-	}
-	public void load(byte[]key, byte[]val){
-		map.put(toLower(key), mf.createImmutable(val, 0, val.length));
-	}
-	
-	public void bake(){
-		fMap = new UnmodifiableTrie<byte[], Marker>(new PatriciaTrie(map));
-	}
-	
-	public Marker get(byte[]key){
-		return fMap.get(toLower(key));
-	}
+    }
+
+    @Override
+    public void load(final byte[] key, final T val) {
+        map.put(toLower(key), val);
+    }
+
+    public void bake() {
+        fMap = new UnmodifiableTrie<>(new PatriciaTrie(map));
+    }
+
+    public Marker get(final byte[] key) {
+        return fMap.get(toLower(key));
+    }
+
 }
