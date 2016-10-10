@@ -43,7 +43,8 @@ import com.flytxt.parser.marker.MarkerFactory;
 public class Utils {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	private Object singleVmString;
+
+    private Object singleVmString;
 
     public String createFile(final String loc, final String content, final String fileName) throws IOException {
         logger.debug("createFile(loc=" + loc + "fileName=" + fileName + ")");
@@ -56,18 +57,17 @@ public class Utils {
 
     private Path createDir(final String loc) throws IOException {
         final Path folder = Paths.get(loc);
-        if (!Files.exists(folder)) {
+        if (!Files.exists(folder))
             Files.createDirectories(folder);
-        }
         return folder;
     }
 
-    public LineProcessor loadClass(String dir, String className) throws MalformedURLException, Exception{
-		File file = new File(dir);
-		URL url = file.toURI().toURL();
-		URL[] urls = new URL[]{url};
-		URLClassLoader loader = new URLClassLoader(urls);
-       final Class<LineProcessor> loadClass = (Class<LineProcessor>) loader.loadClass(className);
+    public LineProcessor loadClass(String dir, String className) throws MalformedURLException, Exception {
+        File file = new File(dir);
+        URL url = file.toURI().toURL();
+        URL[] urls = new URL[] { url };
+        URLClassLoader loader = new URLClassLoader(urls);
+        final Class<LineProcessor> loadClass = (Class<LineProcessor>) loader.loadClass(className);
         LineProcessor lp = loadClass.newInstance();
         loader.close();
         return lp;
@@ -84,7 +84,7 @@ public class Utils {
         final StandardJavaFileManager sjfm = javaCompiler.getStandardFileManager(null, null, null);
         final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
 
-        final List<String> optionList = new ArrayList<String>();
+        final List<String> optionList = new ArrayList<>();
         // set compiler's classpath to be same as the runtime's
         optionList.addAll(Arrays.asList("-classpath", System.getProperty("java.class.path")));
         optionList.addAll(Arrays.asList("-d", dest));
@@ -100,9 +100,8 @@ public class Utils {
                 msg.append('\n');
                 msg.append(err.getKind());
                 msg.append(": ");
-                if (err.getSource() != null) {
+                if (err.getSource() != null)
                     msg.append(err.getSource().getName());
-                }
                 msg.append(':');
                 msg.append(err.getLineNumber());
                 msg.append(": ");
@@ -114,11 +113,10 @@ public class Utils {
     }
 
     public void createJar(final String loc, final String dest) throws IOException {
-	logger.debug("create jar---"+loc+" : "+dest); 
+        logger.debug("create jar---" + loc + " : " + dest);
         final Path destP = Paths.get(dest).getParent();
-        if (!Files.exists(destP)) {
+        if (!Files.exists(destP))
             Files.createDirectories(destP);
-        }
         final FileOutputStream fout = new FileOutputStream(dest);
         final JarOutputStream jarOut = new JarOutputStream(fout);
         listFiles(Paths.get(loc), jarOut, loc.length(), true);
@@ -132,47 +130,46 @@ public class Utils {
                 final boolean isDirectory = Files.isDirectory(entry);
                 if (isDirectory) {
                     listFiles(entry, jarOut, root, false);
-                    if (isParent) {
+                    if (isParent)
                         return;
-                    }
                 }
                 final String folderName = entry.getParent().toString().substring(root);
-                if (isDirectory) {
-//	            	logger.debug("zip ; "+folderName+"/");
+                if (isDirectory)
+                    // logger.debug("zip ; "+folderName+"/");
                     jarOut.putNextEntry(new ZipEntry(folderName + "/"));
-                } else {
-//	            	logger.debug("zip ; "+entry.toString().substring(root));
+                else {
+                    // logger.debug("zip ; "+entry.toString().substring(root));
                     jarOut.putNextEntry(new ZipEntry(entry.toString().substring(root)));
-//	            	logger.debug("read ; "+entry.toString());
+                    // logger.debug("read ; "+entry.toString());
                     jarOut.write(Files.readAllBytes(entry));
                     jarOut.closeEntry();
                 }
             }
         }
     }
-    
-    public String createSingleVM() throws IOException{
-    	if(singleVmString != null)
-    		return singleVmString.toString();
-    	ClassLoader classLoader = getClass().getClassLoader();
-    	File file = new File(classLoader.getResource("Script.lp").getFile());
-    	BufferedReader reader = new BufferedReader(new FileReader(file));
+
+    public String createSingleVM() throws IOException {
+        if (singleVmString != null)
+            return singleVmString.toString();
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("Script.lp").getFile());
+        BufferedReader reader = new BufferedReader(new FileReader(file));
         StringBuilder content = new StringBuilder();
         String line = null;
-        while ((line = reader.readLine()) != null) {
-            content.append(line).append("/n");
-        }    	
+        while ((line = reader.readLine()) != null)
+            content.append(line).append("\n");
         reader.close();
         singleVmString = content.toString();
         return singleVmString.toString();
     }
-    
-    public String testRunLp(LineProcessor lp, String[] data) throws IOException{
-    	MarkerFactory mf = new MarkerFactory();
-    	for(String line:data){
-    		byte[] datum = line.getBytes();
-    		lp.process(datum, 0, datum.length, mf);
-    	}
-    	return lp.done();
+
+    public String testRunLp(LineProcessor lp, String[] data) throws IOException {
+        MarkerFactory mf = new MarkerFactory();
+        lp.init(mf);
+        for (String line : data) {
+            byte[] datum = line.getBytes();
+            lp.process(datum, 0, datum.length, mf);
+        }
+        return lp.done();
     }
 }

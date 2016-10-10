@@ -25,7 +25,7 @@ public class MarkerFactory {
 
     private int listSize;
 
-    public Marker create(final int lastIndex, final int i) {
+    public Marker create(final int index, final int length) {
         Marker m = markerPool.peek();
         if (m == null) {
             m = new Marker();
@@ -34,8 +34,8 @@ public class MarkerFactory {
         } else {
             reused++;
         }
-        m.index = lastIndex;
-        m.length = i;
+        m.index = index;
+        m.length = length;
         return m;
     }
 
@@ -69,7 +69,7 @@ public class MarkerFactory {
 
     }
 
-	public Marker createImmutable(byte[] data, int lastIndex, int i) {
+	public Marker createImmutable(byte[] data, int index, int length) {
 		ImmutableMarker m = markerImmutablePool.peek();
         if (m == null) {
             m = new ImmutableMarker(data);
@@ -79,8 +79,8 @@ public class MarkerFactory {
             reused++;
 
         }
-        m.index = lastIndex;
-        m.length = i;
+        m.index = index;
+        m.length = length;
         return m;
 	}
 }

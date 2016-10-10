@@ -21,9 +21,8 @@ public class ConsoleStore implements Store {
     @Override
     public void save(final byte[] data, final String fileName, final Marker... markers) throws IOException {
         result.append('{');
-        for (int i = 0; i < markers.length; i++) {
-            result.append("'").append(headers[i]).append("':'").append(markers[i].toString(data)).append("'\n");
-        }
+        for (int i = 0; i < markers.length; i++)
+            result.append("'").append(headers[i]).append("':'").append(markers[i].toString(markers[i].getData() == null ? data : markers[i].getData())).append("'\n");
         result.append('}');
     }
 
