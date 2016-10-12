@@ -1,11 +1,14 @@
 package com.flytxt.parser.lookup;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.collections4.trie.PatriciaTrie;
 import org.apache.commons.collections4.trie.UnmodifiableTrie;
 import org.springframework.stereotype.Component;
+
+import com.flytxt.parser.marker.MarkerFactory;
 
 @Component
 public class PrefixLookup<T> extends Lookup<T> {
@@ -16,6 +19,16 @@ public class PrefixLookup<T> extends Lookup<T> {
 
     public PrefixLookup(final String file) {
         this.fileName = file;
+        loadFromFile();
+    }
+
+    public PrefixLookup(final MarkerFactory mf) {
+        this.mf = mf;
+    }
+
+    public PrefixLookup(final File file, MarkerFactory mf) {
+        this.fileName = file.getAbsolutePath();
+        this.mf = mf;
         loadFromFile();
     }
 

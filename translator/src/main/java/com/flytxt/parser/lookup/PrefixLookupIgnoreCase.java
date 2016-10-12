@@ -1,5 +1,6 @@
 package com.flytxt.parser.lookup;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,8 +21,17 @@ public class PrefixLookupIgnoreCase<T> extends Lookup<T> {
 
     private final byte capsZ = 'Z';
 
-    public PrefixLookupIgnoreCase(final String file, MarkerFactory mf) {
+    public PrefixLookupIgnoreCase(final String file) {
         this.fileName = file;
+        loadFromFile();
+    }
+
+    public PrefixLookupIgnoreCase(final MarkerFactory mf) {
+        this.mf = mf;
+    }
+
+    public PrefixLookupIgnoreCase(final File file, MarkerFactory mf) {
+        this.fileName = file.getAbsolutePath();
         this.mf = mf;
         loadFromFile();
     }

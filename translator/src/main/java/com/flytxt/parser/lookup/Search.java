@@ -1,9 +1,12 @@
 package com.flytxt.parser.lookup;
 
+import java.io.File;
+
 import org.springframework.stereotype.Component;
 
 import com.flytxt.parser.lookup.node.CharPath;
 import com.flytxt.parser.lookup.node.CharacterDic;
+import com.flytxt.parser.marker.MarkerFactory;
 
 @Component
 public class Search<T> extends Lookup<T> {
@@ -13,6 +16,16 @@ public class Search<T> extends Lookup<T> {
     public Search(final String file) {
         this.fileName = file;
         loadFromFile();
+    }
+
+    public Search(final File file, MarkerFactory mf) {
+        this.fileName = file.getAbsolutePath();
+        this.mf = mf;
+        loadFromFile();
+    }
+
+    public Search(MarkerFactory mf) {
+        this.mf = mf;
     }
 
     @Override

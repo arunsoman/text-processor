@@ -1,16 +1,29 @@
 package com.flytxt.parser.lookup;
 
+import java.io.File;
+
 import org.springframework.stereotype.Component;
 
 import com.flytxt.parser.lookup.node.Node;
+import com.flytxt.parser.marker.MarkerFactory;
 
 @Component
 public class MatchKey<T> extends Lookup<T> {
 
     private final Node<T> node = new Node<>();
 
+    public MatchKey(final MarkerFactory mf) {
+        this.mf = mf;
+    }
+
     public MatchKey(final String file) {
         this.fileName = file;
+        loadFromFile();
+    }
+
+    public MatchKey(final File file, MarkerFactory mf) {
+        this.fileName = file.getAbsolutePath();
+        this.mf = mf;
         loadFromFile();
     }
 
@@ -21,7 +34,6 @@ public class MatchKey<T> extends Lookup<T> {
 
     @Override
     public void bake() {
-        // fMap = new UnmodifiableTrie<byte[], Marker>(new PatriciaTrie(map));
     }
 
     @Override
