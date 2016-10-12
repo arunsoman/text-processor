@@ -27,7 +27,7 @@ Blockly.Blocks.Manager = {
             };
             return this.root[id];
         },
-        typeChange: function(id, olddatatype, newdatatype) {
+        ChangeDatatype: function(id, olddatatype, newdatatype) {
             if (oldtype === newtype) return;
             if (this.root[id].datatype === olddatatype) {
                 this.root[id].datatype = newdatatype;
@@ -125,7 +125,19 @@ Blockly.Blocks.Manager = {
         });
     },
     deattachBlock: function(child, parent) {
-
+        this._executeEvent({
+            type: "move",
+            blockId: child.id,
+            newParentId: parent.id,
+            internal: true,
+            toJson: function() {
+                return {
+                    type: "move",
+                    blockId: child.id,
+             //       newParentId: parent.id
+                };
+            }
+        });
     },
     getSupportedOperands: function(block) {
         return this.allBlocks.getSupportedOperands((block === undefined)? null : block.getDataType);
@@ -136,6 +148,9 @@ Blockly.Blocks.Manager = {
     getSupportedDataTypes: function(block) {
         return this.dataType;
     },
+    _dataTypeChanged: function(block, olddatatype, newdatatype){
+        this.allBlocks.ChangeDatatype(block.id, olddatatype, newdatatype);
+    }
     _executeEvent: function(event) {
         Blockly.Events.fromJson(event.toJson(), ws)
             .run(true);
