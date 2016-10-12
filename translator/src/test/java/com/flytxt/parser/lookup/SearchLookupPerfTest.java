@@ -21,7 +21,7 @@ public class SearchLookupPerfTest {
 				this.value = value;
 			}
     	}
-    	Search<String> search = new Search<String>();
+    	Search<String> search = new Search<String>("searchdata.csv");
     	ArrayList<Datum> data = new ArrayList();
     	try {
     		ClassLoader classLoader = getClass().getClassLoader();

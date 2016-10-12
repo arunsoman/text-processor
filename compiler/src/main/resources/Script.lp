@@ -12,35 +12,26 @@ import com.flytxt.parser.translator.TpString;
 import java.io.IOException;
 
 public class %(name) implements LineProcessor{
-	private Marker fileName;
+	private Marker fileName = new Marker();
 	private String folderName;
+	private String currentFileName;
 	private MarkerFactory mf;
 	private TpString tpString = new TpString();
 	private TpDate tpDate = new TpDate();
 	private TpMath tpMath = new TpMath();
 	private TpLogic tpLogic = new TpLogic();
-	private Store wcStore = new ConsoleStore();
+	private Marker line = new Marker();
 	
 	%(absProcessor)
 	
-	public void init(){
-	this.mf = mf;
-        String classVariables = "%(absProcessor)";
-        int count = 0;
-        for (String line : classVariables.split("\n")){
-            if (line.contains(" Marker ")){
-                count++;
-                }
-                }
-       this.mf.setMaxListSize(count);
-     %(init)    
+	@Override
+     public void init(MarkerFactory mf){
+          this.mf = mf;
+          %(init)    
 	}
 	
 	public String getFolder(){
 		return folderName;
-	}
-	
-	public void initPerFile(MarkerFactory mf){
 	}
 	
 	public void setInputFileName(String currentFileName){
@@ -57,8 +48,7 @@ public class %(name) implements LineProcessor{
 	}
 
 	public String done() throws IOException{
-		//TODO
-		return null;
+		return store.done();
 	}
 
 	public String getFilter(){
@@ -80,6 +70,6 @@ public class %(name) implements LineProcessor{
 	}
 	
 	public void store(final byte[] data) throws IOException {
-		wcStore.save(data, "test", mj);
+		%(store)
 	}
 }

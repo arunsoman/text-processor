@@ -14,8 +14,6 @@ import java.util.regex.Pattern;
 
 import javax.annotation.PreDestroy;
 
-import lombok.Getter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -23,6 +21,8 @@ import org.springframework.stereotype.Component;
 
 import com.flytxt.parser.marker.LineProcessor;
 import com.flytxt.parser.marker.MarkerFactory;
+
+import lombok.Getter;
 
 @Component
 @Scope("prototype")
@@ -53,19 +53,18 @@ public class FlyReader implements Callable<FlyReader> {
 
     public void run() {
         final Path folderP = Paths.get(folder);
-        if (!Files.exists(folderP)) {
+        if (!Files.exists(folderP))
             try {
                 Files.createDirectories(folderP);
             } catch (final IOException e1) {
                 logger.info("could not create input folder, stopping this FlyReader ", e1);
                 stopRequested = true;
             }
-        }
         logger.debug("Starting file reader @ " + folder);
         final ByteBuffer buf = ByteBuffer.allocate(51200);
         final MarkerFactory mf = new MarkerFactory();
         mf.setMaxListSize(lp.getMaxListSize());
-        while (!stopRequested) {
+        while (!stopRequested)
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder))) {
                 for (final Path path : directoryStream) {
                     final RandomAccessFile file = new RandomAccessFile(path.toString(), "rw");
@@ -87,12 +86,12 @@ public class FlyReader implements Callable<FlyReader> {
             } catch (final Exception ex) {
                 ex.printStackTrace();
             }
-        }
         logger.debug("Worker down " + folder);
     }
 
     private void processFile(final ByteBuffer buf, final Path path, final FileChannel file, final MarkerFactory mf) throws IOException {
         final long t1 = System.currentTimeMillis();
+        lp.init(mf);
         readLines(file, buf, mf);
         lp.done();
         file.close();
@@ -117,7 +116,7 @@ public class FlyReader implements Callable<FlyReader> {
                         }
                         readLines(file.position(file.position() - (readCnt - previousEolPosition - eol.length)), (ByteBuffer) buf.clear(), mf);
                         continue;
-                    } else {
+                    } else
                         try {
                             // final long T1 = System.nanoTime();
                             lp.process(data, previousEolPosition == 0 ? 0 : (int) previousEolPosition + eol.length, (int) eolPosition, mf);
@@ -127,7 +126,6 @@ public class FlyReader implements Callable<FlyReader> {
                         } catch (final IndexOutOfBoundsException e) {
                             logger.debug("could not process : " + new String(data, 0, (int) eolPosition) + " \n cause:" + e.getMessage());
                         }
-                    }
                 } while (eolPosition > 0);
             }
         }
@@ -148,26 +146,22 @@ public class FlyReader implements Callable<FlyReader> {
         logger.debug("check " + folderName + " & " + lp.getFolder());
         if (lp.getFolder().equals(folderName)) {
             final String regex = lp.getFilter();
-            if (regex == null) {
+            if (regex == null)
                 return true;
-            }
             final Pattern pattern = Pattern.compile(regex);
             return pattern.matcher(fileName).find();
-        } else {
+        } else
             return false;
-        }
     }
 
     public long getEOLPosition(final byte[] data, final int startIndex, final int endIndex) {
         try {
             int tokenIndex, currentIndex = startIndex;
             while (currentIndex <= endIndex) {
-                for (tokenIndex = 0; tokenIndex < eol.length && eol[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++) { // loop to check if EOL is present at position currentIndex
+                for (tokenIndex = 0; tokenIndex < eol.length && eol[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++)
                     ;
-                }
-                if (tokenIndex == eol.length) {
+                if (tokenIndex == eol.length)
                     return currentIndex;
-                }
                 currentIndex++;
             }
         } catch (final Exception e) {

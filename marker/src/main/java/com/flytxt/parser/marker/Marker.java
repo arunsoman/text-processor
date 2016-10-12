@@ -6,12 +6,11 @@ public class Marker {
 
     public int length;
 
-    public void splitAndGetMarkers(final byte[] data, final byte[] token, final int[] indexOfMarker, final MarkerFactory mf, Marker ...markers) {
-    	int count = 1, lastIndex = index, currentIndex = index, tokenIndex, index =0;
+    public void splitAndGetMarkers(final byte[] data, final byte[] token, final int[] indexOfMarker, final MarkerFactory mf, Marker... markers) {
+        int count = 1, lastIndex = index, currentIndex = index, tokenIndex, index = 0;
         while (currentIndex < index + length) {
-            for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++) { // loop to check if token is present at position currentIndex
+            for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++)
                 ;
-            }
             if (tokenIndex == token.length) { // true if token found at currentIndex
                 if (indexOfMarker[index] == count++) { // true if correct marker is found
                     markers[index] = mf.create(lastIndex, currentIndex - lastIndex);
@@ -19,37 +18,31 @@ public class Marker {
                 }
                 currentIndex = currentIndex + token.length;
                 lastIndex = currentIndex;
-            } else {
+            } else
                 currentIndex++;
-            }
         }
 
-        if (lastIndex < length + 1 && indexOfMarker[index] == count) { // true if required marker is the last
-            markers[index]= mf.create(lastIndex, this.length - lastIndex);
-        }
+        if (lastIndex < length + 1 && indexOfMarker[index] == count)
+            markers[index] = mf.create(lastIndex, this.length - lastIndex);
     }
-    
+
     public Marker splitAndGetMarker(final byte[] data, final byte[] token, final int indexOfMarker, final MarkerFactory mf) {
 
         int count = 1, lastIndex = index, currentIndex = index, tokenIndex;
         while (currentIndex < index + length) {
-            for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++) { // loop to check if token is present at position currentIndex
-                ;
-            }
+            for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++)
+                ;// loop to check if token is present at position currentIndex
             if (tokenIndex == token.length) { // true if token found at currentIndex
-                if (indexOfMarker == count++) { // true if correct marker is found
+                if (indexOfMarker == count++)
                     return mf.create(lastIndex, currentIndex - lastIndex);
-                }
                 currentIndex = currentIndex + token.length;
                 lastIndex = currentIndex;
-            } else {
+            } else
                 currentIndex++;
-            }
         }
 
-        if (lastIndex < length + 1 && indexOfMarker == count) { // true if required marker is the last
+        if (lastIndex < length + 1 && indexOfMarker == count)
             return mf.create(lastIndex, this.length - lastIndex);
-        }
         return null;
     }
 
@@ -59,9 +52,8 @@ public class Marker {
         int currentIndex = index, lastIndex = index, tokenIndex;
         boolean endReached = false;
         while (currentIndex < index + length) {
-            for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++) { // loop to check if token is present at position currentIndex
+            for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++)
                 ;
-            }
             if (tokenIndex == token.length) {
                 if (markers.add(mf.create(lastIndex, currentIndex - lastIndex))) { // breaks if the remaining markers are not required in the script
                     currentIndex = currentIndex + tokenIndex;
@@ -70,13 +62,11 @@ public class Marker {
                     endReached = true;
                     break;
                 }
-            } else {
+            } else
                 currentIndex++;
-            }
         }
-        if (!endReached && lastIndex < length + 1) {
+        if (!endReached && lastIndex < length + 1)
             markers.add(mf.create(lastIndex, this.length - lastIndex));
-        }
         return markers;
     }
 
