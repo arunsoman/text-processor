@@ -13,6 +13,10 @@ public class Search<T> extends Lookup<T> {
 
     private final CharacterDic<T> dictionary = new CharacterDic<>();
 
+    public Search(MarkerFactory mf) {
+        this.mf = mf;
+    }
+
     public Search(final String file) {
         this.fileName = file;
         loadFromFile();
@@ -22,10 +26,6 @@ public class Search<T> extends Lookup<T> {
         this.fileName = file.getAbsolutePath();
         this.mf = mf;
         loadFromFile();
-    }
-
-    public Search(MarkerFactory mf) {
-        this.mf = mf;
     }
 
     @Override
@@ -38,7 +38,6 @@ public class Search<T> extends Lookup<T> {
 
     @Override
     public void bake() {
-        // fMap = new UnmodifiableTrie<byte[], Marker>(new PatriciaTrie(map));
     }
 
     @Override

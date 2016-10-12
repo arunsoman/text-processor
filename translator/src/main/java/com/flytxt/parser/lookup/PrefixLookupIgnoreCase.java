@@ -21,13 +21,13 @@ public class PrefixLookupIgnoreCase<T> extends Lookup<T> {
 
     private final byte capsZ = 'Z';
 
+    public PrefixLookupIgnoreCase(final MarkerFactory mf) {
+        this.mf = mf;
+    }
+
     public PrefixLookupIgnoreCase(final String file) {
         this.fileName = file;
         loadFromFile();
-    }
-
-    public PrefixLookupIgnoreCase(final MarkerFactory mf) {
-        this.mf = mf;
     }
 
     public PrefixLookupIgnoreCase(final File file, MarkerFactory mf) {

@@ -17,13 +17,13 @@ public class PrefixLookup<T> extends Lookup<T> {
 
     private UnmodifiableTrie<String, T> fMap;
 
+    public PrefixLookup(final MarkerFactory mf) {
+        this.mf = mf;
+    }
+
     public PrefixLookup(final String file) {
         this.fileName = file;
         loadFromFile();
-    }
-
-    public PrefixLookup(final MarkerFactory mf) {
-        this.mf = mf;
     }
 
     public PrefixLookup(final File file, MarkerFactory mf) {
