@@ -3,7 +3,6 @@ package com.flytxt.parser.compiler;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -68,7 +67,7 @@ public class ParserController {
             File jar = parserDomain.getJar(host);
             return ResponseEntity.ok().headers(headers).contentLength(jar.length()).contentType(MediaType.parseMediaType("application/octet-stream"))
                     .body(new InputStreamResource(new FileInputStream(jar)));
-        } catch (final FileNotFoundException e) {
+        } catch (Exception e) {
             return ResponseEntity.ok().headers(headers).contentType(MediaType.parseMediaType("application/octet-stream"))
                     .body(new InputStreamResource(new ByteArrayInputStream(("no content for" + host).getBytes())));
         }
