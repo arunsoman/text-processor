@@ -74,9 +74,14 @@ public class FolderEventListener {
 
         private String destination;
 
-        public Watch() {
-            System.out.println("------------");
-        }
+		public Watch(String source, String regex, String destination) {
+			super();
+			this.source = source;
+			this.regex = regex;
+			this.destination = destination;
+		}
+
+       
 
     }
 

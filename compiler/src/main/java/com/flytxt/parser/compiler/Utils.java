@@ -17,8 +17,12 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
@@ -88,7 +92,22 @@ public class Utils {
         // set compiler's classpath to be same as the runtime's
         optionList.addAll(Arrays.asList("-classpath", System.getProperty("java.class.path")));
         optionList.addAll(Arrays.asList("-d", dest));
-        final File[] javaFiles = new File[] { new File(src) };
+         File[] javaFiles = null;
+        if(Files.isDirectory(Paths.get(src))){
+        	List<JavaFileObject> fileList = getFileList(new File(src, "."),sjfm);
+        	  CompilationTask compilerTask = javaCompiler.getTask(null, sjfm, diagnostics, optionList, null, fileList) ;
+        	  if (!compilerTask.call()) { 
+                  for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) { 
+                      System.err.format("Error on line %d in %s", diagnostic.getLineNumber(), diagnostic); 
+                  } 
+                  //throw new CompilationError("Could not compile project"); 
+              } 
+        	//javaFiles = fileList.toArray(new File[fileList.size()]);
+        	  return null;
+        }else
+        {
+        	javaFiles= new File[] { new File(src) };
+        }
 
         final StringWriter bos = new StringWriter();
         final CompilationTask compilationTask = javaCompiler.getTask(bos, null, null, optionList, null, sjfm.getJavaFileObjects(javaFiles));
@@ -149,18 +168,27 @@ public class Utils {
     }
 
     public String createSingleVM() throws IOException {
-        if (singleVmString != null)
-            return singleVmString.toString();
+    	return readFile("Script.lp");
+    	
+    }
+    
+    public String folderEvent() throws IOException {
+    	return readFile("Script2.lp");
+    }
+    
+    public String readFile(String fileName) throws IOException
+    {
+    	
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("Script.lp").getFile());
+    	File file = new File(classLoader.getResource(fileName).getFile());
         BufferedReader reader = new BufferedReader(new FileReader(file));
         StringBuilder content = new StringBuilder();
         String line = null;
         while ((line = reader.readLine()) != null)
             content.append(line).append("\n");
         reader.close();
-        singleVmString = content.toString();
-        return singleVmString.toString();
+
+        return content.toString();
     }
 
     public String testRunLp(LineProcessor lp, String[] data) throws IOException {
@@ -171,5 +199,39 @@ public class Utils {
             lp.process(datum, 0, datum.length, mf);
         }
         return lp.done();
+    }
+    private JavaFileObject readJavaObject(File file, StandardJavaFileManager fileManager) { 
+        Iterable<? extends JavaFileObject> javaFileObjects = fileManager.getJavaFileObjects(file); 
+        Iterator<? extends JavaFileObject> it = javaFileObjects.iterator(); 
+        if (it.hasNext()) { 
+            return it.next(); 
+        } 
+        throw new RuntimeException("Could not load " + file.getAbsolutePath() + " java file object"); 
+    }
+    
+    private List<JavaFileObject> getFileList(File dir, StandardJavaFileManager fileManager) { 
+        List<JavaFileObject> javaObjects = new LinkedList<JavaFileObject>(); 
+        File[] files = dir.listFiles(); 
+        for (File file : files) { 
+            if (file.isDirectory()) { 
+                javaObjects.addAll(getFileList(file, fileManager)); 
+            } 
+            else if (file.isFile() && file.getName().toLowerCase().endsWith(".java")) { 
+                javaObjects.add(readJavaObject(file, fileManager)); 
+            } 
+        } 
+        return javaObjects; 
+    }
+    
+    public Map<String, String> parseScript(String script)
+    {
+    	String[] split = script.split("\n");
+    	Map<String,String> scriptMap = new HashMap<>();
+    	for(String key : split)
+    	{
+    		int indexOf = key.indexOf("=");
+    		scriptMap.put(key.substring(0,indexOf).trim(),key.substring(indexOf+1, key.length()));
+    	}
+    	return scriptMap;
     }
 }

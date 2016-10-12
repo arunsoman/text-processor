@@ -14,7 +14,7 @@ public class MatchTest {
         		{ "Wallnut", "fruit" },
         		{ "HelloSmallWorld", "SmallWorld" },
         		};
-        final MatchKey<Marker> object = new MatchKey(null);
+        final MatchKey<Marker> object = new MatchKey("");
         final MarkerFactory mf = new MarkerFactory();
         mf.setMaxListSize(100);
 
