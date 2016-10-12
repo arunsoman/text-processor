@@ -1,4 +1,5 @@
 Blockly.Blocks.Manager = {
+    datatype: '[["String", "string"], ["Date", "date"], ["Number", "number"]]',
     workspaceContainer: {},
     ws: {},
     changeListeners: [],
@@ -127,10 +128,13 @@ Blockly.Blocks.Manager = {
 
     },
     getSupportedOperands: function(block) {
-
+        return this.allBlocks.getSupportedOperands((block === undefined)? null : block.getDataType);
     },
     getSupportedOperators: function(block) {
-
+        return block.getSupportedOperators();
+    },
+    getSupportedDataTypes: function(block) {
+        return this.dataType;
     },
     _executeEvent: function(event) {
         Blockly.Events.fromJson(event.toJson(), ws)
