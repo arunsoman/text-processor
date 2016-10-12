@@ -1,19 +1,22 @@
 spring:
+  datasource:
+    url: jdbc:mysql://192.168.14.60:3306/tpe?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: rte
+    password: bullet
+    driverClassName: com.mysql.jdbc.Driver
     application:
-        name: remoteCompiler
+      name: remoteCompiler
 logging:
   file: logs/dev_app.log
   pattern:
-    console: "%d %-5level %logger : %msg%n"
-    file: "%d %-5level [%thread] %logger : %msg%n"
+    console: '%d %-5level %logger : %msg%n'
+    file: '%d %-5level [%thread] %logger : %msg%n'
   level:
     org.springframework.web: ERROR
     guru.springframework.controllers: ERROR
     org.hibernate: ERROR
-
 server:
-    port: 9000
-
+  port: 9000
 loc:
   jarHome: /tmp/jar/
   scriptHome: /tmp/scripts/

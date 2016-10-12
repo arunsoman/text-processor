@@ -1,6 +1,17 @@
-#Group   Country Rank    Jersey  Position        Age     Selections      Club    Player  Captain         
-inputFolder('/tmp/input')
-line->split(',')=>all
-all->element(2)=>country
-all->element(6)=>club
-[club,country]->store('/tmp/out/wc.csv')
+import java.util.ArrayList;
+import java.util.List;
+import com.flytxt.parser.processor.FolderEventListener.Watch;
+
+
+class FolderListener {
+
+List<com.flytxt.parser.processor.FolderEventListener.Watch> getList() {
+List<com.flytxt.parser.processor.FolderEventListener.Watch> list = new ArrayList<>();
+%(list)  
+return list;
+}
+}
+/*
+ a = new Watch("/Files/INPUT/metric" , "tmp" , "dest");
+list.add(a);
+*/
