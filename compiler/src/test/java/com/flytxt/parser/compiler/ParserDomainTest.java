@@ -15,7 +15,7 @@ import com.flytxt.parser.config.LiquibaseConf;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("dev")
 @ContextConfiguration(classes = {Compiler.class, DataStoreConf.class, LiquibaseConf.class})
 public class ParserDomainTest {
 

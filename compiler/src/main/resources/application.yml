@@ -10,7 +10,7 @@ dev:
     hostname: demo
 test:
     datasource:
-       url: jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE
+       url: jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
        username: sa
        password:
        driverClassName: org.h2.Driver
