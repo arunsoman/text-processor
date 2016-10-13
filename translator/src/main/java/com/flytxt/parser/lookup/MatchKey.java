@@ -40,4 +40,17 @@ public class MatchKey<T> extends Lookup<T> {
     public T get(final byte[] search) {
         return node.traverse(search);
     }
+
+    @Override
+    public String toString() {
+        int i = 0;
+        StringBuilder result = new StringBuilder();
+        for (Node<T> b : this.node.nodes) {
+            if (b != null)
+                result.append((char) i + "  ");
+            i++;
+        }
+        return result.toString();
+    }
+
 }
