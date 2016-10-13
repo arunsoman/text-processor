@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -21,7 +20,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
@@ -93,23 +91,21 @@ public class Utils {
         optionList.addAll(Arrays.asList("-classpath", System.getProperty("java.class.path")));
         optionList.addAll(Arrays.asList("-d", dest));
         List<JavaFileObject> fileList = null;
-        if(Files.isDirectory(Paths.get(src))){
-        	fileList = getFileList(new File(src, "."),sjfm);
-        }
-        else{
-        	File f = new File(src);
-        	fileList=  getFileList(new File(f.getParent(), f.getName()),sjfm);
+        if (Files.isDirectory(Paths.get(src)))
+            fileList = getFileList(new File(src, "."), sjfm);
+        else {
+            File f = new File(src);
+            fileList = getFileList(new File(f.getParent(), f.getName()), sjfm);
         }
 
-  	  CompilationTask compilerTask = javaCompiler.getTask(null, sjfm, diagnostics, optionList, null, fileList) ;
-  	  if (!compilerTask.call()) { 
-  		  StringBuilder sb = new StringBuilder();
-            for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) { 
-                sb.append(String.format("Error on line %d in %s", diagnostic.getLineNumber(), diagnostic)); 
-            } 
+        CompilationTask compilerTask = javaCompiler.getTask(null, sjfm, diagnostics, optionList, null, fileList);
+        if (!compilerTask.call()) {
+            StringBuilder sb = new StringBuilder();
+            for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics())
+                sb.append(String.format("Error on line %d in %s", diagnostic.getLineNumber(), diagnostic));
             throw new Exception(sb.toString());
-        } 
-        
+        }
+
         return null;
     }
 
@@ -150,19 +146,18 @@ public class Utils {
     }
 
     public String createSingleVM() throws IOException {
-    	return readFile("Script.lp");
-    	
+        return readFile("Script.lp");
+
     }
-    
+
     public String folderEvent() throws IOException {
-    	return readFile("Script2.lp");
+        return readFile("Script2.lp");
     }
-    
-    public String readFile(String fileName) throws IOException
-    {
-    	
+
+    public String readFile(String fileName) throws IOException {
+
         ClassLoader classLoader = getClass().getClassLoader();
-    	File file = new File(classLoader.getResource(fileName).getFile());
+        File file = new File(classLoader.getResource(fileName).getFile());
         BufferedReader reader = new BufferedReader(new FileReader(file));
         StringBuilder content = new StringBuilder();
         String line = null;
@@ -182,38 +177,43 @@ public class Utils {
         }
         return lp.done();
     }
-    private JavaFileObject readJavaObject(File file, StandardJavaFileManager fileManager) { 
-        Iterable<? extends JavaFileObject> javaFileObjects = fileManager.getJavaFileObjects(file); 
-        Iterator<? extends JavaFileObject> it = javaFileObjects.iterator(); 
-        if (it.hasNext()) { 
-            return it.next(); 
-        } 
-        throw new RuntimeException("Could not load " + file.getAbsolutePath() + " java file object"); 
+
+    private JavaFileObject readJavaObject(File file, StandardJavaFileManager fileManager) {
+        Iterable<? extends JavaFileObject> javaFileObjects = fileManager.getJavaFileObjects(file);
+        Iterator<? extends JavaFileObject> it = javaFileObjects.iterator();
+        if (it.hasNext())
+            return it.next();
+        throw new RuntimeException("Could not load " + file.getAbsolutePath() + " java file object");
     }
-    
-    private List<JavaFileObject> getFileList(File dir, StandardJavaFileManager fileManager) { 
-        List<JavaFileObject> javaObjects = new LinkedList<JavaFileObject>(); 
-        File[] files = dir.isDirectory() ? dir.listFiles() : new File[] {dir}; 
-        for (File file : files) { 
-            if (file.isDirectory()) { 
-                javaObjects.addAll(getFileList(file, fileManager)); 
-            } 
-            else if (file.isFile() && file.getName().toLowerCase().endsWith(".java")) { 
-                javaObjects.add(readJavaObject(file, fileManager)); 
-            } 
-        } 
-        return javaObjects; 
+
+    private List<JavaFileObject> getFileList(File dir, StandardJavaFileManager fileManager) {
+        List<JavaFileObject> javaObjects = new LinkedList<>();
+        File[] files = dir.isDirectory() ? dir.listFiles() : new File[] { dir };
+        for (File file : files)
+            if (file.isDirectory())
+                javaObjects.addAll(getFileList(file, fileManager));
+            else if (file.isFile() && file.getName().toLowerCase().endsWith(".java"))
+                javaObjects.add(readJavaObject(file, fileManager));
+        return javaObjects;
     }
-    
-    public Map<String, String> parseScript(String script)
-    {
-    	String[] split = script.split("\n");
-    	Map<String,String> scriptMap = new HashMap<>();
-    	for(String key : split)
-    	{
-    		int indexOf = key.indexOf("=");
-    		scriptMap.put(key.substring(0,indexOf).trim(),key.substring(indexOf+1, key.length()));
-    	}
-    	return scriptMap;
+
+    public Map<String, String> parseScript(String script) {
+        String[] split = script.split("\n");
+        Map<String, String> scriptMap = new HashMap<>();
+        for (String key : split) {
+            int indexOf = key.indexOf("=");
+            scriptMap.put(key.substring(0, indexOf).trim(), key.substring(indexOf + 1, key.length()));
+        }
+        return scriptMap;
+    }
+
+    public String replaceWithConsoleStore(String absProcessor) {
+        int toBeReplacedEnd = absProcessor.indexOf("Store("), toBeReplacedStart;
+        for (toBeReplacedStart = toBeReplacedEnd; toBeReplacedStart > 0; toBeReplacedStart--)
+            if (absProcessor.charAt(toBeReplacedStart) == ' ')
+                break;
+        String toBeReplaced = absProcessor.substring(toBeReplacedStart + 1, toBeReplacedEnd);
+        return absProcessor.replace(toBeReplaced, "Console");
+
     }
 }

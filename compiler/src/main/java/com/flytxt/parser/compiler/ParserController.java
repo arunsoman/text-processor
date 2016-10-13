@@ -33,7 +33,6 @@ public class ParserController {
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
         headers.add("Pragma", "no-cache");
         try {
-            absProcessor = replaceWithConsoleStore(absProcessor);
             output = parserDomain.compileNtest(name, init, absProcessor, extract, transformation, store, type, sampleData);
             // return ResponseEntity.ok().headers(headers).contentType(MediaType.parseMediaType("application/octet-stream")).body(new InputStreamResource(new
             // ByteArrayInputStream((output).getBytes())));
@@ -41,16 +40,6 @@ public class ParserController {
             output = e.getMessage();
         }
         return ResponseEntity.ok().headers(headers).contentType(MediaType.parseMediaType("text/plain")).body(output);
-    }
-
-    private String replaceWithConsoleStore(String absProcessor) {
-        int toBeReplacedEnd = absProcessor.indexOf("Store("), toBeReplacedStart;
-        for (toBeReplacedStart = toBeReplacedEnd; toBeReplacedStart > 0; toBeReplacedStart--)
-            if (absProcessor.charAt(toBeReplacedStart) == ' ')
-                break;
-        String toBeReplaced = absProcessor.substring(toBeReplacedStart + 1, toBeReplacedEnd);
-        return absProcessor.replace(toBeReplaced, "Console");
-
     }
 
     @RequestMapping(path = "/getJar", method = RequestMethod.GET)

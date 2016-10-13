@@ -25,13 +25,13 @@ public class ParserDomain {
     @Autowired
     private JobRepo repo;
 
-    private Job job;
-
     @Autowired
     private Utils utils;
 
-    public String compileNtest(final String name, final String init, final String absProcessor, final String extract, final String transformation, final String store, final String type, // single,hybrid
+    public String compileNtest(final String name, final String init, String absProcessor, final String extract, final String transformation, final String store, final String type, // single,hybrid
             final String sampleData) {
+        absProcessor = utils.replaceWithConsoleStore(absProcessor);
+
         final Map<String, String> values = new HashMap<>();
         values.put("name", name);
         values.put("init", init);
@@ -64,14 +64,12 @@ public class ParserDomain {
         StrSubstitutor sub = null;
         for (Job job : jobFilter) {
             values = utils.parseScript(job.getDkPscript());
-            values.put("name",job.getName());
+            values.put("name", job.getName());
             sub = new StrSubstitutor(values, "%(", ")");
             String result = sub.replace(createSingleVM);
             utils.createFile(loc.javaHome + host, result, job.getName() + ".java");
-            sbWatch.append("new Watch(\"")
-				.append(job.getInputPath()).append("\",")
-            .append(job.getRegex()==null?null:"\""+job.getRegex()+"\"")
-            .append(",\"").append(loc.javaHome).append(job.getName()).append("\")");
+            sbWatch.append("new Watch(\"").append(job.getInputPath()).append("\",").append(job.getRegex() == null ? null : "\"" + job.getRegex() + "\"").append(",\"").append(loc.javaHome)
+            .append(job.getName()).append("\")");
             sb.append("list.add(").append(sbWatch.toString()).append(");");
             sbWatch.delete(0, sbWatch.length());
         }
@@ -80,7 +78,7 @@ public class ParserDomain {
         sub = new StrSubstitutor(values, "%(", ")");
         String result = sub.replace(utils.folderEvent());
         utils.createFile(loc.javaHome + host, result, "FolderListener.java");
-        utils.complie(loc.javaHome+host+"/", loc.getClassDumpLoc(host));
+        utils.complie(loc.javaHome + host + "/", loc.getClassDumpLoc(host));
         utils.createJar(loc.getClassDumpLoc(host), loc.getJarDumpLocatiom(host) + "/host.jar");
 
         return Paths.get(loc.getJarDumpLocatiom(host) + "/host.jar").toFile();
