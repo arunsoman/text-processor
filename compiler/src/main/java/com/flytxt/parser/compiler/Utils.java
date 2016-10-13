@@ -92,42 +92,24 @@ public class Utils {
         // set compiler's classpath to be same as the runtime's
         optionList.addAll(Arrays.asList("-classpath", System.getProperty("java.class.path")));
         optionList.addAll(Arrays.asList("-d", dest));
-         File[] javaFiles = null;
+        List<JavaFileObject> fileList = null;
         if(Files.isDirectory(Paths.get(src))){
-        	List<JavaFileObject> fileList = getFileList(new File(src, "."),sjfm);
-        	  CompilationTask compilerTask = javaCompiler.getTask(null, sjfm, diagnostics, optionList, null, fileList) ;
-        	  if (!compilerTask.call()) { 
-                  for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) { 
-                      System.err.format("Error on line %d in %s", diagnostic.getLineNumber(), diagnostic); 
-                  } 
-                  //throw new CompilationError("Could not compile project"); 
-              } 
-        	//javaFiles = fileList.toArray(new File[fileList.size()]);
-        	  return null;
-        }else
-        {
-        	javaFiles= new File[] { new File(src) };
+        	fileList = getFileList(new File(src, "."),sjfm);
+        }
+        else{
+        	File f = new File(src);
+        	fileList=  getFileList(new File(f.getParent(), f.getName()),sjfm);
         }
 
-        final StringWriter bos = new StringWriter();
-        final CompilationTask compilationTask = javaCompiler.getTask(bos, null, null, optionList, null, sjfm.getJavaFileObjects(javaFiles));
-        if (!compilationTask.call()) {
-            final Locale myLocale = Locale.getDefault();
-            final StringBuilder msg = new StringBuilder();
-            msg.append("Cannot compile to Java bytecode:");
-            for (final Diagnostic<? extends JavaFileObject> err : diagnostics.getDiagnostics()) {
-                msg.append('\n');
-                msg.append(err.getKind());
-                msg.append(": ");
-                if (err.getSource() != null)
-                    msg.append(err.getSource().getName());
-                msg.append(':');
-                msg.append(err.getLineNumber());
-                msg.append(": ");
-                msg.append(err.getMessage(myLocale));
-            }
-            throw new Exception(msg.toString() + "\n" + bos.toString());
-        }
+  	  CompilationTask compilerTask = javaCompiler.getTask(null, sjfm, diagnostics, optionList, null, fileList) ;
+  	  if (!compilerTask.call()) { 
+  		  StringBuilder sb = new StringBuilder();
+            for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) { 
+                sb.append(String.format("Error on line %d in %s", diagnostic.getLineNumber(), diagnostic)); 
+            } 
+            throw new Exception(sb.toString());
+        } 
+        
         return null;
     }
 
@@ -211,7 +193,7 @@ public class Utils {
     
     private List<JavaFileObject> getFileList(File dir, StandardJavaFileManager fileManager) { 
         List<JavaFileObject> javaObjects = new LinkedList<JavaFileObject>(); 
-        File[] files = dir.listFiles(); 
+        File[] files = dir.isDirectory() ? dir.listFiles() : new File[] {dir}; 
         for (File file : files) { 
             if (file.isDirectory()) { 
                 javaObjects.addAll(getFileList(file, fileManager)); 
