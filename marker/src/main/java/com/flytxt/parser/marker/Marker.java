@@ -7,21 +7,23 @@ public class Marker {
     public int length;
 
     public void splitAndGetMarkers(final byte[] data, final byte[] token, final int[] indexOfMarker, final MarkerFactory mf, Marker... markers) {
-        int count = 1, lastIndex = index, currentIndex = index, tokenIndex, index = 0;
-        while (currentIndex < index + length) {
+        int count = 1, lastIndex = this.index, currentIndex = this.index, tokenIndex, index = 0;
+        while (currentIndex < this.index + length) {
             for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++)
                 ;
             if (tokenIndex == token.length) { // true if token found at currentIndex
                 if (indexOfMarker[index] == count++) { // true if correct marker is found
-                    markers[index] = mf.create(lastIndex, currentIndex - lastIndex);
+                    markers[index].index = lastIndex;
+                    markers[index].length = currentIndex - lastIndex;
                     index++;
                 }
+                if (index == indexOfMarker.length)
+                    return;
                 currentIndex = currentIndex + token.length;
                 lastIndex = currentIndex;
             } else
                 currentIndex++;
         }
-
         if (lastIndex < length + 1 && indexOfMarker[index] == count)
             markers[index] = mf.create(lastIndex, this.length - lastIndex);
     }
