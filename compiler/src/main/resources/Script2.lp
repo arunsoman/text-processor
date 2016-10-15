@@ -3,9 +3,9 @@ import java.util.List;
 import com.flytxt.parser.processor.FolderEventListener.Watch;
 
 
-class FolderListener {
+public class FolderListener {
 
-List<com.flytxt.parser.processor.FolderEventListener.Watch> getList() {
+public List<com.flytxt.parser.processor.FolderEventListener.Watch> getList() {
 List<com.flytxt.parser.processor.FolderEventListener.Watch> list = new ArrayList<>();
 %(list)  
 return list;
