@@ -1,4 +1,4 @@
-package com.flytxt.parser.compiler;
+package com.flytxt.compiler;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.flytxt.parser.domain.CompileNTest;
+import com.flytxt.compiler.domain.CompileNTest;
 
 @Controller
 @EnableAutoConfiguration

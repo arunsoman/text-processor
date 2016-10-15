@@ -1,4 +1,4 @@
-package com.flytxt.parser.config;
+package com.flytxt.compiler.config;
 
 import javax.sql.DataSource;
 

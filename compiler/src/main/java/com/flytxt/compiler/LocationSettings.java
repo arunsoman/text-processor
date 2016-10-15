@@ -1,4 +1,4 @@
-package com.flytxt.parser.compiler;
+package com.flytxt.compiler;
 
 import java.io.IOException;
 import java.nio.file.Files;

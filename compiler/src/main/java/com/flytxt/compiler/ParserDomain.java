@@ -1,4 +1,4 @@
-package com.flytxt.parser.compiler;
+package com.flytxt.compiler;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -12,8 +12,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.flytxt.parser.domain.Job;
-import com.flytxt.parser.domain.JobRepo;
+import com.flytxt.compiler.domain.Job;
+import com.flytxt.compiler.repo.JobRepo;
 
 @EnableAutoConfiguration
 @Component

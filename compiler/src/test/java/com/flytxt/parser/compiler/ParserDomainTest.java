@@ -10,8 +10,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.flytxt.parser.config.DataStoreConf;
-import com.flytxt.parser.config.LiquibaseConf;
+import com.flytxt.compiler.Compiler;
+import com.flytxt.compiler.ParserDomain;
+import com.flytxt.compiler.config.DataStoreConf;
+import com.flytxt.compiler.config.LiquibaseConf;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

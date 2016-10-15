@@ -1,4 +1,4 @@
-package com.flytxt.parser.compiler;
+package com.flytxt.compiler;
 
 import java.io.BufferedReader;
 import java.io.File;

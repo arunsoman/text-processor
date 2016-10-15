@@ -1,17 +1,18 @@
-package com.flytxt.parser.compiler;
+package com.flytxt.compiler;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootApplication
-@EnableAutoConfiguration
-@EntityScan({ "com.flytxt.parser", "com.flytxt.parser.domain" })
-@EnableJpaRepositories({ "com.flytxt.parser", "com.flytxt.parser.domain" })
 public class Compiler {
 
+	
 	public static void main(String args[]) {
 		SpringApplication.run(Compiler.class, args);
 	}

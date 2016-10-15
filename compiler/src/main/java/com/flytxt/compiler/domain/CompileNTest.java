@@ -1,4 +1,4 @@
-package com.flytxt.parser.domain;
+package com.flytxt.compiler.domain;
 
 import lombok.Data;
 
