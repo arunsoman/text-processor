@@ -10,8 +10,6 @@ import java.util.zip.ZipEntry;
 
 import javax.annotation.PostConstruct;
 
-import lombok.Data;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -20,6 +18,8 @@ import org.springframework.context.annotation.Configuration;
 
 import com.flytxt.parser.marker.LineProcessor;
 import com.flytxt.parser.processor.FolderEventListener.Watch;
+
+import lombok.Data;
 
 @Configuration
 @EnableConfigurationProperties
@@ -36,14 +36,15 @@ public class ProxyScripts {
     public String hostName;
 
     private List<LineProcessor> lps;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private Class<?> folderListener;
+    private Class<?> folderListener;
 
-    public List<LineProcessor> getLPInstance(){
-    	return lps;
+    public List<LineProcessor> getLPInstance() {
+        return lps;
     }
-    
+
     @PostConstruct
     public void init() throws Exception {
         final URL url = new URL(remoteHost + getJar + "?host=" + hostName);
@@ -52,24 +53,22 @@ public class ProxyScripts {
         try (JarInputStream jIs = new JarInputStream(url.openStream())) {
             ZipEntry zipEntry;
             String aClass;
-            final List<LineProcessor> lps = new ArrayList<LineProcessor>();
+            lps = new ArrayList<>();
 
             try (URLClassLoader loader = new URLClassLoader(new URL[] { url }, contextClassLoader)) {
-                while ((zipEntry = jIs.getNextEntry()) != null) {
+                while ((zipEntry = jIs.getNextEntry()) != null)
                     if (!zipEntry.isDirectory()) {
                         aClass = zipEntry.getName().replaceAll("/", ".");
                         aClass = aClass.substring(0, aClass.length() - ".class".length());
                         logger.debug("loading class:" + aClass);
-                        //@SuppressWarnings("unchecked")
-                        if(loader.loadClass(aClass).getName().contains("FolderListener")){
-                        	folderListener = loader.loadClass(aClass);
-                        }
-                        else{
-                        	final Class<LineProcessor> loadClass = (Class<LineProcessor>) loader.loadClass(aClass);
-                        	lps.add(loadClass.newInstance());
+                        // @SuppressWarnings("unchecked")
+                        if (loader.loadClass(aClass).getName().contains("FolderListener"))
+                            folderListener = loader.loadClass(aClass);
+                        else {
+                            final Class<LineProcessor> loadClass = (Class<LineProcessor>) loader.loadClass(aClass);
+                            lps.add(loadClass.newInstance());
                         }
                     }
-                }
                 return;
             }
         } catch (final Exception e) {
@@ -77,17 +76,18 @@ public class ProxyScripts {
             throw e;
         }
     }
-    
-    class FolderWatch{}
 
-	public List<com.flytxt.parser.processor.FolderEventListener.Watch> getFolderWatch() {
-		try {
-			return (List<Watch>) folderListener.getMethod("getList", null).invoke(null, null);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-				| SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
+    class FolderWatch {
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<com.flytxt.parser.processor.FolderEventListener.Watch> getFolderWatch() {
+        try {
+            return (List<Watch>) folderListener.getMethod("getList").invoke(folderListener.newInstance());
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
