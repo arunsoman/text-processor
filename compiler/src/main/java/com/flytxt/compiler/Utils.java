@@ -130,7 +130,7 @@ public class Utils {
                     if (isParent)
                         return;
                 }
-                final String folderName = entry.getParent().toString().substring(root);
+                final String folderName = entry.getParent().toString().substring(entry.getParent().toString().lastIndexOf('/') + 1);
                 if (isDirectory)
                     // logger.debug("zip ; "+folderName+"/");
                     jarOut.putNextEntry(new ZipEntry(folderName + "/"));
