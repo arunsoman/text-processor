@@ -11,8 +11,6 @@ import com.flytxt.compiler.domain.Job;
 
 @RepositoryRestResource(collectionResourceRel = "jobrepo", path = "jobrepo")
 public interface JobRepo extends CrudRepository<Job, Long>{
-	
-	List<Job> findByhostNameAndIsActive(@Param("hostName") String hostName,@Param("is_active") Long isActive);
-	
 
+    List<Job> findByhostNameAndActive(@Param("hostName") String hostName, @Param("active") int active);
 }
