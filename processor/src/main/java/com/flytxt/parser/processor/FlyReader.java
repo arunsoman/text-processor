@@ -70,6 +70,7 @@ public class FlyReader implements Callable<FlyReader> {
                     final RandomAccessFile file = new RandomAccessFile(path.toString(), "rw");
                     logger.debug("picked up " + path.toString());
                     try {
+                        lp.init(mf);
                         lp.setInputFileName(path.getFileName().toString());
                         processFile(buf, path, file.getChannel(), mf);
                         buf.clear();
@@ -91,7 +92,7 @@ public class FlyReader implements Callable<FlyReader> {
 
     private void processFile(final ByteBuffer buf, final Path path, final FileChannel file, final MarkerFactory mf) throws IOException {
         final long t1 = System.currentTimeMillis();
-        lp.init(mf);
+
         readLines(file, buf, mf);
         lp.done();
         file.close();
