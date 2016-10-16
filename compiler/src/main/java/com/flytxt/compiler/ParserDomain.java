@@ -2,11 +2,6 @@ package com.flytxt.compiler;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,9 +55,7 @@ public class ParserDomain {
     }
 
     public File getJar(final String host) throws Exception {
-
-        List<Job> jobFilter = openConnection();
-        // repo.findByhostNameAndActive(host, 1);
+        List<Job> jobFilter = repo.findByhostNameAndActiveTrue(host);
         StringBuilder sb = new StringBuilder();
         StringBuilder sbWatch = new StringBuilder();
         String createSingleVM = utils.createSingleVM();
@@ -88,29 +81,6 @@ public class ParserDomain {
         utils.createJar(loc.getClassDumpLoc(host), loc.getJarDumpLocatiom(host) + "host.jar");
 
         return Paths.get(loc.getJarDumpLocatiom(host) + "/host.jar").toFile();
-    }
-
-    public List<Job> openConnection() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://192.168.14.60:3306/tpe", "rte", "bullet");
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from job_dk2 where active=1");
-            List<Job> jobList = new ArrayList<>();
-            while (rs.next()) {
-                Job job = new Job();
-                job.setDkPscript(rs.getString(16));
-                job.setName(rs.getString(2));
-                job.setInputPath(rs.getString(8));
-                job.setRegex(rs.getString(9));
-                jobList.add(job);
-            }
-            con.close();
-            return jobList;
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        return null;
     }
 
 }

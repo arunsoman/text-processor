@@ -30,7 +30,7 @@ public class Job {
     private String startAndEndTime;
 
     @Column(name = "active")
-    private int active;
+    private boolean active;
 
     private String startDate;
 
