@@ -230,7 +230,7 @@ public class FolderEventListener {
                             final List<OutputUnit> outputUnits = hashCache.get(take);
                             boolean found = false;
                             for (final OutputUnit outputUnit : outputUnits)
-                                if (fileName.matches(outputUnit.regex)) {
+                                if (outputUnit.regex != null && fileName.matches(outputUnit.regex)) {
                                     outputUnit.cache.put(source.toString().concat("/").concat(fileName), outputUnit);
                                     found = true;
                                 }
