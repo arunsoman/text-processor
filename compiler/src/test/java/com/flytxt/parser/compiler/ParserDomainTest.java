@@ -5,20 +5,23 @@ import java.io.File;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.flytxt.compiler.Compiler;
 import com.flytxt.compiler.ParserDomain;
-import com.flytxt.compiler.config.DataStoreConf;
-import com.flytxt.compiler.config.LiquibaseConf;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@SpringBootConfiguration
+@EnableJpaRepositories("com.flytxt.compiler.repo")
+@EntityScan("com.flytxt.compiler.domain")
+@ComponentScan("com.flytxt.compiler")
 @ActiveProfiles("test")
-@ContextConfiguration(classes = { Compiler.class, DataStoreConf.class, LiquibaseConf.class })
 public class ParserDomainTest {
 
     @Autowired
