@@ -101,7 +101,7 @@ public class FlyReader implements Callable<FlyReader> {
         Files.delete(path);
         final long totalTimeTaken = System.currentTimeMillis() - t1;
         logger.debug("total time taken: " + totalTimeTaken);
-        transLog.debug("{},{},{}", path, fileSize, totalTimeTaken);
+        transLog.debug("{},{},{}", Files.readSymbolicLink(path), fileSize, totalTimeTaken);
         mf.printStat();
     }
 
