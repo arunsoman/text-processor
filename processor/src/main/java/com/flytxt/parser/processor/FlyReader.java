@@ -45,6 +45,8 @@ public class FlyReader implements Callable<FlyReader> {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private final Logger transLog = LoggerFactory.getLogger("transactionLog");
+
     public void set(final String folder, final LineProcessor lp) {
         this.lp = lp;
         this.folder = folder;
@@ -92,12 +94,14 @@ public class FlyReader implements Callable<FlyReader> {
 
     private void processFile(final ByteBuffer buf, final Path path, final FileChannel file, final MarkerFactory mf) throws IOException {
         final long t1 = System.currentTimeMillis();
-
+        final long fileSize = Files.size(path);
         readLines(file, buf, mf);
         lp.done();
         file.close();
         Files.delete(path);
-        logger.debug("total time taken: " + (System.currentTimeMillis() - t1));
+        final long totalTimeTaken = System.currentTimeMillis() - t1;
+        logger.debug("total time taken: " + totalTimeTaken);
+        transLog.debug("{},{},{}", Files.readSymbolicLink(path), fileSize, totalTimeTaken);
         mf.printStat();
     }
 

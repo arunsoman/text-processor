@@ -23,7 +23,7 @@ compiler:
 
 folder:
   expireTimeInMinutes: 1
-  cacheCleanUpTime: 180000
+  cacheCleanUpTime: 30000
   watch:
   -
     source: /tmp/src
