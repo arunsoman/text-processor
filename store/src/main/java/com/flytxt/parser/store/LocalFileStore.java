@@ -16,31 +16,38 @@ import com.flytxt.parser.marker.Marker;
 
 public class LocalFileStore implements Store {
 
-    private RandomAccessFile channel;
+    private static final byte COMMA = (byte) ',';
 
-    private final byte csv = (byte) ',';
+    private static final byte[] NEWLINE = System.lineSeparator().getBytes();
 
-    private final byte[] newLine = System.lineSeparator().getBytes();
-
-    private int status;
-
-    private final Path filePath;
-
-    private final String[] headers;
+    public final static String TMP = ".tmp";
 
     private final ByteBuffer bBuff = ByteBuffer.allocateDirect(6144);
 
     private final ByteBuffer headBuff = ByteBuffer.allocateDirect(100);
 
+    private final Logger logger = LoggerFactory.getLogger("applicationLog");
+
+    public final String folderName; // Destination folder
+
+    public final String[] headers; // Headers of the output file
+
     private IOException e;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private int status;
 
-    public final static String TMP = ".tmp";
+    private RandomAccessFile channel;
 
-    public LocalFileStore(final String fileName, final String... headers) {
-        this.filePath = Paths.get(fileName);
+    private Path filePath; // Destination file's absolute path
+
+    public LocalFileStore(String folderName, String... headers) {
+        this.folderName = folderName.endsWith("/") ? folderName : folderName + "/";
         this.headers = headers;
+    }
+
+    @Override
+    public void set(final String fileName) {
+        this.filePath = Paths.get(folderName + fileName);
         deleteTempFile();
         createFile();
     }
@@ -53,11 +60,10 @@ public class LocalFileStore implements Store {
                 return entry.toFile().toString().endsWith(TMP);
             }
         };
-        final Path folder = filePath.getParent();
+        final Path folder = Paths.get(folderName);
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(folder, filter)) {
-            for (final Path entry : stream) {
+            for (final Path entry : stream)
                 entry.toFile().delete();
-            }
         } catch (final IOException ex) {
 
         }
@@ -65,7 +71,7 @@ public class LocalFileStore implements Store {
 
     private void createFile() {
         if (!Files.exists(filePath)) {
-            final Path folder = filePath.getParent();
+            final Path folder = Paths.get(folderName);
             try {
                 Files.createDirectories(folder);
             } catch (final IOException e) {
@@ -76,21 +82,21 @@ public class LocalFileStore implements Store {
             }
         }
         final String name = filePath + TMP;
-        final Path fileNameP = Paths.get(name);
+        final Path tempFile = Paths.get(name);
         try {
-            channel = new RandomAccessFile(fileNameP.toString(), "rw");
+            channel = new RandomAccessFile(tempFile.toString(), "rw");
 
             for (final String aheader : headers) {
                 headBuff.put(aheader.getBytes());
-                headBuff.put(csv);
+                headBuff.put(COMMA);
             }
-            headBuff.put(newLine);
+            headBuff.put(NEWLINE);
             headBuff.flip();
             channel.getChannel().write(headBuff);
             headBuff.clear();
-            logger.debug("file created @ " + fileNameP.toString());
+            logger.debug("file created @ " + tempFile.toString());
         } catch (final IOException e) {
-            logger.debug("could not create file @ " + fileNameP.toString(), e);
+            logger.debug("could not create file @ " + tempFile.toString(), e);
             status = -1;
             this.e = e;
         }
@@ -103,19 +109,18 @@ public class LocalFileStore implements Store {
 
     @Override
     public void save(final byte[] data, final String fileName, final Marker... markers) throws IOException {
-        if (status == -1) {
+        if (status == -1)
             throw e;
-        }
         try {
             int delta = fileName.getBytes().length;
             bBuff.put(fileName.getBytes());
             for (final Marker aMarker : markers) {
-                bBuff.put(csv);
+                bBuff.put(COMMA);
                 bBuff.put(data, aMarker.index, aMarker.length);
                 delta += aMarker.length;
             }
             delta *= 2;
-            bBuff.put(newLine);
+            bBuff.put(NEWLINE);
             if (bBuff.position() + delta > bBuff.limit()) {
                 bBuff.flip();
                 channel.getChannel().write(bBuff);
@@ -143,13 +148,7 @@ public class LocalFileStore implements Store {
         channel.close();
         final String[] tmp = filePath.getFileName().toString().split("\\.");
         final String doneFile = tmp[0] + System.currentTimeMillis() + "." + tmp[1];
-        Files.move(Paths.get(filePath.toAbsolutePath() + TMP), Paths.get(filePath.getParent() + "/" + doneFile));
+        Files.move(Paths.get(filePath.toAbsolutePath() + TMP), Paths.get(folderName + "/" + doneFile));
         return null;
-    }
-
-    @Override
-    public void set(final String fileName, final String... headers) {
-        // TODO Auto-generated method stub
-
     }
 }

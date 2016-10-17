@@ -20,7 +20,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.flytxt.parser.marker.LineProcessor;
-import com.flytxt.parser.marker.MarkerFactory;
 
 import lombok.Getter;
 
@@ -43,14 +42,14 @@ public class FlyReader implements Callable<FlyReader> {
 
     byte[] eol = System.lineSeparator().getBytes();
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger appLog = LoggerFactory.getLogger("applicationLog");
 
     private final Logger transLog = LoggerFactory.getLogger("transactionLog");
 
     public void set(final String folder, final LineProcessor lp) {
         this.lp = lp;
         this.folder = folder;
-        logger.debug("file reader @ " + folder);
+        appLog.debug("file reader @ " + folder);
     }
 
     public void run() {
@@ -59,29 +58,27 @@ public class FlyReader implements Callable<FlyReader> {
             try {
                 Files.createDirectories(folderP);
             } catch (final IOException e1) {
-                logger.info("could not create input folder, stopping this FlyReader ", e1);
+                appLog.info("could not create input folder, stopping this FlyReader ", e1);
                 stopRequested = true;
             }
-        logger.debug("Starting file reader @ " + folder);
+        appLog.debug("Starting file reader @ " + folder);
         final ByteBuffer buf = ByteBuffer.allocate(51200);
-        final MarkerFactory mf = new MarkerFactory();
-        mf.setMaxListSize(lp.getMaxListSize());
+
         while (!stopRequested)
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder))) {
                 for (final Path path : directoryStream) {
                     final RandomAccessFile file = new RandomAccessFile(path.toString(), "rw");
-                    logger.debug("picked up " + path.toString());
+                    appLog.debug("picked up " + path.toString());
                     try {
-                        lp.init(mf);
-                        lp.setInputFileName(path.getFileName().toString());
-                        processFile(buf, path, file.getChannel(), mf);
+                        lp.init(path.getFileName().toString());
+                        processFile(buf, path, file.getChannel());
                         buf.clear();
                         if (stopRequested) {
-                            logger.debug("shutting down Worker @ :" + folder);
+                            appLog.debug("shutting down Worker @ :" + folder);
                             break;
                         }
                     } catch (final OverlappingFileLockException e) {
-                        logger.error("Could not process " + path.toString(), e);
+                        appLog.error("Could not process " + path.toString(), e);
                     } finally {
                         file.close();
                     }
@@ -89,23 +86,23 @@ public class FlyReader implements Callable<FlyReader> {
             } catch (final Exception ex) {
                 ex.printStackTrace();
             }
-        logger.debug("Worker down " + folder);
+        appLog.debug("Worker down " + folder);
     }
 
-    private void processFile(final ByteBuffer buf, final Path path, final FileChannel file, final MarkerFactory mf) throws IOException {
+    private void processFile(final ByteBuffer buf, final Path path, final FileChannel file) throws IOException {
         final long t1 = System.currentTimeMillis();
         final long fileSize = Files.size(path);
-        readLines(file, buf, mf);
+        readLines(file, buf);
         lp.done();
         file.close();
         Files.delete(path);
         final long totalTimeTaken = System.currentTimeMillis() - t1;
-        logger.debug("total time taken: " + totalTimeTaken);
+        appLog.debug("total time taken: " + totalTimeTaken);
         transLog.debug("{},{},{}", Files.readSymbolicLink(path), fileSize, totalTimeTaken);
-        mf.printStat();
+        // mf.printstat(); TODO
     }
 
-    private final void readLines(final FileChannel file, final ByteBuffer buf, final MarkerFactory mf) throws IOException {
+    private final void readLines(final FileChannel file, final ByteBuffer buf) throws IOException {
         int readCnt;
         final byte[] data = buf.array();
         while ((readCnt = file.read(buf)) > 0) {
@@ -116,20 +113,19 @@ public class FlyReader implements Callable<FlyReader> {
                     eolPosition = getEOLPosition(data, (int) previousEolPosition + eol.length, readCnt);
                     if (eolPosition < 0) {
                         if (previousEolPosition == 0) {
-                            logger.error("Increase byte array size, current size :" + data.length);
+                            appLog.error("Increase byte array size, current size :" + data.length);
                             throw new IOException("can't process " + readCnt + " long line");
                         }
-                        readLines(file.position(file.position() - (readCnt - previousEolPosition - eol.length)), (ByteBuffer) buf.clear(), mf);
+                        readLines(file.position(file.position() - (readCnt - previousEolPosition - eol.length)), (ByteBuffer) buf.clear());
                         continue;
                     } else
                         try {
                             // final long T1 = System.nanoTime();
-                            lp.process(data, previousEolPosition == 0 ? 0 : (int) previousEolPosition + eol.length, (int) eolPosition, mf);
+                            lp.process(data, previousEolPosition == 0 ? 0 : (int) previousEolPosition + eol.length, (int) eolPosition);
                             // logger.debug("Total: " + (System.nanoTime() - T1));
-                            mf.reclaim();
                             previousEolPosition = eolPosition;
                         } catch (final IndexOutOfBoundsException e) {
-                            logger.debug("could not process : " + new String(data, 0, (int) eolPosition) + " \n cause:" + e.getMessage());
+                            appLog.debug("could not process : " + new String(data, 0, (int) eolPosition) + " \n cause:" + e.getMessage());
                         }
                 } while (eolPosition > 0);
             }
@@ -148,8 +144,8 @@ public class FlyReader implements Callable<FlyReader> {
     }
 
     public boolean canProcess(final String folderName, final String fileName) {
-        logger.debug("check " + folderName + " & " + lp.getFolder());
-        if (lp.getFolder().equals(folderName)) {
+        appLog.debug("check " + folderName + " & " + lp.getSourceFolder());
+        if (lp.getSourceFolder().equals(folderName)) {
             final String regex = lp.getFilter();
             if (regex == null)
                 return true;

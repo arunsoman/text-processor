@@ -12,54 +12,58 @@ import com.flytxt.parser.translator.TpString;
 import java.io.IOException;
 
 public class %(name) implements LineProcessor{
+	public final MarkerFactory mf = new MarkerFactory();
 	private Marker fileName = new Marker();
 	private String folderName;
+	public final String regex;
 	private String currentFileName;
-	private MarkerFactory mf;
 	private TpString tpString = new TpString();
 	private TpDate tpDate = new TpDate();
 	private TpMath tpMath = new TpMath();
 	private TpLogic tpLogic = new TpLogic();
 	private Marker line = new Marker();
-	
 	%(absProcessor)
 	
-	@Override
-     public void init(MarkerFactory mf){
-          this.mf = mf;
-          %(init)    
+	public %(name)(String folderName, String regex){
+	this.folderName = folderName;
+	this.regex=regex;
+	this.mf.setMaxListSize(%(markerSize));
+	%(initMarkers)
 	}
 	
-	public String getFolder(){
+	@Override
+     public void init(String fileName){
+          store.set(fileName);
+          byte[] tt = fileName.getBytes();
+          this.fileName = mf.createImmutable(tt, 0, tt.length);
+          %(init)
+	}
+	
+	public String getSourceFolder(){
 		return folderName;
 	}
-	
-	public void setInputFileName(String currentFileName){
-		this.currentFileName = currentFileName;
-		byte[] tt = currentFileName.getBytes();
-		this.fileName = mf.createImmutable(tt, 0, tt.length);
-	}
 	     
-	public void process(byte[] data, int startIndex, int readCnt, MarkerFactory mf) throws IOException{
-		line = mf.create(startIndex, readCnt);
+	public void process(byte[] data, int startIndex, int readCnt) throws IOException{
+		line.index = startIndex;
+          line.length = readCnt;
 		process(data);
 		translate(data);
 		store(data);
+		mf.reclaim();
 	}
 
 	public String done() throws IOException{
 		return store.done();
+		//TODO
 	}
 
 	public String getFilter(){
-		//TODO
-		return null;
+	    return this.regex;
 	}
 
-	public int getMaxListSize(){
-		//TODO
-		return 10000;
-	}
+	 public int getMaxListSize() {
+        return mf.getListSize();
+    }
 	
 	public void process(final byte[] data){
 		%(extract)

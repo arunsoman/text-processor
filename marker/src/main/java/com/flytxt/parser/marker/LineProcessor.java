@@ -4,13 +4,11 @@ import java.io.IOException;
 
 public interface LineProcessor {
 
-    String getFolder();
+    String getSourceFolder();
 
-    void setInputFileName(String currentFileName);
+    void init(String currentFileName);
 
-    void init(MarkerFactory mf);
-
-    void process(byte[] data, int startIndex, int readCnt, MarkerFactory mf) throws IOException;
+    void process(byte[] data, int startIndex, int readCnt) throws IOException;
 
     String done() throws IOException;
 

@@ -43,7 +43,7 @@ public class Processor {
 			String folder; 
 			for(LineProcessor lP: lpInstance){
 				FlyReader reader = (FlyReader)ctx.getBean("flyReader");
-				folder = lP.getFolder();
+				folder = lP.getSourceFolder();
 				reader.set(folder, lP);
 				fileReaders.add(reader);
 				executor.submit(reader);

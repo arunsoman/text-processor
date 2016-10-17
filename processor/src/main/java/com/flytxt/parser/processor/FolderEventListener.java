@@ -183,7 +183,6 @@ public class FolderEventListener {
         final File file = new File(sourceFile);
         RandomAccessFile raf = null;
         try {
-
             raf = new RandomAccessFile(file, "rw");
             Files.createSymbolicLink(Paths.get(outputUnit.outFolder.concat("/").concat(file.getName())), Paths.get(sourceFile));
         } catch (final IOException e) {

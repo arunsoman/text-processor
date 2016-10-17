@@ -38,15 +38,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
 import com.flytxt.parser.marker.LineProcessor;
-import com.flytxt.parser.marker.MarkerFactory;
 
 @Component
 @ComponentScan
 public class Utils {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private Object singleVmString;
 
     public String createFile(final String loc, final String content, final String fileName) throws IOException {
         logger.debug("createFile(loc=" + loc + "fileName=" + fileName + ")");
@@ -70,12 +67,12 @@ public class Utils {
         URL[] urls = new URL[] { url };
         URLClassLoader loader = new URLClassLoader(urls);
         final Class<LineProcessor> loadClass = (Class<LineProcessor>) loader.loadClass(className);
-        LineProcessor lp = loadClass.newInstance();
+        LineProcessor lp = loadClass.getDeclaredConstructor(String.class, String.class).newInstance("/tmp/java/INReacharge","(.*)");
         loader.close();
         return lp;
     }
 
-    public String complie(final String src, final String dest) throws Exception {
+    public String compile(final String src, final String dest) throws Exception {
         logger.debug("compile(src=" + src + " Dest=" + dest + ")");
         try {
             createDir(dest);
@@ -169,11 +166,10 @@ public class Utils {
     }
 
     public String testRunLp(LineProcessor lp, String[] data) throws IOException {
-        MarkerFactory mf = new MarkerFactory();
-        lp.init(mf);
+        lp.init("");
         for (String line : data) {
             byte[] datum = line.getBytes();
-            lp.process(datum, 0, datum.length, mf);
+            lp.process(datum, 0, datum.length);
         }
         return lp.done();
     }
@@ -208,12 +204,15 @@ public class Utils {
     }
 
     public String replaceWithConsoleStore(String absProcessor) {
-        int toBeReplacedEnd = absProcessor.indexOf("Store("), toBeReplacedStart;
-        for (toBeReplacedStart = toBeReplacedEnd; toBeReplacedStart > 0; toBeReplacedStart--)
-            if (absProcessor.charAt(toBeReplacedStart) == ' ')
-                break;
-        String toBeReplaced = absProcessor.substring(toBeReplacedStart + 1, toBeReplacedEnd);
-        return absProcessor.replace(toBeReplaced, "Console");
+        if (absProcessor.contains("hdfsStore") || absProcessor.contains("HdfsStore")) {
+            int toBeReplacedEnd = absProcessor.indexOf("Store("), toBeReplacedStart;
+            for (toBeReplacedStart = toBeReplacedEnd; toBeReplacedStart > 0; toBeReplacedStart--)
+                if (absProcessor.charAt(toBeReplacedStart) == ' ')
+                    break;
+            String toBeReplaced = absProcessor.substring(toBeReplacedStart + 1, toBeReplacedEnd);
+            return absProcessor.replace(toBeReplaced, "Console");
+        }
+        return absProcessor;
 
     }
 }

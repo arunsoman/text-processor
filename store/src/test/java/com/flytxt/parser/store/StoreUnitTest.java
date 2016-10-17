@@ -23,7 +23,8 @@ public class StoreUnitTest {
     public void test() {
         final String aon = "aon";
         final String age = "age";
-        final Store store = new LocalFileStore("/tmp/out/my.csv", aon, age);
+        final Store store = new LocalFileStore("/tmp/out/", aon, age);
+        store.set("my.csv");
         final String str = "10,twenty";
         final byte[] strB = str.getBytes();
         final MarkerFactory mf = getMf(str.split(",").length);

@@ -30,7 +30,6 @@ public class SearchLookupPerfTest {
             File file = new File(classLoader.getResource("searchdata.csv").getFile());
             FileReader fileReader = new FileReader(file);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
-            StringBuffer stringBuffer = new StringBuffer();
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 String[] tt = line.split(",");
@@ -50,6 +49,7 @@ public class SearchLookupPerfTest {
         System.out.println("total time nano:" + (end - start) + " count: " + data.size() + " inserts/sec:" + ((end - start) / data.size()));
 
         start = System.currentTimeMillis();
+        @SuppressWarnings("unused")
         String str;
         for (Datum d : data)
             str = search.get(d.key);

@@ -36,7 +36,7 @@ public class ParserController {
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
         headers.add("Pragma", "no-cache");
         try {
-            output = parserDomain.compileNtest(cNt.getName(), cNt.getInit(), cNt.getAbsProcessor(), cNt.getExtract(), cNt.getTransformation(), cNt.getStore(), cNt.getType(), cNt.getSample());
+            output = parserDomain.compileNtest(cNt);
         } catch (Exception e) {
             output = e.getMessage();
         }
@@ -47,7 +47,7 @@ public class ParserController {
     public @ResponseBody ResponseEntity<InputStreamResource> getJar(@RequestParam("host") final String host) {
 
         final HttpHeaders headers = new HttpHeaders();
-        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Cache-Control", "no-cache");
         headers.add("Pragma", "no-cache");
         headers.add("Accept", "application/java-archive");
         headers.add("Expires", "0");

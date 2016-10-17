@@ -1,0 +1,22 @@
+spring:
+  application:
+        name: remoteCompiler
+  datasource:
+        url: jdbc:mysql://192.168.14.60:3306/tpe?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+        username: rte
+        password: bullet
+        driverClassName: com.mysql.jdbc.Driver
+
+hostname: demo
+
+liquibase:
+  enabled: false
+
+server:
+  port: 9002
+
+loc:
+  jarHome: /tmp/jar/
+  scriptHome: /tmp/scripts/
+  javaHome: /tmp/java/
+  classHome: /tmp/class/

@@ -5,13 +5,13 @@ import org.slf4j.LoggerFactory;
 
 public class MarkerFactory {
 
-    private final FlyPool<Marker> markerPool = new FlyPool<Marker>();
+    private final FlyPool<Marker> markerPool = new FlyPool<>();
 
-    private final FlyPool<FlyList<Marker>> markerListPool = new FlyPool<FlyList<Marker>>();
+    private final FlyPool<FlyList<Marker>> markerListPool = new FlyPool<>();
 
-    private final FlyPool<ImmutableMarker> markerImmutablePool = new FlyPool<ImmutableMarker>();
+    private final FlyPool<ImmutableMarker> markerImmutablePool = new FlyPool<>();
 
-    private final FlyPool<FlyList<ImmutableMarker>> markerImmutableListPool = new FlyPool<FlyList<ImmutableMarker>>();
+    private final FlyPool<FlyList<ImmutableMarker>> markerImmutableListPool = new FlyPool<>();
 
     private int reused;
 
@@ -25,15 +25,19 @@ public class MarkerFactory {
 
     private int listSize;
 
+
+    public int getListSize() {
+        return listSize;
+    }
+
     public Marker create(final int index, final int length) {
         Marker m = markerPool.peek();
         if (m == null) {
             m = new Marker();
             markerPool.add(m);
             created++;
-        } else {
+        } else
             reused++;
-        }
         m.index = index;
         m.length = length;
         return m;
@@ -54,7 +58,7 @@ public class MarkerFactory {
     public FlyList<Marker> getArrayList() {
         FlyList<Marker> list = markerListPool.peek();
         if (list == null) {
-            list = new FlyList<Marker>(listSize);
+            list = new FlyList<>(listSize);
             markerListPool.add(list);
             createdList++;
         } else {
@@ -66,21 +70,18 @@ public class MarkerFactory {
 
     public void setMaxListSize(final int maxListSize) {
         listSize = maxListSize;
-
     }
 
-	public Marker createImmutable(byte[] data, int index, int length) {
-		ImmutableMarker m = markerImmutablePool.peek();
+    public Marker createImmutable(byte[] data, int index, int length) {
+        ImmutableMarker m = markerImmutablePool.peek();
         if (m == null) {
             m = new ImmutableMarker(data);
             markerImmutablePool.add(m);
             created++;
-        } else {
+        } else
             reused++;
-
-        }
         m.index = index;
         m.length = length;
         return m;
-	}
+    }
 }

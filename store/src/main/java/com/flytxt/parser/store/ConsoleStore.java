@@ -12,10 +12,8 @@ public class ConsoleStore implements Store {
 
     private final StringBuilder result = new StringBuilder();
 
-    @Override
-    public void set(final String fileName, final String... headers) {
+    public ConsoleStore(String... headers) {
         this.headers = headers;
-
     }
 
     @Override
@@ -29,5 +27,11 @@ public class ConsoleStore implements Store {
     @Override
     public String done() throws IOException {
         return result.toString();
+    }
+
+    @Override
+    public void set(String fileName) {
+        // TODO Auto-generated method stub
+
     }
 }
