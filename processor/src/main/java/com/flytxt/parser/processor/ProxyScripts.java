@@ -17,7 +17,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 
 import com.flytxt.parser.marker.LineProcessor;
-import com.flytxt.parser.marker.MarkerFactory;
 import com.flytxt.parser.processor.FolderEventListener.Watch;
 
 import lombok.Data;
@@ -68,7 +67,7 @@ public class ProxyScripts {
                         else {
                             @SuppressWarnings("unchecked")
                             final Class<LineProcessor> loadClass = (Class<LineProcessor>) loader.loadClass(aClass);
-                            lps.add(loadClass.getDeclaredConstructor(MarkerFactory.class, String.class, String.class).newInstance());
+                            lps.add(loadClass.newInstance());
                         }
                     }
                 return;

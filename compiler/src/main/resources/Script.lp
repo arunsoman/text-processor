@@ -4,6 +4,7 @@ import com.flytxt.parser.marker.LineProcessor;
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
 import com.flytxt.parser.store.ConsoleStore;
+import com.flytxt.parser.store.LocalFileStore;
 import com.flytxt.parser.store.Store;
 import com.flytxt.parser.translator.TpDate;
 import com.flytxt.parser.translator.TpLogic;
@@ -14,9 +15,6 @@ import java.io.IOException;
 public class %(name) implements LineProcessor{
 	public final MarkerFactory mf = new MarkerFactory();
 	private Marker fileName = new Marker();
-	private String folderName;
-	public final String regex;
-	private String currentFileName;
 	private TpString tpString = new TpString();
 	private TpDate tpDate = new TpDate();
 	private TpMath tpMath = new TpMath();
@@ -24,9 +22,7 @@ public class %(name) implements LineProcessor{
 	private Marker line = new Marker();
 	%(absProcessor)
 	
-	public %(name)(String folderName, String regex){
-	this.folderName = folderName;
-	this.regex=regex;
+	public %(name)(){
 	this.mf.setMaxListSize(%(markerSize));
 	%(initMarkers)
 	}

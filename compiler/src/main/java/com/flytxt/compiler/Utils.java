@@ -67,7 +67,7 @@ public class Utils {
         URL[] urls = new URL[] { url };
         URLClassLoader loader = new URLClassLoader(urls);
         final Class<LineProcessor> loadClass = (Class<LineProcessor>) loader.loadClass(className);
-        LineProcessor lp = loadClass.getDeclaredConstructor(String.class, String.class).newInstance("/tmp/java/INReacharge","(.*)");
+        LineProcessor lp = loadClass.getDeclaredConstructor().newInstance();
         loader.close();
         return lp;
     }

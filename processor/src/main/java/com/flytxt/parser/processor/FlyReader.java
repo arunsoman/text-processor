@@ -92,13 +92,14 @@ public class FlyReader implements Callable<FlyReader> {
     private void processFile(final ByteBuffer buf, final Path path, final FileChannel file) throws IOException {
         final long t1 = System.currentTimeMillis();
         final long fileSize = Files.size(path);
+        final String inputFile = Files.readSymbolicLink(path).toString();
         readLines(file, buf);
         lp.done();
         file.close();
         Files.delete(path);
         final long totalTimeTaken = System.currentTimeMillis() - t1;
         appLog.debug("total time taken: " + totalTimeTaken);
-        transLog.debug("{},{},{}", Files.readSymbolicLink(path), fileSize, totalTimeTaken);
+        transLog.debug("{},{},{}", inputFile, fileSize, totalTimeTaken);
         // mf.printstat(); TODO
     }
 

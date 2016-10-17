@@ -13,7 +13,7 @@ liquibase:
   enabled: false
 
 server:
-  port: 9002
+  port: 9000
 
 loc:
   jarHome: /tmp/jar/
