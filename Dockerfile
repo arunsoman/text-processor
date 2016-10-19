@@ -24,8 +24,8 @@ RUN echo 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' >> /
 
 RUN update-java-alternatives -s java-8-oracle
 
-RUN apt-get install maven
-RUN apt-get install git-all
+RUN apt-get -y install maven
+RUN apt-get -y install git-all
 
 RUN echo "export JAVA_HOME=/usr/lib/jvm/java-8-oracle" >> ~/.bashrc
 
