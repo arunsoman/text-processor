@@ -24,12 +24,15 @@ RUN echo 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' >> /
 
 RUN update-java-alternatives -s java-8-oracle
 
-RUN sudo apt-get install maven
+RUN apt-get install maven
+RUN apt-get install git-all
 
 RUN echo "export JAVA_HOME=/usr/lib/jvm/java-8-oracle" >> ~/.bashrc
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-RUN mvn package -Dmaven.test.skip=true
+RUN git clone https://github.com/arunsoman/text-processor.git
+
+RUN cd text-processor && mvn package -Dmaven.test.skip=true
 
 ADD compiler/target/compiler.jar app.jar
 RUN sh -c 'touch /app.jar'
