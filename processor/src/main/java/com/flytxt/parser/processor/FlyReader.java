@@ -121,9 +121,7 @@ public class FlyReader implements Callable<FlyReader> {
                         continue;
                     } else
                         try {
-                            // final long T1 = System.nanoTime();
                             lp.process(data, previousEolPosition == 0 ? 0 : (int) previousEolPosition + eol.length, (int) eolPosition);
-                            // logger.debug("Total: " + (System.nanoTime() - T1));
                             previousEolPosition = eolPosition;
                         } catch (final IndexOutOfBoundsException e) {
                             appLog.debug("could not process : " + new String(data, 0, (int) eolPosition) + " \n cause:" + e.getMessage());
