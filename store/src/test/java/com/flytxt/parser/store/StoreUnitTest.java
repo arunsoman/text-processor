@@ -2,6 +2,7 @@ package com.flytxt.parser.store;
 
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -67,6 +68,10 @@ public class StoreUnitTest {
             reader.close();
         } catch (final IOException e) {
             fail(e.getMessage());
+        } finally {
+            File testFile = new File("/tmp/test");
+            testFile.delete();
+
         }
     }
 }

@@ -42,6 +42,8 @@ public class Job {
     @Column(name = "inputpath")
     private String inputPath;
 
+    private String outputPath;
+
     private String regex;
 
     private String platform;

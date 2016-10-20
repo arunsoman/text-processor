@@ -66,6 +66,7 @@ public class Utils {
         URL url = file.toURI().toURL();
         URL[] urls = new URL[] { url };
         URLClassLoader loader = new URLClassLoader(urls);
+        @SuppressWarnings("unchecked")
         final Class<LineProcessor> loadClass = (Class<LineProcessor>) loader.loadClass(className);
         LineProcessor lp = loadClass.getDeclaredConstructor().newInstance();
         loader.close();
@@ -158,8 +159,12 @@ public class Utils {
         BufferedReader reader = new BufferedReader(new FileReader(file));
         StringBuilder content = new StringBuilder();
         String line = null;
-        while ((line = reader.readLine()) != null)
+        while ((line = reader.readLine()) != null) {
             content.append(line).append("\n");
+            if (line.equals("private Marker line = new Marker();"))
+                content.append("private String folderName = \"").append("/tmp/java/INRecharge\";").append("\n");
+            //TODO
+        }
         reader.close();
 
         return content.toString();

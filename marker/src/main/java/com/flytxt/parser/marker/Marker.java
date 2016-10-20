@@ -24,8 +24,10 @@ public class Marker {
             } else
                 currentIndex++;
         }
-        if (lastIndex < length + 1 && indexOfMarker[index] == count)
-            markers[index] = mf.create(lastIndex, this.length - lastIndex);
+        if (lastIndex < length + 1 && indexOfMarker[index] == count) {
+            markers[index].index = lastIndex;
+            markers[index].length = this.length - lastIndex;
+        }
     }
 
     public Marker splitAndGetMarker(final byte[] data, final byte[] token, final int indexOfMarker, final MarkerFactory mf) {

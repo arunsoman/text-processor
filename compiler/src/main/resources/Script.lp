@@ -20,11 +20,11 @@ public class %(name) implements LineProcessor{
 	private TpMath tpMath = new TpMath();
 	private TpLogic tpLogic = new TpLogic();
 	private Marker line = new Marker();
+	private String folderName = "/tmp/java/INRecharge";
 	%(absProcessor)
 	
 	public %(name)(){
-	this.mf.setMaxListSize(%(markerSize));
-	%(initMarkers)
+	%(init)
 	}
 	
 	@Override
@@ -32,7 +32,6 @@ public class %(name) implements LineProcessor{
           store.set(fileName);
           byte[] tt = fileName.getBytes();
           this.fileName = mf.createImmutable(tt, 0, tt.length);
-          %(init)
 	}
 	
 	public String getSourceFolder(){
