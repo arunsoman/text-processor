@@ -21,6 +21,6 @@ jdk:
   - oraclejdk8
 
 before_script:
-  - bash build-rump-platform.sh && build-java-package.sh
+  - bash unikernel/build-rump-platform.sh && unikernel/build-java-package.sh
 
 script: mvn clean verify
