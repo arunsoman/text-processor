@@ -1,12 +1,13 @@
-import com.flytxt.parser.lookup.Lookup;
-import com.flytxt.parser.lookup.PrefixLookupIgnoreCase;
+import com.flytxt.parser.marker.ImmutableMarker;
 import com.flytxt.parser.marker.LineProcessor;
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
+import com.flytxt.parser.lookup.Lookup;
+import com.flytxt.parser.lookup.PrefixLookupIgnoreCase;
 import com.flytxt.parser.store.ConsoleStore;
 import com.flytxt.parser.store.LocalFileStore;
-import com.flytxt.parser.store.StreamStore;
 import com.flytxt.parser.store.Store;
+import com.flytxt.parser.store.StreamStore;
 import com.flytxt.parser.translator.TpConstant;
 import com.flytxt.parser.translator.TpDate;
 import com.flytxt.parser.translator.TpLogic;
@@ -16,7 +17,7 @@ import java.io.IOException;
 
 public class %(name) implements LineProcessor{
 	public final MarkerFactory mf = new MarkerFactory();
-	private Marker fileName = new Marker();
+	private ImmutableMarker fileName;
 	private TpString tpString = new TpString();
 	private TpDate tpDate = new TpDate();
 	private TpMath tpMath = new TpMath();
