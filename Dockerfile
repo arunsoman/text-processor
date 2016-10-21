@@ -36,7 +36,7 @@ RUN cd text-processor && mvn package -Dmaven.test.skip=true
 
 RUN pwd && ls -l
 
-ADD  /text-processor/compiler/target/compiler.jar /
+RUN cp  /text-processor/compiler/target/compiler.jar .
 
 RUN rm -rf text-processor
 
