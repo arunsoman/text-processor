@@ -34,6 +34,10 @@ RUN git clone https://github.com/arunsoman/text-processor.git
 
 RUN cd text-processor && mvn package -Dmaven.test.skip=true
 
-ADD compiler/target/compiler.jar app.jar
-RUN sh -c 'touch /app.jar'
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+RUN pwd && ls -l
+
+RUN cp  /text-processor/compiler/target/compiler.jar .
+
+RUN rm -rf text-processor
+
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/compiler.jar"]

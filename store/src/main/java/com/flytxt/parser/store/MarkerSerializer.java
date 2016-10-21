@@ -2,9 +2,8 @@ package com.flytxt.parser.store;
 
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
-
-import io.mappedbus.MappedBusMessage;
-import io.mappedbus.MemoryMappedFile;
+import com.github.arunsoman.ipc.mappedbus.MappedBusMessage;
+import com.github.arunsoman.ipc.mappedbus.MemoryMappedFile;
 
 public class MarkerSerializer implements MappedBusMessage {
 

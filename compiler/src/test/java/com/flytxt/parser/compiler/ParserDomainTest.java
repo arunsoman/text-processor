@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.flytxt.compiler.ParserDomain;
@@ -21,6 +22,7 @@ import com.flytxt.compiler.domain.CompileNTest;
 @EnableJpaRepositories("com.flytxt.compiler.repo")
 @EntityScan("com.flytxt.compiler.domain")
 @ComponentScan("com.flytxt.compiler")
+@ActiveProfiles("test")
 public class ParserDomainTest {
 
     @Autowired
