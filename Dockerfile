@@ -36,7 +36,7 @@ RUN cd text-processor && mvn package -Dmaven.test.skip=true
 
 ADD text-processor/compiler/target/compiler.jar app.jar
 RUN sh -c 'touch /app.jar'
-
+RUN pwd && ls -l
 RUN rm -rf text-processor
 
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
