@@ -10,18 +10,6 @@
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <repositories>
-  <repository>
-    <id>sonatype-oss-public</id>
-    <url>https://oss.sonatype.org/content/groups/public/</url>
-    <releases>
-      <enabled>true</enabled>
-    </releases>
-    <snapshots>
-      <enabled>true</enabled>
-    </snapshots>
-  </repository>
-</repositories>
     <dependencies>
         <dependency>
             <groupId>com.flytxt.parser</groupId>
@@ -29,9 +17,9 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-  <groupId>com.github.arunsoman.ipc</groupId>
-  <artifactId>mapped-bus-ipc</artifactId>
-  <version>0.0.5-SNAPSHOT</version>
+            <groupId>io.mappedbus</groupId>
+            <artifactId>mappedbus</artifactId>
+            <version>0.5</version>
         </dependency>
         <dependency>
             <groupId>info.cukes</groupId>

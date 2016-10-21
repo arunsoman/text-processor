@@ -11,7 +11,8 @@ import org.junit.Test;
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
 import com.flytxt.parser.marker.TokenFactory;
-import com.github.arunsoman.ipc.mappedbus.MappedBusReader;
+
+import io.mappedbus.MappedBusReader;
 
 public class StoreUnitTest {
 
