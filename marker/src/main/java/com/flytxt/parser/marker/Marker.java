@@ -24,7 +24,7 @@ public class Marker {
             } else
                 currentIndex++;
         }
-        if (lastIndex < length + 1 && indexOfMarker[index] == count) {
+        if (lastIndex > this.index && indexOfMarker[index] == count) {
             markers[index].index = lastIndex;
             markers[index].length = this.length - lastIndex;
         }

@@ -25,7 +25,6 @@ public class MarkerFactory {
 
     private int listSize;
 
-
     public int getListSize() {
         return listSize;
     }
@@ -72,7 +71,7 @@ public class MarkerFactory {
         listSize = maxListSize;
     }
 
-    public Marker createImmutable(byte[] data, int index, int length) {
+    public ImmutableMarker createImmutable(byte[] data, int index, int length) {
         ImmutableMarker m = markerImmutablePool.peek();
         if (m == null) {
             m = new ImmutableMarker(data);
