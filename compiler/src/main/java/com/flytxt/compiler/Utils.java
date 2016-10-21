@@ -37,6 +37,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flytxt.parser.marker.LineProcessor;
 
 @Component
@@ -196,11 +198,14 @@ public class Utils {
     }
 
     public Map<String, String> parseScript(String script) {
-        String[] split = script.split("\n");
+        ObjectMapper mapper = new ObjectMapper();
         Map<String, String> scriptMap = new HashMap<>();
-        for (String key : split) {
-            int indexOf = key.indexOf("=");
-            scriptMap.put(key.substring(0, indexOf).trim(), key.substring(indexOf + 1, key.length()));
+        try {
+            scriptMap = mapper.readValue(script, new TypeReference<Map<String, String>>() {
+            });
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
         return scriptMap;
     }

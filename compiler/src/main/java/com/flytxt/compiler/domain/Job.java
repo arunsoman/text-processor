@@ -43,6 +43,10 @@ public class Job {
     @Column(name = "dk_pscript")
     private String dkPscript;
 
+    @Lob
+    @Column(name = "dkschema")
+    private String dkSchema;
+
     @PostLoad
     public void postload() {
         this.idValue = this.id;

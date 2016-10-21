@@ -12,4 +12,5 @@ import com.flytxt.compiler.domain.Job;
 public interface JobRepo extends PagingAndSortingRepository<Job, Long> {
 
     List<Job> findByhostNameAndActiveTrue(@Param("hostName") String hostName);
+
 }
