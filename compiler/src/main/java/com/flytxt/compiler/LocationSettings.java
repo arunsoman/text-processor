@@ -7,11 +7,11 @@ import java.nio.file.Paths;
 
 import javax.annotation.PostConstruct;
 
-import lombok.Data;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+
+import lombok.Data;
 
 @Configuration
 @EnableConfigurationProperties
@@ -27,6 +27,8 @@ public class LocationSettings {
 
     public String classHome = "/tmp/class/";
 
+    public String watchOutput = "/tmp/";
+
     @PostConstruct
     public void init() throws IOException {
         createDir(jarHome);
@@ -37,9 +39,8 @@ public class LocationSettings {
 
     private Path createDir(final String loc) throws IOException {
         final Path folder = Paths.get(loc);
-        if (!Files.exists(folder)) {
+        if (!Files.exists(folder))
             Files.createDirectories(folder);
-        }
         return folder;
     }
 

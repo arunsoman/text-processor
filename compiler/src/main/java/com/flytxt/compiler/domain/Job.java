@@ -25,16 +25,8 @@ public class Job {
 
     private String name;
 
-    private Long schedulingInterval;
-
-    private String startAndEndTime;
-
     @Column(name = "active")
     private boolean active;
-
-    private String startDate;
-
-    private String endDate;
 
     @Column(name = "hostname")
     private String hostName;
@@ -42,23 +34,13 @@ public class Job {
     @Column(name = "inputpath")
     private String inputPath;
 
+    @Column(name = "outputpath")
     private String outputPath;
 
     private String regex;
 
-    private String platform;
-
-    private String lastRun;
-
-    private String jobConstraint;
-
-    @Column(name = "processedfileaction")
-    private Long processedFileAction;
-
     @Lob
-    private String dkSchema;
-
-    @Lob
+    @Column(name = "dk_pscript")
     private String dkPscript;
 
     @PostLoad

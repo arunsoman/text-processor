@@ -4,13 +4,16 @@ import java.io.IOException;
 
 import com.flytxt.parser.marker.Marker;
 
+import gherkin.deps.com.google.gson.JsonArray;
+import gherkin.deps.com.google.gson.JsonObject;
+
 public class ConsoleStore implements Store {
 
     private String[] headers;
 
     public final static String TMP = ".tmp";
 
-    private final StringBuilder result = new StringBuilder();
+    JsonArray array = new JsonArray();
 
     public ConsoleStore(String... headers) {
         this.headers = headers;
@@ -18,15 +21,15 @@ public class ConsoleStore implements Store {
 
     @Override
     public void save(final byte[] data, final String fileName, final Marker... markers) throws IOException {
-        result.append('{');
+        JsonObject object = new JsonObject();
         for (int i = 0; i < markers.length; i++)
-            result.append("'").append(headers[i]).append("':'").append(markers[i].toString(markers[i].getData() == null ? data : markers[i].getData())).append("'\n");
-        result.append('}');
+            object.addProperty(headers[i], markers[i].toString(data));
+        array.add(object);
     }
 
     @Override
     public String done() throws IOException {
-        return result.toString();
+        return array.toString();
     }
 
     @Override

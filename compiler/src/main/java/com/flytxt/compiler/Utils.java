@@ -130,12 +130,9 @@ public class Utils {
                 }
                 final String folderName = entry.getParent().toString().substring(entry.getParent().toString().lastIndexOf('/') + 1);
                 if (isDirectory)
-                    // logger.debug("zip ; "+folderName+"/");
                     jarOut.putNextEntry(new ZipEntry(folderName + "/"));
                 else {
-                    // logger.debug("zip ; "+entry.toString().substring(root));
                     jarOut.putNextEntry(new ZipEntry(entry.toString().substring(root)));
-                    // logger.debug("read ; "+entry.toString());
                     jarOut.write(Files.readAllBytes(entry));
                     jarOut.closeEntry();
                 }
@@ -163,7 +160,7 @@ public class Utils {
             content.append(line).append("\n");
             if (line.equals("private Marker line = new Marker();"))
                 content.append("private String folderName = \"").append("/tmp/java/INRecharge\";").append("\n");
-            //TODO
+            // TODO
         }
         reader.close();
 

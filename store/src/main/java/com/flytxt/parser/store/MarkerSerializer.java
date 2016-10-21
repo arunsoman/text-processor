@@ -78,4 +78,56 @@ public class MarkerSerializer implements MappedBusMessage {
         sb.append(" }");
         return sb.toString();
     }
+
+    public RtEvent getEvent(RtEvent event) {
+        if (event == null)
+            event = new RtEvent();
+        event.set(data, markers);
+        return event;
+
+    }
+
+    private enum EventType {
+        AGG_AND_TIME, AGG_ONLY, TIME_ONLY, DEFAULT_STATEFULL, STATELESS;
+    };
+
+    private enum FieldType {
+        SECONDS, COUNT, AMOUNT, DATE, NAME
+    };
+
+    class RtEvent {
+
+        private EventType eventType;
+
+        private FieldType fieldType;
+
+        private String eventName;
+
+        private boolean statefull;
+
+        private boolean aggregatable;
+
+        private int eventTimeIndex;
+
+        private int newValueIndex;
+
+        private int oldValueIndex;
+
+        private int eventId;
+
+        private boolean passthrough;
+
+        public void set(byte[] data, Marker... markers) {
+            this.eventType = EventType.valueOf(markers[0].toString(data));
+            this.fieldType = FieldType.valueOf(markers[1].toString(data));
+            this.eventName = markers[2].toString(data);
+            this.statefull = Boolean.valueOf(markers[3].toString(data));
+            this.aggregatable = Boolean.valueOf(markers[4].toString(data));
+            this.eventTimeIndex = Integer.parseInt(markers[5].toString(data));
+            this.newValueIndex = Integer.parseInt(markers[6].toString(data));
+            this.oldValueIndex = Integer.parseInt(markers[7].toString(data));
+            this.eventId = Integer.parseInt(markers[8].toString(data));
+            this.passthrough = Boolean.valueOf(markers[9].toString(data));
+        }
+    }
 }
