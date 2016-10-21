@@ -21,6 +21,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -59,6 +60,7 @@
             <artifactId>guava</artifactId>
             <version>19.0</version>
         </dependency>
+
     </dependencies>
     <build>
         <plugins>
