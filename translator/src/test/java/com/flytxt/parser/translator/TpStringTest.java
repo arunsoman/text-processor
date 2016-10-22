@@ -33,7 +33,7 @@ public class TpStringTest {
         final String str = "abc";
         final byte[] data = str.getBytes();
         final Marker mocker = getMarer(str);
-        final Marker result = tpString.toUpperCase(data, mocker, mf);
+        final Marker result = tpString.toUpperCase(data, mocker);
         assertEquals(str.toUpperCase(), result.toString(result.getData()));
     }
 
@@ -42,7 +42,7 @@ public class TpStringTest {
         final String str = "ABC";
         final byte[] data = str.getBytes();
         final Marker mocker = getMarer(str);
-        final Marker result = tpString.toLowerCase(data, mocker, mf);
+        final Marker result = tpString.toLowerCase(data, mocker);
         assertEquals(str.toLowerCase(), result.toString(result.getData()));
     }
 
@@ -51,7 +51,7 @@ public class TpStringTest {
         final String str = "abc";
         final byte[] data = str.getBytes();
         final Marker mocker = getMarer(str);
-        final Marker result = tpString.toTitleCase(data, mocker, mf);
+        final Marker result = tpString.toTitleCase(data, mocker);
         assertEquals("Abc", result.toString(result.getData()));
     }
 
@@ -60,7 +60,7 @@ public class TpStringTest {
         final String str = "  abc ";
         final byte[] data = str.getBytes();
         final Marker mocker = getMarer(str);
-        final Marker result = tpString.lTrim(data, mocker, mf);
+        final Marker result = tpString.lTrim(data, mocker);
         assertEquals("abc ", result.toString(data));
     }
 
@@ -69,7 +69,7 @@ public class TpStringTest {
         final String str = "  abc ";
         final byte[] data = str.getBytes();
         final Marker mocker = getMarer(str);
-        final Marker result = tpString.rTrim(data, mocker, mf);
+        final Marker result = tpString.rTrim(data, mocker);
         assertEquals("  abc", result.toString(data));
     }
 
@@ -78,7 +78,7 @@ public class TpStringTest {
         final String str = "   ";
         final byte[] data = str.getBytes();
         final Marker mocker = getMarer(str);
-        final Marker result = tpString.lTrim(data, mocker, mf);
+        final Marker result = tpString.lTrim(data, mocker);
         assertEquals(0, result.length);
     }
 
@@ -87,7 +87,7 @@ public class TpStringTest {
         final String str = "    ";
         final byte[] data = str.getBytes();
         final Marker mocker = getMarer(str);
-        final Marker result = tpString.rTrim(data, mocker, mf);
+        final Marker result = tpString.rTrim(data, mocker);
         assertEquals(0, result.length);
     }
 
@@ -96,7 +96,7 @@ public class TpStringTest {
         final String str = "    ";
         final byte[] data = str.getBytes();
         final Marker mocker = getMarer(str);
-        final Marker result = tpString.trim(data, mocker, mf);
+        final Marker result = tpString.trim(data, mocker);
         assertEquals(0, result.length);
     }
 
@@ -105,7 +105,7 @@ public class TpStringTest {
         final String str = "     ";
         final byte[] data = str.getBytes();
         final Marker mocker = getMarer(str);
-        final Marker result = tpString.trim(data, mocker, mf);
+        final Marker result = tpString.trim(data, mocker);
         assertEquals(0, result.length);
     }
 
@@ -114,7 +114,7 @@ public class TpStringTest {
         final String str = "  r  ";
         final byte[] data = str.getBytes();
         final Marker mocker = getMarer(str);
-        final Marker result = tpString.trim(data, mocker, mf);
+        final Marker result = tpString.trim(data, mocker);
         assertEquals(str.trim(), result.toString(data));
     }
 
@@ -123,7 +123,7 @@ public class TpStringTest {
         final String str = "    r ";
         final byte[] data = str.getBytes();
         final Marker mocker = getMarer(str);
-        final Marker result = tpString.trim(data, mocker, mf);
+        final Marker result = tpString.trim(data, mocker);
         assertEquals(str.trim(), result.toString(data));
     }
 

@@ -146,7 +146,7 @@ public class LocalFileStore implements Store {
         }
         bBuff.clear();
         channel.close();
-        final String doneFile = filePath.getFileName().toString() +"_"+ System.currentTimeMillis();
+        final String doneFile = filePath.getFileName().toString() + "_" + System.currentTimeMillis();
         Files.move(Paths.get(filePath.toAbsolutePath() + TMP), Paths.get(folderName + "/" + doneFile));
         return null;
     }

@@ -17,160 +17,149 @@ import cucumber.api.java.en.When;
 
 public class TpStringFeature {
 
-	MarkerFactory mf;
+    MarkerFactory mf;
 
-	Marker marker1;
+    Marker marker1;
 
-	Marker marker2;
+    Marker marker2;
 
-	boolean result;
+    boolean result;
 
-	String resultStr;
+    String resultStr;
 
-	TpString tpString;
+    TpString tpString;
 
-	private Marker getMarker(final String str) {
-		final Marker mocker = new Marker();
-		mocker.index = 0;
-		mocker.length = str.length();
-		return mocker;
-	}
+    private Marker getMarker(final String str) {
+        final Marker mocker = new Marker();
+        mocker.index = 0;
+        mocker.length = str.length();
+        return mocker;
+    }
 
-	@Given("^marker and tpstring class$")
-	public void markerAndTpstringClass() throws Throwable {
-		mf = new MarkerFactory();
-		tpString = new TpString();
-	}
+    @Given("^marker and tpstring class$")
+    public void markerAndTpstringClass() throws Throwable {
+        mf = new MarkerFactory();
+        tpString = new TpString();
+    }
 
-	@When("^\"([^\"]*)\" provided$")
-	public void provided(@Transform(MarkerTransform.class) final MarkerHelper mh) throws Throwable {
-		resultStr = "" + tpString.length(mh.getBytes(), mh.getMarker(), mh.getMf());
-	}
+    @When("^\"([^\"]*)\" provided$")
+    public void provided(@Transform(MarkerTransform.class) final MarkerHelper mh) throws Throwable {
+        resultStr = "" + tpString.length(mh.getBytes(), mh.getMarker());
+    }
 
-	@Then("^check string result \"([^\"]*)\"$")
-	public void returnLength(String arg1) throws Throwable {
-		assertEquals(arg1, resultStr);
-	}
-	@Then("^trimmed string \"([^\"]*)\"$")
-	public void trimmedString(@Transform(StringTransform.class) final StringHelper arg1) throws Throwable {
-		assertEquals(arg1.getStr(), resultStr);
-	}
-	@When("^\"([^\"]*)\" starts with prefix \"([^\"]*)\"$")
-	public void startsWithPrefix(final String arg1, final String arg2) throws Throwable {
-		result = tpString.startsWith(arg1.getBytes(), getMarker(arg1), arg2.getBytes(), getMarker(arg2));
-	}
+    @Then("^check string result \"([^\"]*)\"$")
+    public void returnLength(String arg1) throws Throwable {
+        assertEquals(arg1, resultStr);
+    }
 
-	@Then("^check boolean result \"([^\"]*)\"$")
-	public void returnTrueIfStringStartsWithPrefix(final String arg1) throws Throwable {
-		assertEquals(arg1.equals("Y"), result);
-	}
+    @Then("^trimmed string \"([^\"]*)\"$")
+    public void trimmedString(@Transform(StringTransform.class) final StringHelper arg1) throws Throwable {
+        assertEquals(arg1.getStr(), resultStr);
+    }
 
-	@When("^convert to upperCase\"([^\"]*)\"$")
-	public void convertToUpperCase(final String arg1) throws Throwable {
-		Marker upperCase = tpString.toUpperCase(arg1.getBytes(), getMarker(arg1), mf);
-		resultStr = upperCase.toString(upperCase.getData());
-	}
+    @When("^\"([^\"]*)\" starts with prefix \"([^\"]*)\"$")
+    public void startsWithPrefix(final String arg1, final String arg2) throws Throwable {
+        result = tpString.startsWith(arg1.getBytes(), getMarker(arg1), arg2.getBytes(), getMarker(arg2));
+    }
 
-	@When("^convert to lowerCase \"([^\"]*)\"$")
-	public void convertToLowerCase(final String arg1) throws Throwable {
-		Marker upperCase = tpString.toLowerCase(arg1.getBytes(), getMarker(arg1), mf);
-		resultStr = upperCase.toString(upperCase.getData());
-	}
+    @Then("^check boolean result \"([^\"]*)\"$")
+    public void returnTrueIfStringStartsWithPrefix(final String arg1) throws Throwable {
+        assertEquals(arg1.equals("Y"), result);
+    }
 
-	@When("^conver to titleCase\"([^\"]*)\"$")
-	public void converToTitleCase(final String arg1) throws Throwable {
-		Marker upperCase = tpString.toTitleCase(arg1.getBytes(), getMarker(arg1), mf);
-		byte[] data = (upperCase.getData()==null)?arg1.getBytes():upperCase.getData();
-		resultStr = upperCase.toString(data);
-	}
+    @When("^convert to upperCase\"([^\"]*)\"$")
+    public void convertToUpperCase(final String arg1) throws Throwable {
+        Marker upperCase = tpString.toUpperCase(arg1.getBytes(), getMarker(arg1));
+        resultStr = upperCase.toString(upperCase.getData());
+    }
 
-	@When("^\"([^\"]*)\" with leading whitespace is provided$")
-	public void withLeadingWhitespaceIsProvided(@Transform(MarkerTransform.class) final MarkerHelper mh)
-			throws Throwable {
-		resultStr = tpString.lTrim(mh.getBytes(), mh.getMarker(), mh.getMf()).toString(mh.getBytes());
-	}
+    @When("^convert to lowerCase \"([^\"]*)\"$")
+    public void convertToLowerCase(final String arg1) throws Throwable {
+        Marker upperCase = tpString.toLowerCase(arg1.getBytes(), getMarker(arg1));
+        resultStr = upperCase.toString(upperCase.getData());
+    }
 
-	@Then("^returns string without leading whitespaces \"([^\"]*)\"$")
-	public void returnsStringWithoutLeadingWhitespaces(@Transform(StringTransform.class) final StringHelper arg1)
-			throws Throwable {
-		assertEquals(arg1.getStr(), resultStr);
-	}
+    @When("^conver to titleCase\"([^\"]*)\"$")
+    public void converToTitleCase(final String arg1) throws Throwable {
+        Marker upperCase = tpString.toTitleCase(arg1.getBytes(), getMarker(arg1));
+        byte[] data = (upperCase.getData() == null) ? arg1.getBytes() : upperCase.getData();
+        resultStr = upperCase.toString(data);
+    }
 
-	@When("^\"([^\"]*)\" with trailing whitespaces provided$")
-	public void withTrailingWhitespacesProvided(@Transform(MarkerTransform.class) final MarkerHelper mh)
-			throws Throwable {
-		resultStr = tpString.rTrim(mh.getBytes(), mh.getMarker(), mh.getMf()).toString(mh.getBytes());
-	}
+    @When("^\"([^\"]*)\" with leading whitespace is provided$")
+    public void withLeadingWhitespaceIsProvided(@Transform(MarkerTransform.class) final MarkerHelper mh) throws Throwable {
+        resultStr = tpString.lTrim(mh.getBytes(), mh.getMarker()).toString(mh.getBytes());
+    }
 
-	@Then("^return string without trailing whilespaces \"([^\"]*)\"$")
-	public void returnStringWithoutTrailingWhilespaces(@Transform(StringTransform.class) final StringHelper arg1)
-			throws Throwable {
-		assertEquals(arg1.getStr(), resultStr);
-	}
+    @Then("^returns string without leading whitespaces \"([^\"]*)\"$")
+    public void returnsStringWithoutLeadingWhitespaces(@Transform(StringTransform.class) final StringHelper arg1) throws Throwable {
+        assertEquals(arg1.getStr(), resultStr);
+    }
 
-	@When("^\"([^\"]*)\" with whitespace in beginning or end is provided$")
-	public void withWhitespaceInBeginningOrEndIsProvided(@Transform(MarkerTransform.class) final MarkerHelper mh)
-			throws Throwable {
-		resultStr = tpString.trim(mh.getBytes(), mh.getMarker(), mh.getMf()).toString(mh.getBytes());
-	}
+    @When("^\"([^\"]*)\" with trailing whitespaces provided$")
+    public void withTrailingWhitespacesProvided(@Transform(MarkerTransform.class) final MarkerHelper mh) throws Throwable {
+        resultStr = tpString.rTrim(mh.getBytes(), mh.getMarker()).toString(mh.getBytes());
+    }
 
-	@Then("^return string with no whitespaces at start or end \"([^\"]*)\"$")
-	public void returnStringWithNoWhitespacesAtStartOrEnd(@Transform(StringTransform.class) final StringHelper arg1)
-			throws Throwable {
-		assertEquals(arg1.getStr(), resultStr);
-	}
+    @Then("^return string without trailing whilespaces \"([^\"]*)\"$")
+    public void returnStringWithoutTrailingWhilespaces(@Transform(StringTransform.class) final StringHelper arg1) throws Throwable {
+        assertEquals(arg1.getStr(), resultStr);
+    }
 
-	@When("^\"([^\"]*)\" contains \"([^\"]*)\"$")
-	public void contains(final String arg1, final String arg2) throws Throwable {
-		result = tpString.contains(arg1.getBytes(), getMarker(arg1), arg2.getBytes(), getMarker(arg2), mf);
-	}
+    @When("^\"([^\"]*)\" with whitespace in beginning or end is provided$")
+    public void withWhitespaceInBeginningOrEndIsProvided(@Transform(MarkerTransform.class) final MarkerHelper mh) throws Throwable {
+        resultStr = tpString.trim(mh.getBytes(), mh.getMarker()).toString(mh.getBytes());
+    }
 
-	@When("^\"([^\"]*)\" contains \"([^\"]*)\" ignore case$")
-	public void containsIgnoreCase(final String arg1, final String arg2) throws Throwable {
-		result = tpString.containsIgnoreCase(arg1.getBytes(), getMarker(arg1), arg2.getBytes(), getMarker(arg2), mf);
-	}
+    @Then("^return string with no whitespaces at start or end \"([^\"]*)\"$")
+    public void returnStringWithNoWhitespacesAtStartOrEnd(@Transform(StringTransform.class) final StringHelper arg1) throws Throwable {
+        assertEquals(arg1.getStr(), resultStr);
+    }
 
-	@When("^\"([^\"]*)\" endsWith \"([^\"]*)\"$")
-	public void endswith(@Transform(MarkerTransform.class) final MarkerHelper mh,
-			@Transform(MarkerTransform.class) final MarkerHelper mh2) throws Throwable {
-		result = tpString.endsWith(mh.getBytes(), mh.getMarker(), mh2.getBytes(), mh2.getMarker(), mh.getMf());
-	}
+    @When("^\"([^\"]*)\" contains \"([^\"]*)\"$")
+    public void contains(final String arg1, final String arg2) throws Throwable {
+        result = tpString.contains(arg1.getBytes(), getMarker(arg1), arg2.getBytes(), getMarker(arg2));
+    }
 
-	@When("^\"([^\"]*)\" endsWith \"([^\"]*)\" ignore case$")
-	public void endswithIgnoreCase(@Transform(MarkerTransform.class) final MarkerHelper mh,
-			@Transform(MarkerTransform.class) final MarkerHelper mh2) throws Throwable {
-		result = tpString.endsWithIgnore(mh.getBytes(), mh.getMarker(), mh2.getBytes(), mh2.getMarker(), mh.getMf());
-	}
+    @When("^\"([^\"]*)\" contains \"([^\"]*)\" ignore case$")
+    public void containsIgnoreCase(final String arg1, final String arg2) throws Throwable {
+        result = tpString.containsIgnoreCase(arg1.getBytes(), getMarker(arg1), arg2.getBytes(), getMarker(arg2));
+    }
 
-	@When("^\"([^\"]*)\" is given and \"([^\"]*)\" chars to be extracted from head$")
-	public void isGivenAndCharsToBeExtractedFromHead(@Transform(MarkerTransform.class) final MarkerHelper mh, String n)
-			throws Throwable {
-		try {
-			Marker resultM = tpString.extractLeading(mh.getBytes(), mh.getMarker(), Integer.parseInt(n), mh.getMf());
-			resultStr = resultM.toString(resultM.getData() == null ? mh.getBytes() : resultM.getData());
-		} catch (RuntimeException e) {
-			resultStr = "";
-		}
-	}
+    @When("^\"([^\"]*)\" endsWith \"([^\"]*)\"$")
+    public void endswith(@Transform(MarkerTransform.class) final MarkerHelper mh, @Transform(MarkerTransform.class) final MarkerHelper mh2) throws Throwable {
+        result = tpString.endsWith(mh.getBytes(), mh.getMarker(), mh2.getBytes(), mh2.getMarker());
+    }
 
-	@When("^\"([^\"]*)\" is given and \"([^\"]*)\" chars to be extracted from trail$")
-	public void isGivenAndCharsToBeExtractedFromTrail(@Transform(MarkerTransform.class) final MarkerHelper mh, String n)
-			throws Throwable {
-		try {
-			Marker extractTrailing = tpString.extractTrailing(mh.getBytes(), mh.getMarker(), Integer.parseInt(n),
-					mh.getMf());
-			resultStr = extractTrailing
-					.toString(extractTrailing.getData() == null ? mh.getBytes() : extractTrailing.getData());
+    @When("^\"([^\"]*)\" endsWith \"([^\"]*)\" ignore case$")
+    public void endswithIgnoreCase(@Transform(MarkerTransform.class) final MarkerHelper mh, @Transform(MarkerTransform.class) final MarkerHelper mh2) throws Throwable {
+        result = tpString.endsWithIgnore(mh.getBytes(), mh.getMarker(), mh2.getBytes(), mh2.getMarker());
+    }
 
-		} catch (RuntimeException e) {
-			resultStr = "";
-		}
-	}
+    @When("^\"([^\"]*)\" is given and \"([^\"]*)\" chars to be extracted from head$")
+    public void isGivenAndCharsToBeExtractedFromHead(@Transform(MarkerTransform.class) final MarkerHelper mh, String n) throws Throwable {
+        try {
+            Marker resultM = tpString.extractLeading(mh.getBytes(), mh.getMarker(), Integer.parseInt(n));
+            resultStr = resultM.toString(resultM.getData() == null ? mh.getBytes() : resultM.getData());
+        } catch (RuntimeException e) {
+            resultStr = "";
+        }
+    }
 
-	@When("^two markers has to be merged \"([^\"]*)\" and \"([^\"]*)\"$")
-	public void twoMarkersHasToBeMergedAnd(@Transform(MarkerTransform.class) final MarkerHelper mh,
-			@Transform(MarkerTransform.class) final MarkerHelper mh2) throws Throwable {
-		Marker merge = tpString.merge(mh.getBytes(), mh.getMarker(), mh2.getBytes(), mh2.getMarker(), mh.getMf());
-		resultStr = merge.toString(merge.getData());
-	}
+    @When("^\"([^\"]*)\" is given and \"([^\"]*)\" chars to be extracted from trail$")
+    public void isGivenAndCharsToBeExtractedFromTrail(@Transform(MarkerTransform.class) final MarkerHelper mh, String n) throws Throwable {
+        try {
+            Marker extractTrailing = tpString.extractTrailing(mh.getBytes(), mh.getMarker(), Integer.parseInt(n));
+            resultStr = extractTrailing.toString(extractTrailing.getData() == null ? mh.getBytes() : extractTrailing.getData());
+
+        } catch (RuntimeException e) {
+            resultStr = "";
+        }
+    }
+
+    @When("^two markers has to be merged \"([^\"]*)\" and \"([^\"]*)\"$")
+    public void twoMarkersHasToBeMergedAnd(@Transform(MarkerTransform.class) final MarkerHelper mh, @Transform(MarkerTransform.class) final MarkerHelper mh2) throws Throwable {
+        Marker merge = tpString.merge(mh.getBytes(), mh.getMarker(), mh2.getBytes(), mh2.getMarker());
+        resultStr = merge.toString(merge.getData());
+    }
 }

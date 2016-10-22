@@ -52,14 +52,22 @@ public class ParserDomain {
         String createSingleVM = utils.createSingleVM();
         Map<String, String> values = new HashMap<>();
         StrSubstitutor sub = null;
+        StrSubstitutor sublp2 = null;
         for (Job job : jobFilter) {
             values = utils.parseScript(job.getDkPscript());
             values.put("name", job.getName());
+            values.put("regex", job.getRegex());
+            values.put("outputfolder", job.getOutputPath());
+            values.put("hostname", job.getHostName());
+            sublp2 = new StrSubstitutor(values, "%(", ")");
+
+            String linkLocation = sublp2.replace(loc.watchOutput);
+            values.put("inputFolder", linkLocation);
             sub = new StrSubstitutor(values, "%(", ")");
             String result = sub.replace(createSingleVM);
+
             utils.createFile(loc.javaHome + host, result, job.getName() + ".java");
-            sbWatch.append("new Watch(\"").append(job.getInputPath()).append("\",").append(job.getRegex() == null ? null : "\"" + job.getRegex() + "\"").append(",\"").append(loc.javaHome)
-            .append(job.getName()).append("\")");
+            sbWatch.append("new Watch(\"").append(job.getInputPath()).append("\",").append("\"" + job.getRegex() + "\"").append(",\"").append(linkLocation).append("\")");
             sb.append("list.add(").append(sbWatch.toString()).append(");");
             sbWatch.delete(0, sbWatch.length());
         }

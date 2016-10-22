@@ -40,7 +40,7 @@ public class ParserController {
         } catch (Exception e) {
             output = e.getMessage();
         }
-        return ResponseEntity.ok().headers(headers).contentType(MediaType.parseMediaType("text/plain")).body(output);
+        return ResponseEntity.ok().headers(headers).contentType(MediaType.parseMediaType("application/json")).body(output);
     }
 
     @RequestMapping(path = "/getJar", method = RequestMethod.GET)

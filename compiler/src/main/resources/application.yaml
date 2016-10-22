@@ -20,3 +20,4 @@ loc:
   scriptHome: /tmp/scripts/
   javaHome: /tmp/java/
   classHome: /tmp/class/
+  watchOutput: /tmp/%(hostname)/%(name)/

@@ -121,10 +121,10 @@ public class FlyReader implements Callable<FlyReader> {
                         continue;
                     } else
                         try {
-                            lp.process(data, previousEolPosition == 0 ? 0 : (int) previousEolPosition + eol.length, (int) eolPosition);
+                            lp.process(data, previousEolPosition == 0 ? 0 : (int) previousEolPosition + eol.length, (int) (eolPosition - previousEolPosition));
                             previousEolPosition = eolPosition;
                         } catch (final IndexOutOfBoundsException e) {
-                            appLog.debug("could not process : " + new String(data, 0, (int) eolPosition) + " \n cause:" + e.getMessage());
+                            appLog.debug("could not process : " + new String(data, 0, (int) eolPosition) + " \n cause:", e);
                         }
                 } while (eolPosition > 0);
             }

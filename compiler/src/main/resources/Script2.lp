@@ -11,7 +11,3 @@ List<com.flytxt.parser.processor.FolderEventListener.Watch> list = new ArrayList
 return list;
 }
 }
-/*
- a = new Watch("/Files/INPUT/metric" , "tmp" , "dest");
-list.add(a);
-*/

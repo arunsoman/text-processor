@@ -3,7 +3,8 @@ package com.flytxt.parser.store;
 import java.io.IOException;
 
 import com.flytxt.parser.marker.Marker;
-import com.github.arunsoman.ipc.mappedbus.MappedBusWriter;
+
+import io.mappedbus.MappedBusWriter;
 
 public class StreamStore implements Store {
 

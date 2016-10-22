@@ -6,36 +6,14 @@
             <column autoIncrement="true" name="id" type="INT">
                 <constraints primaryKey="true" />
             </column>
-            <column name="name" type="VARCHAR(500)" />
-            <column name="scheduling_interval" type="INT" />
-            <column name="start_and_end_time" type="VARCHAR(150)" />
-            <column name="is_active" type="INT" />
-            <column name="start_date" type="TEXT" />
-            <column name="end_date" type="TEXT" />
-            <column name="hostName" type="VARCHAR(255)" />
-            <column name="inputPath" type="VARCHAR(400)" />
-            <column name="regex" type="VARCHAR(255)" />
-            <column name="last_run" type="TEXT" />
-            <column name="platform" type="VARCHAR(45)" />
-            <column name="job_constraint" type="VARCHAR(300)" />
-            <column name="processedFileAction" type="VARCHAR(255)" />
-            <column name="isLocal" type="INT" />
-            <column name="dk_schema" type="TEXT" />
+            <column name="name" type="VARCHAR(100)" />
+            <column name="active" type="TINYINT" />
+            <column name="hostname" type="VARCHAR(100)" />
+            <column name="inputpath" type="VARCHAR(200)" />
+            <column name="regex" type="VARCHAR(50)" />
+            <column name="outputpath" type="VARCHAR(200)" />
+            <column name="platform" type="VARCHAR(20)" />
             <column name="dk_pscript" type="MEDIUMBLOB" />
-        </createTable>
-    </changeSet>
-    <changeSet author="gomathy (generated)" id="1476340510778-422" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
-        <createTable tableName="process">
-            <column name="id" type="INT">
-                <constraints nullable="false" />
-            </column>
-            <column name="platform_process_id" type="VARCHAR(100)" />
-            <column name="stage" type="INT" />
-            <column name="status" type="INT" />
-            <column name="start_time" type="TEXT" />
-            <column name="end_time" type="TEXT" />
-            <column name="summary" type="LONGTEXT" />
-            <column name="jobId" type="INT" />
         </createTable>
     </changeSet>
 </databaseChangeLog>
