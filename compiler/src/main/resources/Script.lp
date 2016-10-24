@@ -44,8 +44,9 @@ public class %(name) implements LineProcessor{
 	}
 	     
 	public void process(byte[] data, int startIndex, int readCnt) throws IOException{
+		mf.setCurrentLineData(data);
 		line.index = startIndex;
-          line.length = readCnt;
+        line.length = readCnt;
 		process(data);
 		translate(data);
 		store(data);

@@ -3,7 +3,7 @@ package com.flytxt.parser.marker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MarkerFactory {
+public final class MarkerFactory {
 
     private final FlyPool<Marker> markerPool = new FlyPool<>();
 
@@ -20,11 +20,16 @@ public class MarkerFactory {
     private int reusedList;
 
     private int createdList;
+    
+    private byte[] currentLine;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private int listSize;
 
+    public void setCurrentLineData(byte[] currentLine){
+    	this.currentLine = currentLine;
+    }
     public int getListSize() {
         return listSize;
     }
@@ -35,6 +40,7 @@ public class MarkerFactory {
             m = new Marker();
             markerPool.add(m);
             created++;
+            m.setData(currentLine);
         } else
             reused++;
         m.index = index;
