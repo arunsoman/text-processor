@@ -155,6 +155,10 @@ public class Utils {
 
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource(fileName).getFile());
+        if (!file.exists()) {
+            fileName = "/tmp/templates/" + fileName;
+            file = new File(fileName);
+        }
         BufferedReader reader = new BufferedReader(new FileReader(file));
         StringBuilder content = new StringBuilder();
         String line = null;
@@ -173,7 +177,7 @@ public class Utils {
         lp.init("");
         for (String line : data) {
             byte[] datum = line.getBytes();
-            lp.process(datum, 0, datum.length);
+            lp.process();
         }
         return lp.done();
     }

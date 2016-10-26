@@ -59,7 +59,7 @@ public class ParserController {
                     .body(new InputStreamResource(new FileInputStream(jar)));
         } catch (Exception e) {
             return ResponseEntity.ok().headers(headers).contentType(MediaType.parseMediaType("application/octet-stream"))
-                    .body(new InputStreamResource(new ByteArrayInputStream(("no content for" + host).getBytes())));
+                    .body(new InputStreamResource(new ByteArrayInputStream(("no content for" + host + e).getBytes())));
         }
 
     }
