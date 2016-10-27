@@ -2,10 +2,12 @@ package com.flytxt.parser.marker;
 
 public class ImmutableMarker extends Marker {
 
-    public byte[] data;
+    private byte[] data;
 
-    public ImmutableMarker(final byte[] data) {
-        this.data = data;
+    public ImmutableMarker() {
+    }
+    public void setData(byte[] currentLine){
+    	this.data = currentLine;
         this.index = 0;
         this.length = data.length;
     }

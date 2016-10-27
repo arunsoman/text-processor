@@ -1,5 +1,12 @@
 package com.flytxt.parser.marker;
 
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+@Component
+@Scope("prototype")
+@Configuration
 public class Marker {
 
     public int index;
@@ -85,6 +92,6 @@ public class Marker {
     }
 
     public String toString(final byte[] b) {
-        return new String(data, index, length);
+        return new String(b, index, length);
     }
 }

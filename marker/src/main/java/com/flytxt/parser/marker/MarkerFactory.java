@@ -2,16 +2,44 @@ package com.flytxt.parser.marker;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Component
+@Scope("prototype")
 public final class MarkerFactory {
 
-    private final FlyPool<Marker> markerPool = new FlyPool<>();
+	@Autowired
+	@Qualifier("markerPool")
+	@Getter
+	@Setter
+    private  FlyPool<Marker> markerPool;
 
-    private final FlyPool<FlyList<Marker>> markerListPool = new FlyPool<>();
+	@Autowired
+	@Qualifier("markerListPool")
+	@Getter
+	@Setter
+    private  FlyPool<FlyList<Marker>> markerListPool;
 
-    private final FlyPool<ImmutableMarker> markerImmutablePool = new FlyPool<>();
+	@Autowired
+	@Qualifier("markerImmutablePool")
+	@Getter
+	@Setter
+    private  FlyPool<ImmutableMarker> markerImmutablePool;
 
-    private final FlyPool<FlyList<ImmutableMarker>> markerImmutableListPool = new FlyPool<>();
+	@Autowired
+	@Qualifier("markerImmutableListPool")
+	@Getter
+	@Setter
+    private  FlyPool<FlyList<ImmutableMarker>> markerImmutableListPool;
 
     private int reused;
 
@@ -27,6 +55,9 @@ public final class MarkerFactory {
 
     private int listSize;
 
+    @Autowired
+    @Getter @Setter private ApplicationContext appContext;
+    
     public void setCurrentLineData(byte[] currentLine){
     	this.currentLine = currentLine;
     }
@@ -37,7 +68,7 @@ public final class MarkerFactory {
     public Marker create(final int index, final int length) {
         Marker m = markerPool.peek();
         if (m == null) {
-            m = new Marker();
+        	m = appContext.getBean(Marker.class);
             markerPool.add(m);
             created++;
             m.setData(currentLine);
@@ -63,7 +94,8 @@ public final class MarkerFactory {
     public FlyList<Marker> getArrayList() {
         FlyList<Marker> list = markerListPool.peek();
         if (list == null) {
-            list = new FlyList<>(listSize);
+            list = appContext.getBean(FlyList.class);
+            list.set(listSize);
             markerListPool.add(list);
             createdList++;
         } else {
@@ -80,7 +112,8 @@ public final class MarkerFactory {
     public ImmutableMarker createImmutable(byte[] data, int index, int length) {
         ImmutableMarker m = markerImmutablePool.peek();
         if (m == null) {
-            m = new ImmutableMarker(data);
+        	m = appContext.getBean(ImmutableMarker.class);
+            m.setData(data);
             markerImmutablePool.add(m);
             created++;
         } else
