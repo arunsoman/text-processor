@@ -12,22 +12,27 @@ import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.flytxt.parser.marker.CurrentObject;
 import com.flytxt.parser.marker.LineProcessor;
+import com.flytxt.parser.marker.MarkerFactory;
 
 import lombok.Getter;
 
 @Component
 @Scope("prototype")
 public class FlyReader implements Callable<FlyReader> {
-
-    private String folder;
+	@Autowired
+	private MarkerFactory markerFactory;
+	private CurrentObject currentObject;
 
     private LineProcessor lp;
 
@@ -46,14 +51,18 @@ public class FlyReader implements Callable<FlyReader> {
 
     private final Logger transLog = LoggerFactory.getLogger("transactionLog");
 
+    @PostConstruct
+    public void init(){
+    	currentObject = markerFactory.getCurrentObject();
+    }
     public void set(final String folder, final LineProcessor lp) {
         this.lp = lp;
-        this.folder = folder;
+        currentObject.setFolderName(folder);
         appLog.debug("file reader @ " + folder);
     }
 
     public void run() {
-        final Path folderP = Paths.get(folder);
+        final Path folderP = Paths.get(currentObject.getFolderName());
         if (!Files.exists(folderP))
             try {
                 Files.createDirectories(folderP);
@@ -61,15 +70,17 @@ public class FlyReader implements Callable<FlyReader> {
                 appLog.info("could not create input folder, stopping this FlyReader ", e1);
                 stopRequested = true;
             }
-        appLog.debug("Starting file reader @ " + folder);
+        appLog.debug("Starting file reader @ " + currentObject.getFolderName());
         final ByteBuffer buf = ByteBuffer.allocate(51200);
 
-        while (!stopRequested)
+        while (!stopRequested){
+        	String folder = currentObject.getFolderName();
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder))) {
                 for (final Path path : directoryStream) {
                     final RandomAccessFile file = new RandomAccessFile(path.toString(), "rw");
                     appLog.debug("picked up " + path.toString());
                     try {
+                    	currentObject.setFileName(path.getFileName().toString());
                         lp.init(path.getFileName().toString());
                         processFile(buf, path, file.getChannel());
                         buf.clear();
@@ -86,7 +97,8 @@ public class FlyReader implements Callable<FlyReader> {
             } catch (final Exception ex) {
                 ex.printStackTrace();
             }
-        appLog.debug("Worker down " + folder);
+            }
+        appLog.debug("Worker down " + currentObject.getFolderName());
     }
 
     private void processFile(final ByteBuffer buf, final Path path, final FileChannel file) throws IOException {
@@ -106,6 +118,7 @@ public class FlyReader implements Callable<FlyReader> {
     private final void readLines(final FileChannel file, final ByteBuffer buf) throws IOException {
         int readCnt;
         final byte[] data = buf.array();
+        currentObject.setLineMarker(data);
         while ((readCnt = file.read(buf)) > 0) {
             long eolPosition;
             long previousEolPosition = 0;
@@ -121,7 +134,8 @@ public class FlyReader implements Callable<FlyReader> {
                         continue;
                     } else
                         try {
-                            lp.process(data, previousEolPosition == 0 ? 0 : (int) previousEolPosition + eol.length, (int) (eolPosition - previousEolPosition));
+                        	currentObject.setCurrentLine(previousEolPosition == 0 ? 0 : (int) previousEolPosition + eol.length, (int) (eolPosition - previousEolPosition));
+                            lp.process( );
                             previousEolPosition = eolPosition;
                         } catch (final IndexOutOfBoundsException e) {
                             appLog.debug("could not process : " + new String(data, 0, (int) eolPosition) + " \n cause:", e);
