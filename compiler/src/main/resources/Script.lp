@@ -36,7 +36,7 @@ public class %(name) implements LineProcessor{
      public void init(String fileName){
           store.set(fileName);
           byte[] tt = fileName.getBytes();
-          this.fileName = mf.createImmutable(tt, 0, tt.length);
+          this.fileName = mf.createMarker(tt, 0, tt.length);
 	}
 	
 	public String getSourceFolder(){

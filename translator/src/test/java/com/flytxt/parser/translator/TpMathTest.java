@@ -1,34 +1,31 @@
 package com.flytxt.parser.translator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.flytxt.parser.marker.Marker;
-import com.flytxt.parser.marker.MarkerFactory;
+import com.flytxt.parser.marker.MarkerDefaultConfig;
 
-public class TpMathTest {
-	TpMath tpMath = new TpMath();
-	MarkerFactory mf = new MarkerFactory();
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {MarkerDefaultConfig.class, TranslatorDefaultConfig.class})
+public class TpMathTest extends TpAbsTest {
 	
-	@Before
-	public void setUp() throws Exception {
-	}
-	
-	private Marker getMarker(String str){
-		Marker mocker=new Marker();
-		mocker.index=0;
-		mocker.length=str.length();
-		return mocker;
-	}
+	@Autowired
+	TpMath tpMath;
 
 	@Test
 	public final void testAbs() {
 		String str = "-98.78";
 		Marker m = getMarker(str);
-		Marker actual = tpMath.abs(str.getBytes(), m, mf);
-		assertEquals(String.valueOf(Math.abs(Double.parseDouble(str))), actual.toString(str.getBytes()));
+		Marker actual = tpMath.abs(m, markerFactory);
+		assertEquals(String.valueOf(Math.abs(Double.parseDouble(str))), actual.toString());
 	}
 
 	@Test
@@ -38,7 +35,7 @@ public class TpMathTest {
 		String str2 = "-99.78";
 		Marker m2 = getMarker(str2);
 		assertEquals(Double.parseDouble(str1)<Double.parseDouble(str2),
-				tpMath.lessThan(str1.getBytes(), m1, str2.getBytes(), m2, mf));
+				tpMath.lessThan( m1,  m2, markerFactory));
 	}
 
 	@Test
@@ -48,7 +45,7 @@ public class TpMathTest {
 		String str2 = "-98.78";
 		Marker m2 = getMarker(str2);
 		assertEquals(Double.parseDouble(str1)<=Double.parseDouble(str2),
-		             tpMath.lessEqThan(str1.getBytes(), m1, str2.getBytes(), m2, mf));
+		             tpMath.lessEqThan( m1,  m2, markerFactory));
 	}
 
 	@Test
@@ -58,7 +55,7 @@ public class TpMathTest {
 		String str2 = "98.78";
 		Marker m2 = getMarker(str2);
 		assertEquals(Double.parseDouble(str1)>=Double.parseDouble(str2),
-				tpMath.greaterEqThan(str1.getBytes(), m1, str2.getBytes(), m2, mf));
+				tpMath.greaterEqThan( m1,  m2, markerFactory));
 	}
 
 	@Test
@@ -67,7 +64,7 @@ public class TpMathTest {
 		Marker m1 = getMarker(str1);
 		String str2 = "98.78";
 		Marker m2 = getMarker(str2);
-		assertEquals(tpMath.lessEqThan(str1.getBytes(), m1, str2.getBytes(), m2, mf), true);
+		assertEquals(tpMath.lessEqThan(m1,  m2, markerFactory), true);
 	}
 
 	@Test
@@ -76,9 +73,9 @@ public class TpMathTest {
 		Marker m1 = getMarker(str1);
 		String str2 = "9878";
 		Marker m2 = getMarker(str2);
-		Marker res = tpMath.subLong(str1.getBytes(), m1, str2.getBytes(), m2, mf);
+		Marker res = tpMath.subLong( m1,  m2, markerFactory);
 		String str3 = String.valueOf(Long.parseLong(str1)-Long.parseLong(str2));
-		assertEquals(str3, res.toString(res.getData()));
+		assertEquals(str3, res.toString());
 	}
 
 	@Test
@@ -87,9 +84,9 @@ public class TpMathTest {
 		Marker m1 = getMarker(str1);
 		String str2 = "98.78";
 		Marker m2 = getMarker(str2);
-		Marker res = tpMath.subDouble(str1.getBytes(), m1, str2.getBytes(), m2, mf);
+		Marker res = tpMath.subDouble( m1,  m2, markerFactory);
 		String str3 = String.valueOf(Double.parseDouble(str1)-Double.parseDouble(str2));
-		assertEquals(str3, res.toString(res.getData()));
+		assertEquals(str3, res.toString());
 	}
 
 	@Test
@@ -98,9 +95,9 @@ public class TpMathTest {
 		Marker m1 = getMarker(str1);
 		String str2 = "9878";
 		Marker m2 = getMarker(str2);
-		Marker res = tpMath.addLong(str1.getBytes(), m1, str2.getBytes(), m2, mf);
+		Marker res = tpMath.addLong( m1,  m2, markerFactory);
 		String str3 = String.valueOf(Long.parseLong(str1)+Long.parseLong(str2));
-		assertEquals(str3, res.toString(res.getData()));
+		assertEquals(str3, res.toString());
 	}
 
 	@Test
@@ -109,9 +106,9 @@ public class TpMathTest {
 		Marker m1 = getMarker(str1);
 		String str2 = "98.78";
 		Marker m2 = getMarker(str2);
-		Marker res = tpMath.addDouble(str1.getBytes(), m1, str2.getBytes(), m2, mf);
+		Marker res = tpMath.addDouble( m1,  m2, markerFactory);
 		String str3 = String.valueOf(Double.parseDouble(str1)+Double.parseDouble(str2));
-		assertEquals(str3, res.toString(res.getData()));
+		assertEquals(str3, res.toString());
 	}
 
 	@Test
@@ -126,9 +123,9 @@ public class TpMathTest {
 	public final void testCeil() {
 		String str1 = "98.78";
 		Marker m1 = getMarker(str1);
-		Marker res = tpMath.ceil(str1.getBytes(), m1,  mf);
+		Marker res = tpMath.ceil( m1,  markerFactory);
 		String str3 = String.valueOf(Double.parseDouble(str1)+Double.parseDouble(str2));
-		assertEquals(str3, res.toString(res.getData()));
+		assertEquals(str3, res.toString());
 	}
 
 	@Test
@@ -149,15 +146,15 @@ public class TpMathTest {
 		Marker m1 = getMarker(str1);
 		String str2 = "98.78";
 		Marker m2 = getMarker(str2);
-		assertEquals(tpMath.eq(str1.getBytes(), m1, str2.getBytes(), m2, mf), true);
+		assertEquals(tpMath.eq( m1,  m2, markerFactory), true);
 	}
 
 	@Test
 	public final void testExtractDecimalIntegerPart() {
 		String str1 = "98.78";
 		Marker m1 = getMarker(str1);
-		Marker res = tpMath.extractDecimalIntegerPart(str1.getBytes(), m1, mf);
-		assertEquals(str1.substring(0, str1.indexOf('.')), res.toString(str1.getBytes()));
+		Marker res = tpMath.extractDecimalIntegerPart( m1, markerFactory);
+		assertEquals(str1.substring(0, str1.indexOf('.')), res.toString());
 	}
 
 	@Test
@@ -165,15 +162,15 @@ public class TpMathTest {
 		String str1 = "98.78";
 		String str2=".78";
 		Marker m1 = getMarker(str1);
-		Marker res = tpMath.extractDecimalFractionPart(str1.getBytes(), m1, mf);
-		assertEquals(str2, res.toString(str1.getBytes()));
+		Marker res = tpMath.extractDecimalFractionPart( m1, markerFactory);
+		assertEquals(str2, res.toString());
 	}
 
 	@Test
 	public final void testIsNumber() {
 		String str1 = "98.78";
 		Marker m1 = getMarker(str1);
-		boolean res = tpMath.isNumber(str1.getBytes(), m1, mf);
+		boolean res = tpMath.isNumber( m1, markerFactory);
 		assertEquals(true, res);
 	}
 
@@ -195,7 +192,7 @@ public class TpMathTest {
 	public final void testAsLong() {
 		String str1 = "9878";
 		Marker m1 = getMarker(str1);
-		long res = tpMath.asLong(str1.getBytes(), m1);
+		long res = tpMath.asLong( m1);
 		assertEquals(str1, String.valueOf(res));
 	}
 
@@ -203,7 +200,7 @@ public class TpMathTest {
 	public final void testAsDouble() {
 		String str1 = "98.78";
 		Marker m1 = getMarker(str1);
-		double res = tpMath.asDouble(str1.getBytes(), m1);
+		double res = tpMath.asDouble( m1);
 		assertEquals(str1, String.valueOf(res));
 	}
 }

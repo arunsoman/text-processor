@@ -39,7 +39,7 @@ public class ParserDomainTest {
     public void compileNtest() throws Exception {
         String name, init, absProcessor, extract, transformation = ";", store, type, sampleData, output = null;
         name = "TestJavaCode";
-        init = "this.mf.setMaxListSize(7);mzxcswewq=mf.create(0,0);";
+        init = "this.mf.setMaxListSize(7);mzxcswewq=mf.createMarker(null,0,0);";
         absProcessor = "protected Marker mzxcswewq;protected byte[] token_124= \"|\".getBytes();private Store store = new ConsoleStore(\"/tmp/output\");public final String folderName=\"/tmp/java/INRecharge/\";";
         extract = "mzxcswewq = line.splitAndGetMarker(data, token_124,1, mf);";
         type = "single";

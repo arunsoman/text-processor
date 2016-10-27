@@ -49,7 +49,7 @@ public class MarkerSerializer implements MappedBusMessage {
         int markersLength = mem.getInt(pos);
         this.markers = new Marker[markersLength];
         while (i < markersLength)
-            this.markers[i++] = mf.create(0, 0);
+            this.markers[i++] = mf.createMarker(null,0, 0);
         int dataSize = mem.getInt(pos + 4);
         this.data = new byte[dataSize];
         pos += 8; // two int's

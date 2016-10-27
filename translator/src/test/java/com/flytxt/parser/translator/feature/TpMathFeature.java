@@ -1,12 +1,12 @@
-package com.flytxt.parser.test.translator;
+package com.flytxt.parser.translator.feature;
 
 import static org.junit.Assert.assertEquals;
 
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
-import com.flytxt.parser.test.translator.transformer.MarkerHelper;
-import com.flytxt.parser.test.translator.transformer.MarkerTransform;
 import com.flytxt.parser.translator.TpMath;
+import com.flytxt.parser.translator.feature.transformer.MarkerHelper;
+import com.flytxt.parser.translator.feature.transformer.MarkerTransform;
 
 import cucumber.api.Transform;
 import cucumber.api.java.en.Given;
@@ -54,7 +54,7 @@ public class TpMathFeature {
 
     @When("^enter number to apply abs \"([^\"]*)\"$")
     public void enterNumberToApplyAbs(final String arg1) throws Throwable {
-        resultStr = math.abs(arg1.getBytes(), getMarker(arg1), mf).toString(arg1.getBytes());
+        resultStr = math.abs( getMarker(arg1), mf).toString();
     }
 
     @Then("^after applying abs result should be \"([^\"]*)\"$")
@@ -69,7 +69,7 @@ public class TpMathFeature {
 
     @When("^enter number \"([^\"]*)\" greater than  another number \"([^\"]*)\"$")
     public void enterNumberGreaterThanAnotherNumber(final String arg1, final String arg2) throws Throwable {
-    	result= math.greaterThan(arg1.getBytes(), getMarker(arg1),arg2.getBytes(), getMarker(arg2), mf);
+    	result= math.greaterThan( getMarker(arg1), getMarker(arg2), mf);
 
     }
 
@@ -135,91 +135,91 @@ public class TpMathFeature {
 
     @When("^enter number \"([^\"]*)\" less than another number \"([^\"]*)\"$")
     public void enterNumberLessThanAnotherNumber(final String arg1, final String arg2) throws Throwable {
-        result = math.lessThan(arg1.getBytes(), getMarker(arg1), arg2.getBytes(), getMarker(arg2), mf);
+        result = math.lessThan( getMarker(arg1),  getMarker(arg2), mf);
     }
 
     @When("^enter number \"([^\"]*)\" less than equal to another number \"([^\"]*)\"$")
     public void enterNumberLessThanEqualToAnotherNumber(final String arg1, final String arg2) throws Throwable {
-        result = math.lessEqThan(arg1.getBytes(), getMarker(arg1), arg2.getBytes(), getMarker(arg2), mf);
+        result = math.lessEqThan( getMarker(arg1),  getMarker(arg2), mf);
     }
 
     @When("^enter number \"([^\"]*)\" greater than equal to another number \"([^\"]*)\"$")
     public void enterNumberGreaterThanEqualToAnotherNumber(final String arg1, final String arg2) throws Throwable {
-        result = math.greaterEqThan(arg1.getBytes(), getMarker(arg1), arg2.getBytes(), getMarker(arg2), mf);
+        result = math.greaterEqThan( getMarker(arg1),  getMarker(arg2), mf);
     }
 
     @When("^enter two long numbers \"([^\"]*)\" \"([^\"]*)\" for substraction$")
     public void enterTwoLongNumbersForSubstraction(final String arg1, final String arg2) throws Throwable {
-        final Marker m = math.subLong(arg1.getBytes(), getMarker(arg1), arg2.getBytes(), getMarker(arg2), mf);
-        resultStr = m.toString(m.getData());
+        final Marker m = math.subLong( getMarker(arg1),  getMarker(arg2), mf);
+        resultStr = m.toString();
     }
 
     @When("^enter two float number \"([^\"]*)\" \"([^\"]*)\" for substraction$")
     public void enterTwoFloatNumberForSubstraction(final String arg1, final String arg2) throws Throwable {
-        final Marker m = math.subDouble(arg1.getBytes(), getMarker(arg1), arg2.getBytes(), getMarker(arg2), mf);
-        resultStr = m.toString(m.getData());
+        final Marker m = math.subDouble( getMarker(arg1),  getMarker(arg2), mf);
+        resultStr = m.toString();
     }
 
     @When("^enter two long numbers \"([^\"]*)\" \"([^\"]*)\" for addition$")
     public void enterTwoLongNumbersForAddition(final String arg1, final String arg2) throws Throwable {
-        final Marker m = math.addLong(arg1.getBytes(), getMarker(arg1), arg2.getBytes(), getMarker(arg2), mf);
-        resultStr = m.toString(m.getData());
+        final Marker m = math.addLong( getMarker(arg1),  getMarker(arg2), mf);
+        resultStr = m.toString();
     }
 
     @When("^enter two float numbers \"([^\"]*)\" \"([^\"]*)\" for addition$")
     public void enterTwoFloatNumbersForAddition(final String arg1, final String arg2) throws Throwable {
-        final Marker m = math.addDouble(arg1.getBytes(), getMarker(arg1), arg2.getBytes(), getMarker(arg2), mf);
-        resultStr = m.toString(m.getData());
+        final Marker m = math.addDouble( getMarker(arg1),  getMarker(arg2), mf);
+        resultStr = m.toString();
     }
 
     @When("^enter a number \"([^\"]*)\" to find ceil$")
     public void enterANumberToFindCeil(final String arg1) throws Throwable {
-    	resultStr = math.ceil(arg1.getBytes(), getMarker(arg1), mf).toString(arg1.getBytes()) ;
+    	resultStr = math.ceil( getMarker(arg1), mf).toString() ;
     }
 
     @When("^enter a number \"([^\"]*)\" to find floor$")
     public void enterANumberToFindFloor(final String arg1) throws Throwable {
-        Marker floor = math.floor(arg1.getBytes(), getMarker(arg1), mf);
-        resultStr = floor.toString(floor.getData());
+        Marker floor = math.floor( getMarker(arg1), mf);
+        resultStr = floor.toString();
     }
 
     @When("^enter a number \"([^\"]*)\"  and the scale \"([^\"]*)\"$")
     public void enterANumberAndTheScale(final String arg1, final String arg2) throws Throwable {
-        Marker round = math.round(arg1.getBytes(), Integer.parseInt(arg2), getMarker(arg1), mf);
-        resultStr = round.toString(round.getData());
+        Marker round = math.round( Integer.parseInt(arg2), getMarker(arg1), mf);
+        resultStr = round.toString();
     }
 
     @When("^enter two equal numbers \"([^\"]*)\"  \"([^\"]*)\"$")
     public void enterTwoEqualNumbers(final String arg1, final String arg2) throws Throwable {
-        result = math.eq(arg1.getBytes(), getMarker(arg1), arg2.getBytes(), getMarker(arg2), mf);
+        result = math.eq( getMarker(arg1),  getMarker(arg2), mf);
     }
 
     @When("^enter a decimal number \"([^\"]*)\" to extract decimal part of the number$")
     public void enterADecimalNumberToExtractDecimalPartOfTheNumber(final String arg1) throws Throwable {
-         Marker decimal = math.extractDecimalFractionPart(arg1.getBytes(), getMarker(arg1), mf);
+         Marker decimal = math.extractDecimalFractionPart( getMarker(arg1), mf);
          byte[] data = (decimal.getData() == null)?arg1.getBytes():decimal.getData();
-         resultStr = decimal.toString(data);
+         resultStr = decimal.toString();
     }
 
     @When("^enter a decimal number \"([^\"]*)\" to extract integer part of the number$")
     public void enterADecimalNumberToExtractIntegerPartOfTheNumber(final String arg1) throws Throwable {
-        resultStr = math.extractDecimalIntegerPart(arg1.getBytes(), getMarker(arg1), mf).toString(arg1.getBytes());
+        resultStr = math.extractDecimalIntegerPart( getMarker(arg1), mf).toString();
     }
 
     @When("^enter a number string \"([^\"]*)\"$")
     public void enterANumberString(final String arg1) throws Throwable {
-        result = math.isNumber(arg1.getBytes(), getMarker(arg1), mf);
+        result = math.isNumber( getMarker(arg1), mf);
     }
     
     @When("^min of \"([^\"]*)\"  \"([^\"]*)\"$")
     public void minOf(@Transform(MarkerTransform.class) final MarkerHelper arg1, @Transform(MarkerTransform.class) final MarkerHelper arg2) throws Throwable {   
-    	Marker m1 = arg1.getMarker();
-    	Marker m2=arg2.getMarker();
-    	Marker min = math.min(arg1.getBytes(), m1, arg2.getBytes(), m2, mf);
+    	Marker m1 = arg1.getMarker(mf);
+    	Marker m2=arg2.getMarker(mf);
+    	Marker min = math.min( m1,  m2, mf);
     	if(min == m1){
-    		resultStr =m1.toString(arg1.getBytes());	
+    		resultStr =m1.toString();	
     	}else if (min == m2){
-    		resultStr =m2.toString(arg2.getBytes());	
+    		resultStr =m2.toString();	
     	}
     }
 
@@ -230,13 +230,13 @@ public class TpMathFeature {
 
     @When("^max of \"([^\"]*)\"  \"([^\"]*)\"$")
     public void maxOf(@Transform(MarkerTransform.class) final MarkerHelper arg1, @Transform(MarkerTransform.class) final MarkerHelper arg2) throws Throwable {
-    	Marker m1 = arg1.getMarker();
-    	Marker m2=arg2.getMarker();
-    	Marker max = math.max(arg1.getBytes(), m1, arg2.getBytes(), m2, mf);
+    	Marker m1 = arg1.getMarker(mf);
+    	Marker m2=arg2.getMarker(mf);
+    	Marker max = math.max( m1,  m2, mf);
     	if(max == m1){
-    		resultStr =m1.toString(arg1.getBytes());	
+    		resultStr =m1.toString();	
     	}else if (max == m2){
-    		resultStr =m2.toString(arg2.getBytes());	
+    		resultStr =m2.toString();	
     	}    }
 
     @Then("^max number is \"([^\"]*)\"$")

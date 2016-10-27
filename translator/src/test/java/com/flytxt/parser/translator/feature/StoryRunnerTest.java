@@ -1,4 +1,4 @@
-package com.flytxt.parser.translator;
+package com.flytxt.parser.translator.feature;
 
 import org.junit.runner.RunWith;
 

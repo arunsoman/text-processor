@@ -1,5 +1,8 @@
 package com.flytxt.parser.translator;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class TpLogic implements TpConstant{
 	private final int ff = (falseToken*2);
 	private final int tt = (trueToken*2);

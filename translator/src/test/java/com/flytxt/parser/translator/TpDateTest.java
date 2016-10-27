@@ -1,30 +1,26 @@
 package com.flytxt.parser.translator;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.flytxt.parser.marker.Marker;
+import com.flytxt.parser.marker.MarkerDefaultConfig;
 
-public class TpDateTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {MarkerDefaultConfig.class, TranslatorDefaultConfig.class})
 
-	TpDate tpDate = new TpDate();
+public class TpDateTest extends TpAbsTest {
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	private Marker getMarker(String str) {
-		Marker mocker = new Marker();
-		mocker.index = 0;
-		mocker.length = str.length();
-		return mocker;
-	}
+	@Autowired
+	TpDate tpDate;
 
 	@Test
 	public final void testConvertDate() {
@@ -36,12 +32,10 @@ public class TpDateTest {
 		SimpleDateFormat sdf = new SimpleDateFormat("ddmmyyy HH:mm:ss");
 		String d1 = "01022012 12:00:00";
 		String d2 = "01022013 12:00:00";
-		byte[] d1b = d1.getBytes();
-		byte[] d2b = d2.getBytes();
 		Marker m1 = getMarker(d1);
 		Marker m2 = getMarker(d2);
 		try {
-			assertEquals(sdf.parse(d1).after(sdf.parse(d2)), tpDate.after(d1b, m1, d2b, m2));
+			assertEquals(sdf.parse(d1).after(sdf.parse(d2)), tpDate.after(m1,  m2));
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -53,12 +47,10 @@ public class TpDateTest {
 		SimpleDateFormat sdf = new SimpleDateFormat("ddmmyyy HH:mm:ss");
 		String d1 = "01022012 12:00:00";
 		String d2 = "01022013 12:00:00";
-		byte[] d1b = d1.getBytes();
-		byte[] d2b = d2.getBytes();
 		Marker m1 = getMarker(d1);
 		Marker m2 = getMarker(d2);
 		try {
-			assertEquals(sdf.parse(d1).before(sdf.parse(d2)), tpDate.before(d1b, m1, d2b, m2));
+			assertEquals(sdf.parse(d1).before(sdf.parse(d2)), tpDate.before( m1,  m2));
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

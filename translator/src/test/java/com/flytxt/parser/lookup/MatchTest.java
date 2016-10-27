@@ -14,7 +14,7 @@ public class MatchTest {
         mf.setMaxListSize(100);
         final MatchKey<Marker> object = new MatchKey<>(mf);
         for (final String[] datum : data)
-            object.load(datum[0].getBytes(), mf.createImmutable(datum[1].getBytes(), 0, datum[1].getBytes().length));
+            object.load(datum[0].getBytes(), mf.createMarker(datum[1].getBytes(), 0, datum[1].getBytes().length));
 
         Marker marker = object.get("Wallnut".getBytes());
         assertEquals("fruit", marker.getData());

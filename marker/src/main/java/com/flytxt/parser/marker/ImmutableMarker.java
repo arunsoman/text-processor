@@ -1,5 +1,14 @@
 package com.flytxt.parser.marker;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+@Component
+@Scope("prototype")
+@Configuration
+@Qualifier("immutableMarker")
 public class ImmutableMarker extends Marker {
 
     private byte[] data;
@@ -18,7 +27,7 @@ public class ImmutableMarker extends Marker {
     }
 
     @Override
-    public void splitAndGetMarkers(final byte[] dataNull, final byte[] token, final int[] indexOfMarker, final MarkerFactory mf, Marker... markers) {
+    public void splitAndGetMarkers( final byte[] token, final int[] indexOfMarker, final MarkerFactory mf, Marker... markers) {
         int count = 1, lastIndex = this.index, currentIndex = this.index, tokenIndex, index = 0;
         while (currentIndex < this.index + length) {
             for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++)
@@ -43,7 +52,7 @@ public class ImmutableMarker extends Marker {
     }
 
     @Override
-    public Marker splitAndGetMarker(final byte[] dataNull, final byte[] token, final int indexOfMarker, final MarkerFactory mf) {
+    public Marker splitAndGetMarker( final byte[] token, final int indexOfMarker, final MarkerFactory mf) {
 
         int count = 1, lastIndex = index, currentIndex = index, tokenIndex;
         while (currentIndex - index <= length) {
@@ -51,7 +60,7 @@ public class ImmutableMarker extends Marker {
                 ;
             if (tokenIndex == token.length) { // true if token found at currentIndex
                 if (indexOfMarker == count++)
-                    return mf.createImmutable(data, lastIndex, currentIndex - lastIndex);
+                    return mf.createMarker(data, lastIndex, currentIndex - lastIndex);
                 currentIndex = currentIndex + token.length;
                 lastIndex = currentIndex;
             } else
@@ -59,12 +68,12 @@ public class ImmutableMarker extends Marker {
         }
 
         if (lastIndex < length + 1 && indexOfMarker == count)
-            return mf.createImmutable(data, lastIndex, this.length - (lastIndex - 1));
+            return mf.createMarker(data, lastIndex, this.length - (lastIndex - 1));
         return null;
     }
 
     @Override
-    public FlyList<Marker> splitAndGetMarkers(final byte[] dataNull, final byte[] token, final MarkerFactory mf) {
+    public FlyList<Marker> splitAndGetMarkers(final byte[] token, final MarkerFactory mf) {
 
         final FlyList<Marker> markers = mf.getArrayList();
         int currentIndex = index, lastIndex = index, tokenIndex;
@@ -73,7 +82,7 @@ public class ImmutableMarker extends Marker {
             for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++)
                 ;
             if (tokenIndex == token.length) {
-                if (markers.add(mf.createImmutable(data, lastIndex, currentIndex - lastIndex))) { // breaks if the remaining markers are not required in the script
+                if (markers.add(mf.createMarker(data, lastIndex, currentIndex - lastIndex))) { // breaks if the remaining markers are not required in the script
                     currentIndex = currentIndex + tokenIndex;
                     lastIndex = currentIndex;
                 } else {
@@ -84,7 +93,7 @@ public class ImmutableMarker extends Marker {
                 currentIndex++;
         }
         if (!endReached && lastIndex < length + 1)
-            markers.add(mf.createImmutable(data, lastIndex, this.length - (lastIndex - 1)));
+            markers.add(mf.createMarker(data, lastIndex, this.length - (lastIndex - 1)));
         return markers;
     }
 

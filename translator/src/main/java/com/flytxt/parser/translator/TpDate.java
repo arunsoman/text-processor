@@ -3,11 +3,15 @@ package com.flytxt.parser.translator;
 import java.text.ParseException;
 import java.util.HashMap;
 
+import org.springframework.stereotype.Service;
+
+import com.flytxt.parser.marker.ImmutableMarker;
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
 import com.flytxt.parser.translator.TpDateUtil.Translator;
 
-public class TpDate {
+@Service
+public class TpDate extends com.flytxt.parser.translator.Translator{
 
     public static String flyDateFormat = "ddMMyyyy HH:mm:ss";
 
@@ -22,19 +26,19 @@ public class TpDate {
     private static int[] time = { 9, 10, 12, 13, 15, 16 };
     private static HashMap<String, Translator> planMap= new HashMap<String, Translator>();
     
-    public Marker convertDate(final byte[] data, final Marker m, final MarkerFactory mf, final String format) throws ParseException {
+    public Marker convertDate(final Marker m, final MarkerFactory mf, final String format) throws ParseException {
         Translator translator = planMap.get(format);
         if(translator == null){
         	translator = tpDateUtil.Formater(format);
         	planMap.put(format, translator);
         }
-        byte[] translate = translator.translate(data, null);
-        return mf.createImmutable(translate, 0, translate.length);
+        byte[] translate = translator.translate(m.getData(), null);
+        return mf.createMarker(translate, 0, translate.length);
     }
 
-    public boolean after(final byte[] data, final Marker m, final byte[] data2, final Marker m2) {
-        final byte[] d1 = (m.getData() != null) ? m.getData() : data;
-        final byte[] d2 = (m2.getData() != null) ? m2.getData() : data2;
+    public boolean after(final Marker m, final Marker m2) {
+        final byte[] d1 = m.getData();
+        final byte[] d2 = m2.getData();
         int b;
         int a = b = 1;
         for (final int i : yearArray) {
@@ -76,15 +80,13 @@ public class TpDate {
         return a > b;
     }
 
-    public boolean before(final byte[] data, final Marker m, final byte[] data2, final Marker m2) {
-        final byte[] d1 = (m.getData() != null) ? m.getData() : data;
-        final byte[] d2 = (m2.getData() != null) ? m2.getData() : data2;
-        return !after(d1, m, d2, m2);
+    public boolean before(final Marker m, final Marker m2) {
+        return !after( m, m2);
     }
 
-    public long differenceInMillis(final byte[] data, final Marker m, final byte[] data2, final Marker m2) throws ParseException {
-        final byte[] d1 = (m.getData() != null) ? m.getData() : data;
-        final byte[] d2 = (m2.getData() != null) ? m2.getData() : data2;
-        return tpDateUtil.parse(m.toString(d1)).getTime() - tpDateUtil.parse(m2.toString(d2)).getTime();
+    public Marker differenceInMillis(final Marker m, final Marker m2, MarkerFactory mf) throws ParseException {
+        long l = tpDateUtil.parse(m.toString()).getTime() - tpDateUtil.parse(m2.toString()).getTime();
+        byte[] data = asByteArray(l);
+        return mf.createMarker(data, 0, data.length);
     }
 }

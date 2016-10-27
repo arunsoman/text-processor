@@ -31,7 +31,7 @@ public class StoreUnitTest {
         final String str = "10,twenty";
         final byte[] strB = str.getBytes();
         final MarkerFactory mf = getMf(str.split(",").length);
-        final Marker line = mf.create(0, strB.length - 1);
+        final Marker line = mf.createMarker(null,0, strB.length - 1);
         final List<Marker> ms = line.splitAndGetMarkers(strB, TokenFactory.create(","), mf);
         final Marker aonM = ms.get(1);
         final Marker ageM = ms.get(2);
@@ -52,7 +52,7 @@ public class StoreUnitTest {
         final String str = "10,twenty";
         final byte[] strB = str.getBytes();
         final MarkerFactory mf = getMf(str.split(",").length);
-        final Marker line = mf.create(0, strB.length - 1);
+        final Marker line = mf.createMarker(null,0, strB.length - 1);
         final List<Marker> ms = line.splitAndGetMarkers(strB, TokenFactory.create(","), mf);
         final Marker aonM = ms.get(1);
         final Marker ageM = ms.get(2);

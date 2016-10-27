@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -49,8 +47,6 @@ public final class MarkerFactory {
 
     private int createdList;
     
-    private byte[] currentLine;
-
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private int listSize;
@@ -58,24 +54,24 @@ public final class MarkerFactory {
     @Autowired
     @Getter @Setter private ApplicationContext appContext;
     
-    public void setCurrentLineData(byte[] currentLine){
-    	this.currentLine = currentLine;
-    }
+    @Autowired
+    @Getter
+    private CurrentObject currentObject;
+    
     public int getListSize() {
         return listSize;
     }
 
-    public Marker create(final int index, final int length) {
+    private Marker create(final int index, final int length) {
         Marker m = markerPool.peek();
         if (m == null) {
-        	m = appContext.getBean(Marker.class);
+        	m = (Marker)appContext.getBean("marker");
             markerPool.add(m);
             created++;
-            m.setData(currentLine);
+            m.setData(currentObject);
         } else
             reused++;
-        m.index = index;
-        m.length = length;
+        m.setLineAttribute(index, length);
         return m;
     }
 
@@ -109,10 +105,10 @@ public final class MarkerFactory {
         listSize = maxListSize;
     }
 
-    public ImmutableMarker createImmutable(byte[] data, int index, int length) {
+    private ImmutableMarker createImmutable(byte[] data, int index, int length) {
         ImmutableMarker m = markerImmutablePool.peek();
         if (m == null) {
-        	m = appContext.getBean(ImmutableMarker.class);
+        	m = (ImmutableMarker)appContext.getBean("immutableMarker");
             m.setData(data);
             markerImmutablePool.add(m);
             created++;
@@ -121,5 +117,9 @@ public final class MarkerFactory {
         m.index = index;
         m.length = length;
         return m;
+    }
+    
+    public Marker createMarker(byte[] data, int index, int length) {
+    	return (data == null)?create(index, length):createImmutable(data, index, length);
     }
 }
