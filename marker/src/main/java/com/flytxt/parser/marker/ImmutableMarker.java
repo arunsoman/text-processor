@@ -6,6 +6,11 @@ public class ImmutableMarker extends Marker {
 
     public ImmutableMarker() {
     }
+    public ImmutableMarker(byte[] currentLine){
+    	this.data = currentLine;
+        this.index = 0;
+        this.length = data.length;
+    }
     public void setData(byte[] currentLine){
     	this.data = currentLine;
         this.index = 0;
