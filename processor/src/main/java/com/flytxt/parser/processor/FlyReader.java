@@ -14,14 +14,15 @@ import java.util.regex.Pattern;
 
 import javax.annotation.PreDestroy;
 
+import lombok.Getter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.flytxt.parser.marker.LineProcessor;
-
-import lombok.Getter;
+import com.flytxt.parser.marker.Marker;
 
 @Component
 @Scope("prototype")
@@ -46,9 +47,12 @@ public class FlyReader implements Callable<FlyReader> {
 
     private final Logger transLog = LoggerFactory.getLogger("transactionLog");
 
+    private Marker line;
+
     public void set(final String folder, final LineProcessor lp) {
         this.lp = lp;
         this.folder = folder;
+        line = lp.getMf().getLineMarker();
         appLog.debug("file reader @ " + folder);
     }
 
@@ -121,7 +125,10 @@ public class FlyReader implements Callable<FlyReader> {
                         continue;
                     } else
                         try {
-                            lp.process(data, previousEolPosition == 0 ? 0 : (int) previousEolPosition + eol.length, (int) (eolPosition - previousEolPosition));
+                            line.setData(data);
+                            line.index=previousEolPosition == 0 ? 0 : (int) previousEolPosition + eol.length;
+                            line.length=(int) (eolPosition - previousEolPosition);
+                            lp.process();
                             previousEolPosition = eolPosition;
                         } catch (final IndexOutOfBoundsException e) {
                             appLog.debug("could not process : " + new String(data, 0, (int) eolPosition) + " \n cause:", e);

@@ -12,12 +12,12 @@ public class Blackhole implements Store {
     }
 
     @Override
-    public void save(final byte[] data, final String fileName, final Marker... markers) throws IOException {
+    public void save(final byte[] data, String fileName, final Marker... markers) throws IOException {
     }
 
     @Override
     public String done() throws IOException {
-    	return null;
+        return null;
     }
 
     @Override

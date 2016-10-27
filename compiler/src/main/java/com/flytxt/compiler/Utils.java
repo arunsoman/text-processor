@@ -22,6 +22,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.JarOutputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 
 import javax.tools.Diagnostic;
@@ -40,6 +42,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flytxt.parser.marker.LineProcessor;
+import com.flytxt.parser.marker.Marker;
 
 @Component
 @ComponentScan
@@ -174,9 +177,12 @@ public class Utils {
     }
 
     public String testRunLp(LineProcessor lp, String[] data) throws IOException {
-        lp.init("");
-        for (String line : data) {
-            byte[] datum = line.getBytes();
+        Marker lineMarker = lp.getMf().getLineMarker();
+        for (String datum : data) {
+            lineMarker.setData(datum.getBytes());
+            lineMarker.index = 0;
+            lineMarker.length = datum.length();
+            lp.init("");
             lp.process();
         }
         return lp.done();
@@ -215,15 +221,15 @@ public class Utils {
     }
 
     public String replaceWithConsoleStore(String absProcessor) {
-        if (absProcessor.contains("hdfsStore") || absProcessor.contains("HdfsStore")) {
-            int toBeReplacedEnd = absProcessor.indexOf("Store("), toBeReplacedStart;
-            for (toBeReplacedStart = toBeReplacedEnd; toBeReplacedStart > 0; toBeReplacedStart--)
-                if (absProcessor.charAt(toBeReplacedStart) == ' ')
-                    break;
-            String toBeReplaced = absProcessor.substring(toBeReplacedStart + 1, toBeReplacedEnd);
-            return absProcessor.replace(toBeReplaced, "Console");
-        }
-        return absProcessor;
+        Pattern p = Pattern.compile("(new\\s)+(.+)(Store\\()", Pattern.MULTILINE);
+        Matcher m = p.matcher(absProcessor);
+        if (m.find())
+            return m.replaceAll("$1 Console$3");
+        return null;
+    }
 
+    public static void main(String[] args) {
+        Utils u = new Utils();
+        System.out.println(u.replaceWithConsoleStore(new String("new ConsoleStore();\nnew HtreaeStore();")));
     }
 }

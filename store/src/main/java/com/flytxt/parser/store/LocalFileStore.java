@@ -116,8 +116,13 @@ public class LocalFileStore implements Store {
             bBuff.put(fileName.getBytes());
             for (final Marker aMarker : markers) {
                 bBuff.put(COMMA);
-                bBuff.put(data, aMarker.index, aMarker.length);
-                delta += aMarker.length;
+                try {
+                    bBuff.put(aMarker.getData(), aMarker.index, aMarker.length);
+                    delta += aMarker.length;
+                } catch (NullPointerException e) {
+                    delta += 1;
+                    continue;
+                }
             }
             delta *= 2;
             bBuff.put(NEWLINE);

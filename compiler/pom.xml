@@ -71,11 +71,6 @@
         </dependency>
         <dependency>
             <groupId>com.flytxt.parser</groupId>
-            <artifactId>marker</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.flytxt.parser</groupId>
             <artifactId>processor</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
@@ -96,6 +91,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>1.4.0.RELEASE</version>
                 <configuration>
                     <useProjectReferences>false</useProjectReferences>
                 </configuration>

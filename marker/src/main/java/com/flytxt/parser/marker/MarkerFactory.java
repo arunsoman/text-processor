@@ -20,16 +20,23 @@ public final class MarkerFactory {
     private int reusedList;
 
     private int createdList;
-    
+
     private byte[] currentLine;
+
+    private Marker line = new Marker();
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private int listSize;
 
-    public void setCurrentLineData(byte[] currentLine){
-    	this.currentLine = currentLine;
+    public void setCurrentLineData(byte[] currentLine) {
+        this.currentLine = currentLine;
     }
+
+    public Marker getLineMarker() {
+        return line;
+    }
+
     public int getListSize() {
         return listSize;
     }

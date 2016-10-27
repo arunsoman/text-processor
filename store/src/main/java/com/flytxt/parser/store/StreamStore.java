@@ -1,10 +1,10 @@
 package com.flytxt.parser.store;
 
+import io.mappedbus.MappedBusWriter;
+
 import java.io.IOException;
 
 import com.flytxt.parser.marker.Marker;
-
-import io.mappedbus.MappedBusWriter;
 
 public class StreamStore implements Store {
 
@@ -24,7 +24,7 @@ public class StreamStore implements Store {
     }
 
     @Override
-    public void save(final byte[] data, final String fileName, final Marker... markers) throws IOException {
+    public void save(final byte[] data,  String fileName, final Marker... markers) throws IOException {
         ms.set(data, markers);
         writer.write(ms);
     }

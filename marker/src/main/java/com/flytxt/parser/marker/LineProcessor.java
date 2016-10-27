@@ -8,11 +8,13 @@ public interface LineProcessor {
 
     void init(String currentFileName);
 
-    void process(byte[] data, int startIndex, int readCnt) throws IOException;
+    void process() throws IOException;
 
     String done() throws IOException;
 
     String getFilter();
 
     int getMaxListSize();
+
+    MarkerFactory getMf();
 }

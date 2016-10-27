@@ -1,11 +1,12 @@
 package com.flytxt.parser.store;
 
+import gherkin.deps.com.google.gson.JsonArray;
+import gherkin.deps.com.google.gson.JsonObject;
+
 import java.io.IOException;
 
 import com.flytxt.parser.marker.Marker;
-
-import gherkin.deps.com.google.gson.JsonArray;
-import gherkin.deps.com.google.gson.JsonObject;
+import com.flytxt.parser.translator.TpConstant;
 
 public class ConsoleStore implements Store {
 
@@ -13,17 +14,25 @@ public class ConsoleStore implements Store {
 
     public final static String TMP = ".tmp";
 
-    JsonArray array = new JsonArray();
+    private JsonArray array = new JsonArray();
 
-    public ConsoleStore(String... headers) {
+    public ConsoleStore(String outputFolder, String... headers) {
         this.headers = headers;
     }
 
     @Override
-    public void save(final byte[] data, final String fileName, final Marker... markers) throws IOException {
+    public void save(final byte[] data, String fileName, final Marker... markers) throws IOException {
         JsonObject object = new JsonObject();
-        for (int i = 0; i < markers.length; i++)
-            object.addProperty(headers[i], markers[i].toString(data));
+        StringBuilder currentProperty = new StringBuilder();
+        for (int i = 0, j = 0; i < markers.length; i++) {
+            currentProperty.append(markers[i].toString(data)).append(',');
+            if (i == markers.length - 1 || markers[i + 1].getData() == TpConstant.INTERDATATYPE.getData()) {
+                currentProperty.deleteCharAt(currentProperty.length() - 1);
+                object.addProperty(headers[j], currentProperty.toString());
+                currentProperty.delete(0, currentProperty.length() - 1);
+                j += 2;
+            }
+        }
         array.add(object);
     }
 
@@ -34,7 +43,6 @@ public class ConsoleStore implements Store {
 
     @Override
     public void set(String fileName) {
-        // TODO Auto-generated method stub
 
     }
 }

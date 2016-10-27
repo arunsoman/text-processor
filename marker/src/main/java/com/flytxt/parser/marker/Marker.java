@@ -7,11 +7,11 @@ public class Marker {
     public int length;
 
     private byte[] data;
-    
-    public void setData(byte[] currentLine){
-    	this.data = currentLine;
+
+    public void setData(byte[] currentLine) {
+        this.data = currentLine;
     }
-    
+
     public void splitAndGetMarkers(final byte[] data, final byte[] token, final int[] indexOfMarker, final MarkerFactory mf, Marker... markers) {
         int count = 1, lastIndex = this.index, currentIndex = this.index, tokenIndex, index = 0;
         while (currentIndex < this.index + length) {
@@ -85,6 +85,6 @@ public class Marker {
     }
 
     public String toString(final byte[] b) {
-        return new String(data, index, length);
+        return new String(data == null ? b : data, index, length);
     }
 }
