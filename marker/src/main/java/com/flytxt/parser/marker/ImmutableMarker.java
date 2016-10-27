@@ -73,7 +73,7 @@ public class ImmutableMarker extends Marker {
     }
 
     @Override
-    public FlyList<Marker> splitAndGetMarkers(final byte[] token, final MarkerFactory mf) {
+    public FlyList<Marker> splitAndGetMarkerList(final byte[] token, final MarkerFactory mf) {
 
         final FlyList<Marker> markers = mf.getArrayList();
         int currentIndex = index, lastIndex = index, tokenIndex;

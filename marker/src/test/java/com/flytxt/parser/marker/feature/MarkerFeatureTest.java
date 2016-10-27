@@ -74,7 +74,7 @@ public class MarkerFeatureTest {
 		byte[] inputB = arg1.getBytes();
 		byte[] token = arg2.getBytes();
 		markerFactory.setMaxListSize(arg1.split(arg2).length);
-		size = getMarker(arg1).splitAndGetMarkers( token, markerFactory).size();
+		size = getMarker(arg1).splitAndGetMarkerList( token, markerFactory).size();
 	}
 
 	@Then("^lenght should be \"([^\"]*)\"$")

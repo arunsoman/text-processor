@@ -71,7 +71,7 @@ public class Marker {
         return null;
     }
 
-    public FlyList<Marker> splitAndGetMarkers(final byte[] token, final MarkerFactory mf) {
+    public FlyList<Marker> splitAndGetMarkerList(final byte[] token, final MarkerFactory mf) {
     	byte[] data = currentObject.getLineMarker();
         final FlyList<Marker> markers = mf.getArrayList();
         int currentIndex = index, lastIndex = index, tokenIndex;

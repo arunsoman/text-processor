@@ -44,7 +44,7 @@ public class MarkerSplitTest {
 		markerFactory.setMaxListSize(splits.length);
 		
 		final byte[] token = TokenFactory.create(str);
-		final FlyList<Marker> ms = line.splitAndGetMarkers(token, markerFactory);
+		final FlyList<Marker> ms = line.splitAndGetMarkerList(token, markerFactory);
 		if (splits.length != ms.size()) {
 			assertEquals(splits.length, ms.size());
 		}
@@ -67,7 +67,7 @@ public class MarkerSplitTest {
 		markerFactory.setMaxListSize(splits.length);
 		
 		final byte[] token = TokenFactory.create(str);
-		final FlyList<Marker> ms = line.splitAndGetMarkers(token, markerFactory);
+		final FlyList<Marker> ms = line.splitAndGetMarkerList(token, markerFactory);
 		if (splits.length != ms.size()) {
 			assertEquals(splits.length, ms.size());
 		}
@@ -90,7 +90,7 @@ public class MarkerSplitTest {
 		markerFactory.setMaxListSize(splits.length);
 		
 		final byte[] token = TokenFactory.create(str);
-		final FlyList<Marker> ms = line.splitAndGetMarkers(token, markerFactory);
+		final FlyList<Marker> ms = line.splitAndGetMarkerList(token, markerFactory);
 		if (splits.length != ms.size()) {
 			assertEquals(splits.length, ms.size());
 		}
@@ -112,7 +112,7 @@ public class MarkerSplitTest {
 		markerFactory.setMaxListSize(splits.length);
 		
 		final byte[] token = TokenFactory.create(str);
-		final FlyList<Marker> ms = line.splitAndGetMarkers(token, markerFactory);
+		final FlyList<Marker> ms = line.splitAndGetMarkerList(token, markerFactory);
 		if (splits.length != ms.size()) {
 			assertEquals(splits.length, ms.size());
 		}
