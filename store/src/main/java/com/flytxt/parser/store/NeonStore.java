@@ -11,9 +11,14 @@ import java.nio.file.Paths;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.flytxt.parser.marker.Marker;
-
+@Component
+@Scope("prototype")
+@Qualifier("neonStore")
 public class NeonStore implements Store {
 
     private static final byte COMMA = (byte) ',';
@@ -28,9 +33,9 @@ public class NeonStore implements Store {
 
     private final Logger logger = LoggerFactory.getLogger("applicationLog");
 
-    public final String folderName; // Destination folder
+    public  String folderName; // Destination folder
 
-    public final String[] headers; // Headers of the output file
+    public  String[] headers; // Headers of the output file
 
     private IOException e;
 
@@ -42,12 +47,13 @@ public class NeonStore implements Store {
 
     public NeonStore(String folderName, String... headers) {
         this.folderName = folderName.endsWith("/") ? folderName : folderName + "/";
-        this.headers = headers;
+        
     }
 
     @Override
-    public void set(final String fileName) {
-        this.filePath = Paths.get(folderName + fileName);
+    public void set(final String folderName, final String fileName, String...headers) {
+    	this.headers = headers;
+    	this.filePath = Paths.get(folderName + fileName);
         deleteTempFile();
         createFile();
     }

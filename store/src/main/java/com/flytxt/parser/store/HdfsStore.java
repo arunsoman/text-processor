@@ -4,16 +4,14 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import com.flytxt.parser.marker.Marker;
-@Component
-@Scope("prototypes")
-@Qualifier("streamStore")
-public class StreamStore implements Store {
+@Scope("prototype")
+@Qualifier("hdfsStore")
+public class HdfsStore implements Store {
 
 	@Override
-	public void set(String folderName, String fileName, String ...headers) {
+	public void set(String folderName, String fileName, String... headers) {
 		// TODO Auto-generated method stub
 		
 	}
