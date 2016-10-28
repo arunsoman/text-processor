@@ -15,7 +15,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerDefaultConfig;
 import com.flytxt.parser.marker.MarkerFactory;
-import com.flytxt.parser.marker.TokenFactory;
+
+import lombok.Getter;
+import lombok.Setter;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes ={
 		MarkerDefaultConfig.class,
@@ -24,7 +26,8 @@ import com.flytxt.parser.marker.TokenFactory;
 public class StoreUnitTest {
 
 	@Autowired
-	MarkerFactory mf;
+	@Getter @Setter
+	MarkerFactory markerFactory;
 	
     
     @Test
@@ -36,9 +39,9 @@ public class StoreUnitTest {
         store.set("/tmp/out/","sample.txt", aon, age);
         final String str = "10,twenty";
         final byte[] strB = str.getBytes();
-        //final MarkerFactory mf = getMf(str.split(",").length);
-        final Marker line = mf.createMarker(strB,0, strB.length - 1);
-        final List<Marker> ms = line.splitAndGetMarkerList(TokenFactory.create(","), mf);
+        markerFactory.setMaxListSize(str.split(",").length);
+        final Marker line = markerFactory.createMarker(strB,0, strB.length - 1);
+        final List<Marker> ms = line.splitAndGetMarkerList((",").getBytes(), markerFactory);
         final Marker aonM = ms.get(1);
         final Marker ageM = ms.get(2);
         try {
@@ -57,9 +60,9 @@ public class StoreUnitTest {
         store.set("/tmp/test","streamStore.txt", aon, age);
         final String str = "10,twenty";
         final byte[] strB = str.getBytes();
-        mf.setMaxListSize(str.split(",").length);
-        final Marker line = mf.createMarker(null,0, strB.length - 1);
-        final List<Marker> ms = line.splitAndGetMarkerList( ",".getBytes(), mf);
+        markerFactory.setMaxListSize(str.split(",").length);
+        final Marker line = markerFactory.createMarker(strB,0, strB.length - 1);
+        final List<Marker> ms = line.splitAndGetMarkerList( ",".getBytes(), markerFactory);
         final Marker aonM = ms.get(1);
         final Marker ageM = ms.get(2);
         try {

@@ -80,10 +80,11 @@ public class Marker {
             for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++)
                 ;
             if (tokenIndex == token.length) {
-                if (markers.add(mf.createMarker(null,lastIndex, currentIndex - lastIndex))) { // breaks if the remaining markers are not required in the script
+                try{
+                	markers.add(mf.createMarker(null,lastIndex, currentIndex - lastIndex)) ; // breaks if the remaining markers are not required in the script
                     currentIndex = currentIndex + tokenIndex;
                     lastIndex = currentIndex;
-                } else {
+                } catch(ArrayIndexOutOfBoundsException e) {
                     endReached = true;
                     break;
                 }
@@ -91,7 +92,11 @@ public class Marker {
                 currentIndex++;
         }
         if (!endReached && lastIndex < length + 1)
-            markers.add(mf.createMarker(null,lastIndex, this.length - lastIndex));
+            try{
+            	markers.add(mf.createMarker(null,lastIndex, this.length - lastIndex));
+            } catch (Exception e) {
+				// TODO: handle exception
+			}
         return markers;
     }
 

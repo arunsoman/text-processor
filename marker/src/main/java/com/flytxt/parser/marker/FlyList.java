@@ -28,7 +28,7 @@ public class FlyList<T> implements List<T> {
             array[size++] = element;
             return true;
         }
-        return false;
+        throw new ArrayIndexOutOfBoundsException(size);
     }
 
     @Override

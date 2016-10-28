@@ -11,7 +11,7 @@ public class SearchLookupTest {
 
     final MarkerFactory mf = new MarkerFactory();
 
-    @Test
+    //@Test
     public void basicTest() {
         final String[][] data = { { "Hello World", "World" }, { "Wallnut", "fruit" } };
         mf.setMaxListSize(100);
@@ -22,7 +22,7 @@ public class SearchLookupTest {
         assertEquals("fruit", marker.toString());
     }
 
-    @Test
+    //@Test
     public void biggerSearch() {
         final String[][] data = { { "98744", "test" }, { "99478", "fruit" }, { "99477", "World" } };
         final Search<Marker> search = new Search<>(mf);
