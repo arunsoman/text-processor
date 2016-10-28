@@ -30,12 +30,12 @@ public interface TpConstant {
 
     byte[] delim4 = { (byte) 0x06 };
 
-    ImmutableMarker dm1 = new ImmutableMarker(delim1);
+    ImmutableMarker INTERDATATYPE = new ImmutableMarker(delim1);
 
-    ImmutableMarker dm2 = new ImmutableMarker(delim2);
+    ImmutableMarker INTRADATATYPE = new ImmutableMarker(delim2);
 
-    ImmutableMarker dm3 = new ImmutableMarker(delim3);
+    ImmutableMarker SEPARATOR = new ImmutableMarker(delim3);
 
-    ImmutableMarker dm4 = new ImmutableMarker(delim4);
+    ImmutableMarker VALUESEPARATOR = new ImmutableMarker(delim4);
 
 }

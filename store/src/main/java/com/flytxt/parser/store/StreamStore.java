@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.flytxt.parser.marker.Marker;
 @Component
-@Scope("prototypes")
+@Scope("prototype")
 @Qualifier("streamStore")
 public class StreamStore implements Store {
 

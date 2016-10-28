@@ -46,7 +46,6 @@ public final class MarkerFactory {
     private int reusedList;
 
     private int createdList;
-    
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private int listSize;

@@ -103,7 +103,7 @@ public class Marker {
     public byte[] getData() {
         return currentObject.getLineMarker();
     }
-
+    
     public String toString() {
         return new String(currentObject.getLineMarker(), index, length);
     }

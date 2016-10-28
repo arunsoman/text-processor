@@ -120,6 +120,7 @@ public class LocalFileStore implements Store {
             bBuff.put(fileName.getBytes());
             for (final Marker aMarker : markers) {
                 bBuff.put(COMMA);
+
                 if(aMarker == null || aMarker.getData() == null){
                 	delta +=1;
                 	continue;

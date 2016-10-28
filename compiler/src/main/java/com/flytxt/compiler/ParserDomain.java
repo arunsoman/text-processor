@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
 import com.flytxt.compiler.domain.CompileNTest;
@@ -17,13 +18,14 @@ import com.flytxt.compiler.repo.JobRepo;
 
 @EnableAutoConfiguration
 @Component
+@ComponentScan(basePackages={ "com.flytxt.compiler.repo"})
 public class ParserDomain {
 
     @Autowired
     private LocationSettings loc;
 
     @Autowired
-    private JobRepo repo;
+    private JobRepo jobRepo;
 
     @Autowired
     private Utils utils;
@@ -46,7 +48,7 @@ public class ParserDomain {
     }
 
     public File getJar(final String host) throws Exception {
-        List<Job> jobFilter = repo.findByhostNameAndActiveTrue(host);
+        List<Job> jobFilter = jobRepo.findByhostNameAndActiveTrue(host);
         StringBuilder sb = new StringBuilder();
         StringBuilder sbWatch = new StringBuilder();
         String createSingleVM = utils.createSingleVM();

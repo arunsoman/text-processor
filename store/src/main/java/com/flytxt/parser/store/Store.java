@@ -10,7 +10,7 @@ public interface Store {
 
     public void set(final String folderName, final String fileName, String ...headers);
 
-    public void save(final byte[] data, final String fileName, final Marker... markers) throws IOException;
+    public void save(final byte[] data,   String fileName, final Marker... markers) throws IOException;
 
     public String done() throws IOException;
 }
