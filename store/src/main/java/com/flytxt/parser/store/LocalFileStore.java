@@ -11,9 +11,14 @@ import java.nio.file.Paths;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.flytxt.parser.marker.Marker;
-
+@Component
+@Scope("prototype")
+@Qualifier("localFileStore")
 public class LocalFileStore implements Store {
 
     private static final byte COMMA = (byte) ',';
@@ -28,9 +33,9 @@ public class LocalFileStore implements Store {
 
     private final Logger logger = LoggerFactory.getLogger("applicationLog");
 
-    public final String folderName; // Destination folder
+    public  String destinationFolder; // Destination folder
 
-    public final String[] headers; // Headers of the output file
+    public String[] headers; // Headers of the output file
 
     private IOException e;
 
@@ -40,14 +45,13 @@ public class LocalFileStore implements Store {
 
     private Path filePath; // Destination file's absolute path
 
-    public LocalFileStore(String folderName, String... headers) {
-        this.folderName = folderName.endsWith("/") ? folderName : folderName + "/";
-        this.headers = headers;
-    }
+
 
     @Override
-    public void set(final String fileName) {
+    public void set(final String folderName, final String fileName, String ...headers) {
         this.filePath = Paths.get(folderName + fileName);
+        this.destinationFolder = folderName;
+        this.headers = headers;
         deleteTempFile();
         createFile();
     }
@@ -60,7 +64,7 @@ public class LocalFileStore implements Store {
                 return entry.toFile().toString().endsWith(TMP);
             }
         };
-        final Path folder = Paths.get(folderName);
+        final Path folder = Paths.get(destinationFolder);
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(folder, filter)) {
             for (final Path entry : stream)
                 entry.toFile().delete();
@@ -71,7 +75,7 @@ public class LocalFileStore implements Store {
 
     private void createFile() {
         if (!Files.exists(filePath)) {
-            final Path folder = Paths.get(folderName);
+            final Path folder = Paths.get(destinationFolder);
             try {
                 Files.createDirectories(folder);
             } catch (final IOException e) {
@@ -116,13 +120,13 @@ public class LocalFileStore implements Store {
             bBuff.put(fileName.getBytes());
             for (final Marker aMarker : markers) {
                 bBuff.put(COMMA);
-                try {
-                    bBuff.put(aMarker.getData(), aMarker.index, aMarker.length);
-                    delta += aMarker.length;
-                } catch (NullPointerException e) {
-                    delta += 1;
-                    continue;
+
+                if(aMarker == null || aMarker.getData() == null){
+                	delta +=1;
+                	continue;
                 }
+                bBuff.put(data, aMarker.index, aMarker.length);
+                delta += aMarker.length;
             }
             delta *= 2;
             bBuff.put(NEWLINE);
@@ -152,7 +156,7 @@ public class LocalFileStore implements Store {
         bBuff.clear();
         channel.close();
         final String doneFile = filePath.getFileName().toString() + "_" + System.currentTimeMillis();
-        Files.move(Paths.get(filePath.toAbsolutePath() + TMP), Paths.get(folderName + "/" + doneFile));
+        Files.move(Paths.get(filePath.toAbsolutePath() + TMP), Paths.get(destinationFolder + "/" + doneFile));
         return null;
     }
 }

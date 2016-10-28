@@ -11,14 +11,10 @@ public class Translator implements TpConstant {
 		//need to find cleaner way
 		return String.valueOf(lVal).getBytes();
 	}
-	public static final long asLong(byte[] data, Marker m){
-		if(m.getData() != null)
-			data = m.getData();
-		return Long.parseLong(m.toString(data));
+	public static final long asLong( Marker m){
+		return Long.parseLong(m.toString());
 	}
-	public static final double asDouble(byte[] data,Marker m){
-		if(m.getData() != null)
-			data = m.getData();
-		return Double.parseDouble(m.toString(data));
+	public static final double asDouble(Marker m){
+		return Double.parseDouble(m.toString());
 	}
 }

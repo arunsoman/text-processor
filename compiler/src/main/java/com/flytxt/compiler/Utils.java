@@ -41,6 +41,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flytxt.parser.marker.CurrentObject;
 import com.flytxt.parser.marker.LineProcessor;
 import com.flytxt.parser.marker.Marker;
 
@@ -177,11 +178,10 @@ public class Utils {
     }
 
     public String testRunLp(LineProcessor lp, String[] data) throws IOException {
-        Marker lineMarker = lp.getMf().getLineMarker();
+    	CurrentObject currentObject = lp.getMf().getCurrentObject();
+        Marker lineMarker = lp.getMf().createMarker(currentObject.getLineMarker(), currentObject.getIndex(), currentObject.getLength());
         for (String datum : data) {
-            lineMarker.setData(datum.getBytes());
-            lineMarker.index = 0;
-            lineMarker.length = datum.length();
+            lineMarker.setLineAttribute(0, datum.length());
             lp.init("");
             lp.process();
         }

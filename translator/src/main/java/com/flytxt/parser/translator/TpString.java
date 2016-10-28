@@ -1,8 +1,10 @@
 package com.flytxt.parser.translator;
 
+import org.springframework.stereotype.Service;
+
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
-
+@Service
 public class TpString {
 
     private static final byte smallA = 'a';
@@ -17,24 +19,18 @@ public class TpString {
 
     private static final byte deltaFromA2a = capsA - smallA;
 
-    private MarkerFactory mf = new MarkerFactory();
-
-    public TpString() {
-        mf.setMaxListSize(1);
-    }
-
-    public int length(final byte[] data, final Marker m) {
+    public int length( Marker m) {
         return m.length; // will it come index-length
     }
 
-    public boolean isNull(final byte[] data, final Marker m) {
+    public boolean isNull( Marker m) {
         return m == null || m.length == 0;
     }
 
-    public boolean endsWithIgnore(final byte[] data, final Marker dataMarker, final byte[] prefix, final Marker prefixMarker) {
+    public boolean endsWithIgnore( Marker dataMarker, final Marker prefixMarker) {
 
-        final byte[] d1 = (dataMarker.getData() != null) ? dataMarker.getData() : data;
-        final byte[] d2 = (prefixMarker.getData() != null) ? prefixMarker.getData() : prefix;
+        final byte[] d1 = dataMarker.getData();
+        final byte[] d2 = prefixMarker.getData();
         int prefixPtr = prefixMarker.index;
         int dataPtr = dataMarker.index + dataMarker.length - prefixMarker.length;
         for (int i = dataPtr; i < dataMarker.index + dataMarker.length; i++) {
@@ -46,10 +42,10 @@ public class TpString {
         return true;
     }
 
-    public boolean endsWith(final byte[] data, final Marker dataMarker, final byte[] prefix, final Marker prefixMarker) {
+    public boolean endsWith( Marker dataMarker, final Marker prefixMarker) {
 
-        final byte[] data1 = (dataMarker.getData() != null) ? dataMarker.getData() : data;
-        final byte[] data2 = (prefixMarker.getData() != null) ? prefixMarker.getData() : prefix;
+        final byte[] data1 = dataMarker.getData();
+        final byte[] data2 = prefixMarker.getData() ;
 
         int dataIndex = dataMarker.index + dataMarker.length - 1;
         int prefixIndex = prefixMarker.index + prefixMarker.length - 1;
@@ -62,10 +58,10 @@ public class TpString {
         return true;
     }
 
-    public boolean startsWith(final byte[] data, final Marker dataMarker, final byte[] prefix, final Marker prefixMarker) {
+    public boolean startsWith( Marker dataMarker, final Marker prefixMarker) {
 
-        final byte[] data1 = (dataMarker.getData() != null) ? dataMarker.getData() : data;
-        final byte[] data2 = (prefixMarker.getData() != null) ? prefixMarker.getData() : prefix;
+        final byte[] data1 = dataMarker.getData();
+        final byte[] data2 = prefixMarker.getData();
         if (dataMarker.length < prefixMarker.length)
             return false;
         int dataIndex = dataMarker.index + prefixMarker.length - 1;
@@ -79,8 +75,8 @@ public class TpString {
         return true;
     }
 
-    public Marker toUpperCase(final byte[] data, final Marker m) {
-        final byte[] data1 = m.getData() == null ? data : m.getData();
+    public Marker toUpperCase( Marker m, MarkerFactory mf) {
+        final byte[] data1 = m.getData();
         final byte[] dest = new byte[m.length];
         int index = 0;
         for (int i = m.index; i < m.length; i++)
@@ -88,11 +84,11 @@ public class TpString {
                 dest[index++] = (byte) (data1[i] + deltaFromA2a);
             else
                 dest[index++] = data1[i];
-        return mf.createImmutable(dest, 0, m.length);
+        return mf.createMarker(dest, 0, m.length);
     }
 
-    public Marker toLowerCase(final byte[] data, final Marker m) {
-        final byte[] data1 = m.getData() == null ? data : m.getData();
+    public Marker toLowerCase( Marker m, MarkerFactory mf) {
+        final byte[] data1 = m.getData();
         final byte[] dest = new byte[m.length];
         int index = 0;
         for (int i = m.index; i < m.length; i++)
@@ -100,15 +96,15 @@ public class TpString {
                 dest[index++] = (byte) (data1[i] - deltaFromA2a);
             else
                 dest[index++] = data1[i];
-        return mf.createImmutable(dest, 0, m.length);
+        return mf.createMarker(dest, 0, m.length);
     }
 
-    public Marker toTitleCase(final byte[] data, final Marker m) {
+    public Marker toTitleCase( Marker m, MarkerFactory mf) {
         if (m.length == 0)
             return m;
-        final byte[] data1 = m.getData() == null ? data : m.getData();
+        final byte[] data1 = m.getData();
         final byte[] dest = new byte[m.length];
-        System.arraycopy(data, m.index, dest, 0, m.length);
+        System.arraycopy(m.getData(), m.index, dest, 0, m.length);
         if (data1[m.index] >= 'a' && data1[m.index] <= 'z')
             dest[m.index] += deltaFromA2a;
 
@@ -116,20 +112,20 @@ public class TpString {
             if (dest[i] >= 'A' && dest[i] <= 'Z')
                 dest[i] -= deltaFromA2a;
 
-        return mf.createImmutable(dest, 0, m.length);
+        return mf.createMarker(dest, 0, m.length);
     }
 
-    public Marker lTrim(final byte[] data, final Marker m) {
-        final byte[] data1 = m.getData() == null ? data : m.getData();
+    public Marker lTrim( Marker m, MarkerFactory mf) {
+        final byte[] data1 = m.getData();
         int start = m.index;
         final int end = start + m.length;
         while ((start < end) && (data1[start] == space))
             start++;
-        return mf.create(start, m.length - start);
+        return mf.createMarker(null,start, m.length - start);
     }
 
-    public Marker rTrim(final byte[] data, final Marker m) {
-        final byte[] data1 = m.getData() == null ? data : m.getData();
+    public Marker rTrim( Marker m, MarkerFactory mf) {
+        final byte[] data1 = m.getData();
         int start = m.index + m.length - 1;
         int dec = 0;
         final int end = m.index;
@@ -137,11 +133,11 @@ public class TpString {
             start--;
             dec--;
         }
-        return mf.create(m.index, m.length + dec);
+        return mf.createMarker(null,m.index, m.length + dec);
     }
 
-    public Marker trim(final byte[] data, final Marker m) {
-        final byte[] data1 = m.getData() == null ? data : m.getData();
+    public Marker trim( Marker m, MarkerFactory mf) {
+        final byte[] data1 = m.getData();
         int start = m.index;
         int end = start + m.length - 1;
         int newStart = start;
@@ -169,16 +165,16 @@ public class TpString {
         int len = m.length + dec;
         if (len < 0)
             len = 0;
-        return mf.create(newStart, len);
+        return mf.createMarker(null,newStart, len);
     }
 
-    public boolean contains(final byte[] data1, final Marker m1, final byte[] data2, final Marker m2) {
-        return indexOf(data1, m1, data2, m2) > -1;
+    public boolean contains( final Marker m1,  final Marker m2) {
+        return indexOf( m1, m2) > -1;
     }
 
-    public int indexOf(final byte[] data1, final Marker m1, final byte[] data2, final Marker m2) {
-        final byte[] d1 = m1.getData() == null ? data1 : m1.getData();
-        final byte[] d2 = m2.getData() == null ? data2 : m2.getData();
+    public int indexOf(final Marker m1, final Marker m2) {
+        final byte[] d1 = m1.getData();
+        final byte[] d2 = m2.getData();
         for (int i = m1.index; i < m1.index + m1.length - m2.length + 1; ++i) {
             boolean found = true;
             for (int j = m2.index; j < m2.index + m2.length; ++j)
@@ -192,13 +188,13 @@ public class TpString {
         return -1;
     }
 
-    public boolean containsIgnoreCase(final byte[] data1, final Marker m1, final byte[] data2, final Marker m2) {
-        return indexOIgnoreCase(data1, m1, data2, m2) > -1;
+    public boolean containsIgnoreCase(final Marker m1, final Marker m2) {
+        return indexOIgnoreCase(m1, m2) > -1;
     }
 
-    public int indexOIgnoreCase(final byte[] data1, final Marker m1, final byte[] data2, final Marker m2) {
-        final byte[] d1 = m1.getData() == null ? data1 : m1.getData();
-        final byte[] d2 = m2.getData() == null ? data2 : m2.getData();
+    public int indexOIgnoreCase(final Marker m1, final Marker m2) {
+        final byte[] d1 = m1.getData();
+        final byte[] d2 = m2.getData();
         for (int i = m1.index; i < m1.index + m1.length - m2.length + 1; ++i) {
             boolean found = true;
             for (int j = m2.index; j < m2.index + m2.length; ++j) {
@@ -215,33 +211,33 @@ public class TpString {
         return -1;
     }
 
-    public Marker extractLeading(final byte[] data, final Marker m1, final int extractCnt) {
+    public Marker extractLeading( Marker m1, final int extractCnt, MarkerFactory mf) {
         if (extractCnt < 0)
             throw new RuntimeException("extractCnt should be greater than 0 current:" + extractCnt);
-        final byte[] data1 = (m1.getData() == null) ? data : m1.getData();
+        
         if (m1.getData() == null)
-            return mf.create(m1.index, extractCnt);
+            return mf.createMarker(null,m1.index, extractCnt);
         else
-            return mf.createImmutable(data1, m1.index, extractCnt);
+            return mf.createMarker(m1.getData(), m1.index, extractCnt);
     }
 
-    public Marker extractTrailing(final byte[] data, final Marker m1, final int extractCnt) {
+    public Marker extractTrailing( Marker m1, final int extractCnt, MarkerFactory mf) {
         if (extractCnt < 0)
             throw new RuntimeException("extractCnt should be greater than 0 current:" + extractCnt);
-        final byte[] data1 = (m1.getData() == null) ? data : m1.getData();
-        if (m1.getData() == null)
-            return mf.create(m1.index + m1.length - extractCnt, extractCnt);
+        final byte[] data1 = m1.getData();
+        if (data1 == null)
+            return mf.createMarker(null,m1.index + m1.length - extractCnt, extractCnt);
         else
-            return mf.createImmutable(data1, m1.index + m1.length - extractCnt, extractCnt);
+            return mf.createMarker(data1, m1.index + m1.length - extractCnt, extractCnt);
     }
 
-    public Marker merge(final byte[] data1, final Marker m1, final byte[] data2, final Marker m2) {
-        final byte[] d1 = m1.getData() == null ? data1 : m1.getData();
-        final byte[] d2 = m2.getData() == null ? data2 : m2.getData();
+    public Marker merge(final Marker m1,final Marker m2, MarkerFactory mf) {
+        final byte[] d1 = m1.getData();
+        final byte[] d2 = m2.getData();
         final byte[] result = new byte[m1.length + m2.length];
         // TODO
         System.arraycopy(d1, m1.index, result, 0, m1.length);
         System.arraycopy(d2, m2.index, result, m1.length, m2.length);
-        return mf.createImmutable(result, 0, result.length);
+        return mf.createMarker(result, 0, result.length);
     }
 }

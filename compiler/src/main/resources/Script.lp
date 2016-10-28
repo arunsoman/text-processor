@@ -41,8 +41,12 @@ public class %(name) implements LineProcessor{
      public void init(String fileName){
           store.set(fileName);
           byte[] tt = fileName.getBytes();
+<<<<<<< HEAD
           this.fileName = mf.createImmutable(tt, 0, tt.length);
           line = mf.getLineMarker();
+=======
+          this.fileName = mf.createMarker(tt, 0, tt.length);
+>>>>>>> master
 	}
 	
 	public String getSourceFolder(){

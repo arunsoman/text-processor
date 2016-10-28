@@ -1,20 +1,20 @@
-package com.flytxt.parser.test.translator.transformer;
+package com.flytxt.parser.translator.feature.transformer;
 
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
 
 public class MarkerHelper {
-	private static MarkerFactory mf = new MarkerFactory();
+	
 	private String str;
 	
 	public byte[] getBytes(){
 		return str.getBytes();
 	}
-	public MarkerFactory getMf(){
-		return mf;
-	}
-	public Marker getMarker(){
-		return mf.create(0, str.getBytes().length);
+	
+	public Marker getMarker(MarkerFactory mf){
+		byte[] data = str.getBytes();
+		mf.getCurrentObject().setLineMarker(data);
+		return mf.createMarker(null,0, data.length);
 	}
 
 	public MarkerHelper(String str) {

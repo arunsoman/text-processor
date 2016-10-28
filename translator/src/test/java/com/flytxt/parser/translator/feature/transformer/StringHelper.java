@@ -1,4 +1,4 @@
-package com.flytxt.parser.test.translator.transformer;
+package com.flytxt.parser.translator.feature.transformer;
 
 public class StringHelper {
 	private String str;

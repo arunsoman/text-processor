@@ -23,7 +23,7 @@ public class {0} implements LineProcessor{
 	public void setInputFileName(String currentFileName){
 		this.currentFileName = currentFileName;
 		byte[] tt = currentFileName.getBytes();
-		this.fileName = mf.createImmutable(tt, 0. tt.length);
+		this.fileName = mf.createMarker(tt, 0. tt.length);
 	}
 
 	public void process(byte[] data, int startIndex, int readCnt, MarkerFactory mf) throws IOException{
