@@ -17,6 +17,7 @@ import com.flytxt.compiler.ParserDomain;
 import com.flytxt.compiler.domain.CompileNTest;
 
 @RunWith(SpringRunner.class)
+
 @SpringBootTest
 @SpringBootConfiguration
 @EnableJpaRepositories("com.flytxt.compiler.repo")
