@@ -3,9 +3,9 @@ FROM anapsix/alpine-java
 
 MAINTAINER  Arun soman <author@email.com>
 
-RUN echo "deb http://archive.ubuntu.com/ubuntu trusty main universe" > /etc/apt/sources.list && \
+RUN mkdir -p /etc/apt/ && \
+    echo "deb http://archive.ubuntu.com/ubuntu trusty main universe" > /etc/apt/sources.list && \
     apt-get -y update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y -q python-software-properties software-properties-common && \
     echo 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' >> /etc/apt/sources.list && \
     echo 'deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' >> /etc/apt/sources.list && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C2518248EEA14886 && \
