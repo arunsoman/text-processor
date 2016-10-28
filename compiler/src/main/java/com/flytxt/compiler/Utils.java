@@ -46,7 +46,6 @@ import com.flytxt.parser.marker.LineProcessor;
 import com.flytxt.parser.marker.Marker;
 
 @Component
-@ComponentScan
 public class Utils {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -228,8 +227,4 @@ public class Utils {
         return null;
     }
 
-    public static void main(String[] args) {
-        Utils u = new Utils();
-        System.out.println(u.replaceWithConsoleStore(new String("new ConsoleStore();\nnew HtreaeStore();")));
-    }
 }
