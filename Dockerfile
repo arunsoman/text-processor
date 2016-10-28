@@ -3,8 +3,8 @@ FROM anapsix/alpine-java
 
 MAINTAINER  Arun soman <author@email.com>
 
-RUN apk update && \
-   apk add --update maven  git && \
+RUN apk update && apk upgrade && \
+    apk add --no-cache maven  git openssh && \
    git clone https://github.com/arunsoman/text-processor.git && \
    cd text-processor && mvn package -Dmaven.test.skip=true && \
    cd .. && \
