@@ -11,14 +11,9 @@ import java.nio.file.Paths;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import com.flytxt.parser.marker.Marker;
-@Component
-@Scope("prototype")
-@Qualifier("localFileStore")
+
 public class LocalFileStore implements Store {
 
     private static final byte COMMA = (byte) ',';

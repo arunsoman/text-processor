@@ -2,16 +2,12 @@ package com.flytxt.parser.store;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.translator.TpConstant;
 
 import gherkin.deps.com.google.gson.JsonArray;
 import gherkin.deps.com.google.gson.JsonObject;
-@Component
-@Qualifier("consoleStore")
+
 public class ConsoleStore implements Store {
 
     private String[] headers;

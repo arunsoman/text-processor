@@ -2,14 +2,8 @@ package com.flytxt.parser.store;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 import com.flytxt.parser.marker.Marker;
-@Component
-@Scope("prototype")
-@Qualifier("streamStore")
+
 public class StreamStore implements Store {
 
 	@Override
