@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootConfiguration
 @EnableJpaRepositories("com.flytxt.tp.repo")
 @EntityScan("com.flytxt.tp.domain")
-@ComponentScan(basePackages={"com.flytxt.tp"})
+Scan(basePackages={"com.flytxt.tp"})
 
 public class Main {
 

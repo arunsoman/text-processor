@@ -12,14 +12,10 @@ import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import com.flytxt.parser.marker.CurrentObject;
 import com.flytxt.parser.marker.LineProcessor;
@@ -27,12 +23,10 @@ import com.flytxt.parser.marker.MarkerFactory;
 
 import lombok.Getter;
 
-@Component
-@Scope("prototype")
 public class FlyReader implements Callable<FlyReader> {
-	@Autowired
-	private MarkerFactory markerFactory;
-	private CurrentObject currentObject;
+
+	private MarkerFactory markerFactory = new MarkerFactory();
+	private CurrentObject currentObject = new CurrentObject();
 
     private LineProcessor lp;
 
@@ -51,13 +45,9 @@ public class FlyReader implements Callable<FlyReader> {
 
     private final Logger transLog = LoggerFactory.getLogger("transactionLog");
 
-    @PostConstruct
-    public void init(){
-    	currentObject = markerFactory.getCurrentObject();
-    }
+    
     public void set(final String folder, final LineProcessor lp) {
         this.lp = lp;
-        currentObject.setFolderName(folder);
         appLog.debug("file reader @ " + folder);
     }
 
@@ -80,8 +70,8 @@ public class FlyReader implements Callable<FlyReader> {
                     final RandomAccessFile file = new RandomAccessFile(path.toString(), "rw");
                     appLog.debug("picked up " + path.toString());
                     try {
-                    	currentObject.setFileName(path.getFileName().toString());
-                        lp.init(path.getFileName().toString());
+                    	currentObject.init(folder, path.getFileName().toString());
+                        lp.init(path.getFileName().toString(), markerFactory);
                         processFile(buf, path, file.getChannel());
                         buf.clear();
                         if (stopRequested) {
@@ -118,7 +108,6 @@ public class FlyReader implements Callable<FlyReader> {
     private final void readLines(final FileChannel file, final ByteBuffer buf) throws IOException {
         int readCnt;
         final byte[] data = buf.array();
-        currentObject.setLineMarker(data);
         while ((readCnt = file.read(buf)) > 0) {
             long eolPosition;
             long previousEolPosition = 0;
@@ -134,7 +123,7 @@ public class FlyReader implements Callable<FlyReader> {
                         continue;
                     } else
                         try {
-                        	currentObject.setCurrentLine(previousEolPosition == 0 ? 0 : (int) previousEolPosition + eol.length, (int) (eolPosition - previousEolPosition));
+                        	currentObject.setCurrentLine(data, previousEolPosition == 0 ? 0 : (int) previousEolPosition + eol.length, (int) (eolPosition - previousEolPosition));
                             lp.process( );
                             previousEolPosition = eolPosition;
                         } catch (final IndexOutOfBoundsException e) {

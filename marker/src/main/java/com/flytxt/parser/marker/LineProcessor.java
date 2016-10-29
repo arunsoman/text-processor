@@ -6,7 +6,7 @@ public interface LineProcessor {
 
     String getSourceFolder();
 
-    void init(String currentFileName);
+    void init(String currentFileName, MarkerFactory mf);
 
     void process() throws IOException;
 
