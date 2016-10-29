@@ -5,11 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
-@Component
-@Scope("prototype")
 public class FlyList<T> implements List<T> {
 
     private T[] array;
@@ -17,7 +12,7 @@ public class FlyList<T> implements List<T> {
     private int size;
 
     @SuppressWarnings("unchecked")
-    public void set(final int size) {
+    public FlyList(final int size) {
         this.size = 0;
         array = (T[]) new Object[size];
     }

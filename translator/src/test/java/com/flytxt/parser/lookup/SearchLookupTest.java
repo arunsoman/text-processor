@@ -14,7 +14,6 @@ public class SearchLookupTest {
     //@Test
     public void basicTest() {
         final String[][] data = { { "Hello World", "World" }, { "Wallnut", "fruit" } };
-        mf.setMaxListSize(100);
         final Search<Marker> object = new Search<>(mf);
         for (final String[] datum : data)
             object.load(datum[0].getBytes(), mf.createMarker(datum[1].getBytes(), 0, datum[1].getBytes().length));

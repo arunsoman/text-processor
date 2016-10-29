@@ -1,10 +1,7 @@
 package com.flytxt.parser.translator;
 
-import org.springframework.stereotype.Service;
-
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
-@Service
 public class TpString {
 
     private static final byte smallA = 'a';

@@ -4,11 +4,9 @@ import java.math.BigDecimal;
 
 import org.apache.commons.math3.util.FastMath;
 import org.apache.commons.math3.util.Precision;
-import org.springframework.stereotype.Service;
 
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
-@Service
 public class TpMath extends Translator {
 
 	public final static byte dotByte = '.';
@@ -118,7 +116,9 @@ public class TpMath extends Translator {
 	}
 
 	public Marker extractDecimalIntegerPart(final Marker m, final MarkerFactory mf) {
-		return m.splitAndGetMarker(dotToken, 1, mf);
+		Marker result = mf.createMarker(m.getData(), m.index, m.length);
+		m.splitAndGetMarkers(dotToken, new int[]{1}, mf, result);
+		return result;
 	}
 
 	public Marker extractDecimalFractionPart(final Marker m, final MarkerFactory mf) {

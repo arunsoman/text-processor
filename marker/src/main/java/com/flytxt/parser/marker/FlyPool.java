@@ -1,16 +1,5 @@
 package com.flytxt.parser.marker;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
-import lombok.Getter;
-import lombok.Setter;
-
-@Component
-@Scope("prototype")
 public class FlyPool<T> {
 
     private Node<T> current;
@@ -19,18 +8,11 @@ public class FlyPool<T> {
 
     private int size;
 
-    @Autowired
-    private ApplicationContext appContext;
-    
-    @Component
-    @Scope("prototype")
     private static class Node<T> {
-
         T item;
-
         Node<T> next;
-
-        void set(final T element, final Node<T> next) {
+        
+        Node(final T element, final Node<T> next) {
             this.item = element;
             this.next = next;
         }
@@ -38,8 +20,7 @@ public class FlyPool<T> {
 
     public T add(final T element) {
         final Node<T> f = head;
-        Node<T> newNode = appContext.getBean(Node.class);
-        newNode.set(element, f);
+        Node<T> newNode = new Node<T>(element, f);
         head = newNode;
         size++;
         return element;
@@ -52,7 +33,6 @@ public class FlyPool<T> {
             return result.item;
         }
         return null;
-
     }
 
     public void reset() {

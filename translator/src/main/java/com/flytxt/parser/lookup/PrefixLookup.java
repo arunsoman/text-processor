@@ -6,11 +6,9 @@ import java.util.Map;
 
 import org.apache.commons.collections4.trie.PatriciaTrie;
 import org.apache.commons.collections4.trie.UnmodifiableTrie;
-import org.springframework.stereotype.Component;
 
 import com.flytxt.parser.marker.MarkerFactory;
 
-@Component
 public class PrefixLookup<T> extends Lookup<T> {
 
     private final Map<String, T> map = new HashMap<>();

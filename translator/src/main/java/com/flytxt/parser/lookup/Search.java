@@ -2,13 +2,10 @@ package com.flytxt.parser.lookup;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.flytxt.parser.lookup.node.CharPath;
 import com.flytxt.parser.lookup.node.CharacterDic;
 import com.flytxt.parser.marker.MarkerFactory;
 
-@Component
 public class Search<T> extends Lookup<T> {
 
     private final CharacterDic<T> dictionary = new CharacterDic<>();

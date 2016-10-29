@@ -5,17 +5,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.flytxt.parser.marker.MarkerFactory;
 
-@Component
 public abstract class Lookup<T> {
 
     protected String fileName;
-
-    @Autowired
     protected MarkerFactory mf;
 
     @SuppressWarnings("unchecked")

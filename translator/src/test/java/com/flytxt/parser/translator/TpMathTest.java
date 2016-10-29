@@ -4,21 +4,13 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.flytxt.parser.marker.Marker;
-import com.flytxt.parser.marker.MarkerDefaultConfig;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MarkerDefaultConfig.class, TranslatorDefaultConfig.class})
 public class TpMathTest extends TpAbsTest {
 	
-	@Autowired
-	TpMath tpMath;
+	TpMath tpMath = new TpMath();
 
 	@Test
 	public final void testAbs() {

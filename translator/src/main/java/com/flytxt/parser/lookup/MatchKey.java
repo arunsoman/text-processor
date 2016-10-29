@@ -2,12 +2,9 @@ package com.flytxt.parser.lookup;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.flytxt.parser.lookup.node.Node;
 import com.flytxt.parser.marker.MarkerFactory;
 
-@Component
 public class MatchKey<T> extends Lookup<T> {
 
     private final Node<T> node = new Node<>();
