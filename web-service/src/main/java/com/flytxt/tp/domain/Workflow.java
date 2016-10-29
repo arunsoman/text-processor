@@ -1,4 +1,4 @@
-package com.flytxt.compiler.domain;
+package com.flytxt.tp.domain;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,9 +6,8 @@ import java.util.Map;
 import lombok.Data;
 
 @Data
-public class CompileNTest {
-
-    final String name;
+public class Workflow {
+	final String name;
 
     final String init;
 

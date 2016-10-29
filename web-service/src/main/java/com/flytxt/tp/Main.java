@@ -1,4 +1,4 @@
-package com.flytxt.compiler;
+package com.flytxt.tp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
@@ -9,13 +9,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @SpringBootConfiguration
-@EnableJpaRepositories("com.flytxt.compiler.repo")
-@EntityScan("com.flytxt.compiler.domain")
-@ComponentScan(basePackages={"com.flytxt.compiler",
-		"com.flytxt.parser.marker",
-		"com.flytxt.parser.processor",
-		"com.flytxt.parser.store",
-		"com.flytxt.parser.translator"})
+@EnableJpaRepositories("com.flytxt.tp.repo")
+@EntityScan("com.flytxt.tp.domain")
+@ComponentScan(basePackages={"com.flytxt.tp"})
 
 public class Main {
 

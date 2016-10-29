@@ -17,14 +17,15 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.tools.JavaFileObject;
 
-public class StringJavaFileObject implements JavaFileObject{
+public class FlyJavaFileObject implements JavaFileObject{
 	
 	private URI uri;
 	private String name;
 	private String content;
 	private ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 	
-	public StringJavaFileObject(String content) {
+	public FlyJavaFileObject(String fileName, String content) {
+		this.name = name;
 		this.content = content;
 	}
 	@Override

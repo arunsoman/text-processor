@@ -1,7 +1,8 @@
-package com.flytxt.compiler.domain;
+package com.flytxt.tp.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
@@ -9,11 +10,14 @@ import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.flytxt.tp.domain.listener.JobListener;
+
 import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "job_dk2")
+@EntityListeners(JobListener.class)
 public class Job {
 
     @Id
@@ -27,6 +31,9 @@ public class Job {
 
     @Column(name = "active")
     private boolean active;
+    
+    @Column(name = "status")
+    private boolean status;
 
     @Column(name = "hostname")
     private String hostName;
@@ -40,16 +47,15 @@ public class Job {
     private String regex;
 
     @Lob
-    @Column(name = "dk_pscript")
-    private String dkPscript;
+    @Column(name = "byte_code")
+    private byte[] byteCode;
 
     @Lob
-    @Column(name = "dkschema")
-    private String dkSchema;
+    @Column(name = "schema")
+    private String schema;
 
     @PostLoad
     public void postload() {
         this.idValue = this.id;
     }
-
 }
