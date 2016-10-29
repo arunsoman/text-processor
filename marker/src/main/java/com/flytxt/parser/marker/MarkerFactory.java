@@ -35,8 +35,8 @@ public final class MarkerFactory {
 		if (m == null) {
 			m = new Marker(currentObject);
 			markerPool.add(m);
-		} else
-			m.setLineAttribute(index, length);
+		} 
+		m.setLineAttribute(index, length);
 		return m;
 	}
 }
