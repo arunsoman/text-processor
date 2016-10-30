@@ -4,4 +4,5 @@
 target
 bin
 log
+*logs*
 .DS_Store

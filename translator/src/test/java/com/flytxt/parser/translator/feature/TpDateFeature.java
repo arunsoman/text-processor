@@ -1,4 +1,4 @@
-package com.flytxt.parser.test.translator;
+package com.flytxt.parser.translator.feature;
 
 import static org.junit.Assert.assertEquals;
 
@@ -35,7 +35,7 @@ public class TpDateFeature {
 	public void after(String arg1, String arg2) throws Throwable {
 		byte[] d1 = arg1.getBytes();
 		byte[] d2 = arg2.getBytes();
-		result = tpDate.after(d1, getMarker(arg1), d2, getMarker(arg2));
+		result = tpDate.after( getMarker(arg1), getMarker(arg2));
 	}
 
 	@Then("^date one after date two returns \"([^\"]*)\"$")
@@ -49,7 +49,7 @@ public class TpDateFeature {
 	public void before(String arg1, String arg2) throws Throwable {
 		byte[] d1 = arg1.getBytes();
 		byte[] d2 = arg2.getBytes();
-		result = tpDate.before(d1, getMarker(arg1), d2, getMarker(arg2));
+		result = tpDate.before( getMarker(arg1),  getMarker(arg2));
 	}
 	
 	@Then("^date one before date two returns \"([^\"]*)\"$")
@@ -60,9 +60,7 @@ public class TpDateFeature {
 
 	@When("^\"([^\"]*)\" minus \"([^\"]*)\"$")
 	public void minus(String arg1, String arg2) throws Throwable {
-		byte[] d1 = arg1.getBytes();
-		byte[] d2 = arg2.getBytes();
-		resultStr = ""+tpDate.differenceInMillis(d1, getMarker(arg1), d2, getMarker(arg2));
+		resultStr = tpDate.differenceInMillis(getMarker(arg1),  getMarker(arg2), mf).toString();
 	}
 
 	@Then("^diff is \"([^\"]*)\"$")

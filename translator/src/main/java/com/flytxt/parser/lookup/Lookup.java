@@ -32,7 +32,7 @@ public abstract class Lookup<T> {
                 final byte[] valueByteArray = value.getBytes();
 
                 if (!key.isEmpty())
-                    this.load(key.getBytes(), (T) mf.createImmutable(valueByteArray, 0, valueByteArray.length));
+                    this.load(key.getBytes(), (T) mf.createMarker(valueByteArray, 0, valueByteArray.length));
             }
             fileReader.close();
         } catch (final IOException e) {

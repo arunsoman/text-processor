@@ -5,6 +5,8 @@ import java.text.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.flytxt.parser.translator.TpDateUtil;
+
 public class TpDateUtilTest {
 
     private final TpDateUtil tpDu = new TpDateUtil();
