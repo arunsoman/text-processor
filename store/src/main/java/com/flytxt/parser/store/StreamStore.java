@@ -15,7 +15,7 @@ public class StreamStore implements Store {
     public final static String TMP = ".tmp";
 
     public StreamStore(String file, String... headers) {
-        writer = new MappedBusWriter(file, 100, 15, true);
+        writer = new MappedBusWriter(file, 10000, 15, true);
         try {
             writer.open();
         } catch (IOException e) {

@@ -21,13 +21,14 @@ public class %(name) implements LineProcessor{
 	public final MarkerFactory mf = new MarkerFactory();
 	private ImmutableMarker fileName;
 	private Marker m_inter = TpConstant.INTERDATATYPE;
-    private Marker m_intra = TpConstant.INTRADATATYPE;
-    private String str_inter = new String(TpConstant.INTERDATATYPE.getData());
+     private Marker m_intra = TpConstant.INTRADATATYPE;
+     private String str_inter = new String(TpConstant.INTERDATATYPE.getData());
 	private TpString tpString = new TpString();
 	private TpDate tpDate = new TpDate();
 	private TpMath tpMath = new TpMath();
 	private TpLogic tpLogic = new TpLogic();
 	private Marker line = new Marker();
+	private Marker mnull;
 	public final String outputFolder = "%(outputfolder)";
 	public final String regex = "%(regex)";
 	public final String inputFolder = "%(inputFolder)";
@@ -43,6 +44,7 @@ public class %(name) implements LineProcessor{
           byte[] tt = fileName.getBytes();
           this.fileName = mf.createImmutable(tt, 0, tt.length);
           line = mf.getLineMarker();
+          mnull = mf.createImmutable(" ".getBytes(), 0, 0);          
 	}
 	
 	public String getSourceFolder(){
@@ -57,8 +59,11 @@ public class %(name) implements LineProcessor{
 	}
 
 	public String done() throws IOException{
-		return neonStore.done();
-		//TODO
+	    StringBuilder sb = new StringBuilder("[");
+	    %(done)
+	    sb.deleteCharAt(sb.length() - 1);
+	    sb.append(']');
+	    return sb.toString();
 	}
 
 	public String getFilter(){

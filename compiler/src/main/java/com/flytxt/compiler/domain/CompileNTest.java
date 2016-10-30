@@ -24,6 +24,8 @@ public class CompileNTest {
 
     final String sample;
 
+    final String done;
+
     public Map<String, String> toMap() {
         final Map<String, String> values = new HashMap<>();
         values.put("name", name);
@@ -34,6 +36,7 @@ public class CompileNTest {
         values.put("store", store);
         values.put("type", type); // single,hybrid
         values.put("sample", sample);
+        values.put("done", done);
         return values;
     }
 

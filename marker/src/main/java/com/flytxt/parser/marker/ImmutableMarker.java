@@ -7,7 +7,7 @@ public class ImmutableMarker extends Marker {
     public ImmutableMarker(final byte[] data) {
         this.data = data;
         this.index = 0;
-        this.length = data.length;
+        this.length = data == null ? 0 : data.length;
     }
 
     @Override

@@ -8,17 +8,20 @@ public class Marker {
 
     private byte[] data;
 
+    private Router router = new Router();
+
     public void setData(byte[] currentLine) {
         this.data = currentLine;
     }
 
     public void splitAndGetMarkers(final byte[] data, final byte[] token, final int[] indexOfMarker, final MarkerFactory mf, Marker... markers) {
         int count = 1, lastIndex = this.index, currentIndex = this.index, tokenIndex, index = 0;
+        router.set(indexOfMarker);
         while (currentIndex < this.index + length) {
             for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++)
                 ;
             if (tokenIndex == token.length) { // true if token found at currentIndex
-                if (indexOfMarker[index] == count++) { // true if correct marker is found
+                if (router.getMarkerPosition(index) == count++) { // true if current marker is to be stored
                     markers[index].index = lastIndex;
                     markers[index].length = currentIndex - lastIndex;
                     index++;
