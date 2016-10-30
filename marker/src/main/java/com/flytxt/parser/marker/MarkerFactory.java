@@ -19,6 +19,10 @@ public final class MarkerFactory {
 		this.currentObject = currentObject;
 	}
 
+	public Marker getLineMarker(){
+		return new Marker(currentObject);
+	}
+	
 	private ImmutableMarker createImmutable(byte[] data, int index, int length) {
 		ImmutableMarker m = markerImmutablePool.peek();
 		if (m == null) {
