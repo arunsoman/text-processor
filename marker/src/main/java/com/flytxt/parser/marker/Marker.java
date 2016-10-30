@@ -21,6 +21,9 @@ public class Marker {
     
     public void splitAndGetMarkers( final byte[] token, final int[] indexOfMarker, final MarkerFactory mf, Marker... markers) {
     	byte[] data = currentObject.getLineMarker();
+    	find(data, token, indexOfMarker, mf, markers);
+    }
+    protected void find( byte[] data,  byte[] token,  int[] indexOfMarker,  MarkerFactory mf, Marker... markers){
         int count = 1, lastIndex = this.index, currentIndex = this.index, tokenIndex, index = 0;
         while (currentIndex < this.index + length) {
             for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++)
@@ -43,7 +46,6 @@ public class Marker {
             markers[index].length = this.length - lastIndex;
         }
     }
-
     public byte[] getData() {
         return currentObject.getLineMarker();
     }
