@@ -6,6 +6,8 @@ public class Marker {
 
     public int length;
 
+    private Router router;
+
     private CurrentObject currentObject;
     
     Marker(){}
@@ -25,11 +27,12 @@ public class Marker {
     }
     protected void find( byte[] data,  byte[] token,  int[] indexOfMarker,  MarkerFactory mf, Marker... markers){
         int count = 1, lastIndex = this.index, currentIndex = this.index, tokenIndex, index = 0;
+        router.set(indexOfMarker);
         while (currentIndex < this.index + length) {
             for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++)
                 ;
             if (tokenIndex == token.length) { // true if token found at currentIndex
-                if (indexOfMarker[index] == count++) { // true if correct marker is found
+                if (router.getMarkerPosition(index) == count++) { // true if current marker is to be stored
                     markers[index].index = lastIndex;
                     markers[index].length = currentIndex - lastIndex;
                     index++;
