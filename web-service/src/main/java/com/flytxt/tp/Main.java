@@ -3,6 +3,8 @@ package com.flytxt.tp;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.stereotype.Repository;
 
 @SpringBootApplication
 /*
@@ -12,7 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableJpaRepositories("com.flytxt.tp")
 @EntityScan("com.flytxt.tp")
  */
-@ComponentScan(basePackageClasses={Job.class, JobRepo.class})
+@EnableJpaRepositories(basePackages={"com.flytxt.tp"})
 
 public class Main {
 

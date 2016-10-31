@@ -49,9 +49,9 @@ public class Job {
     @Lob
     @Column(name = "byte_code")
     private byte[] byteCode;
-
+    
     @Lob
-    @Column(name = "schema")
+    @Column(name = "schema", columnDefinition="TEXT")
     private String schema;
 
     @PostLoad
