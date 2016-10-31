@@ -6,7 +6,7 @@ import com.flytxt.parser.marker.Marker;
 
 public interface Store {
 
-    public void set(final String folderName, final String fileName, String ...headers);
+    public void set(final String fileName);
 
     public void save(final byte[] data,   String fileName, final Marker... markers) throws IOException;
 

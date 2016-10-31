@@ -1,12 +1,12 @@
 package com.flytxt.parser.store;
 
+import gherkin.deps.com.google.gson.JsonArray;
+import gherkin.deps.com.google.gson.JsonObject;
+
 import java.io.IOException;
 
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.translator.TpConstant;
-
-import gherkin.deps.com.google.gson.JsonArray;
-import gherkin.deps.com.google.gson.JsonObject;
 
 public class ConsoleStore implements Store {
 
@@ -16,15 +16,13 @@ public class ConsoleStore implements Store {
 
     private JsonArray array = new JsonArray();
 
-    public ConsoleStore(){}
-    
-    public void set(String fileName, String folderName,	String... headers) {
+    public ConsoleStore(String outputFolder, String... headers) {
         this.headers = headers;
     }
 
     @Override
     public void save(final byte[] data, String fileName, final Marker... markers) throws IOException {
-    	JsonObject object = new JsonObject();
+        JsonObject object = new JsonObject();
         StringBuilder currentProperty = new StringBuilder();
         for (int i = 0, j = 0; i < markers.length; i++) {
             currentProperty.append(markers[i].toString()).append(',');
@@ -36,11 +34,15 @@ public class ConsoleStore implements Store {
             }
         }
         array.add(object);
-     }
+    }
 
     @Override
     public String done() throws IOException {
         return array.toString();
     }
 
+    @Override
+    public void set(String fileName) {
+
+    }
 }

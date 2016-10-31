@@ -1,4 +1,4 @@
-package com.flytxt.tp.domain;
+package com.flytxt.tp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,9 +10,9 @@ import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.flytxt.tp.domain.listener.JobListener;
-
 import lombok.Data;
+
+import com.flytxt.tp.domain.listener.JobListener;
 
 @Data
 @Entity
@@ -31,7 +31,7 @@ public class Job {
 
     @Column(name = "active")
     private boolean active;
-    
+
     @Column(name = "status")
     private boolean status;
 

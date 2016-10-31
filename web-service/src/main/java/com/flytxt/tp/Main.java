@@ -1,17 +1,18 @@
 package com.flytxt.tp;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
+/*
+@EnableAutoConfiguration
 @SpringBootConfiguration
-@EnableJpaRepositories("com.flytxt.tp.repo")
-@EntityScan("com.flytxt.tp.domain")
-@ComponentScan(basePackages={"com.flytxt.tp"})
+
+@EnableJpaRepositories("com.flytxt.tp")
+@EntityScan("com.flytxt.tp")
+ */
+@ComponentScan(basePackageClasses={Job.class, JobRepo.class})
 
 public class Main {
 

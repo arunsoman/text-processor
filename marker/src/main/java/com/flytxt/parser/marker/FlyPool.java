@@ -8,17 +8,19 @@ public class FlyPool<T extends Comparable<J>, J> {
 
     private int size;
 
-    private  class Node<T extends Comparable<J>> {
+    private class Node<T extends Comparable<J>> {
+
         T item;
-        Node<T > next;
-        
+
+        Node<T> next;
+
         Node(final T element, final Node<T> next) {
             this.item = element;
             this.next = next;
         }
     }
 
-    public T add(final T  element) {
+    public T add(final T element) {
         final Node<T> f = head;
         Node<T> newNode = new Node<T>(element, f);
         head = newNode;
@@ -39,14 +41,13 @@ public class FlyPool<T extends Comparable<J>, J> {
         current = head;
     }
 
-    public T find(J j){
-    	Node<T> temp = current;
-    	while(temp != null){
-    		if(temp.item.compareTo(j) == 0){
-    			return temp.item;
-    		}
-    		temp = temp.next;
-    	}
-    	return null;
+    public T find(J j) {
+        Node<T> temp = current;
+        while (temp != null) {
+            if (temp.item.compareTo(j) == 0)
+                return temp.item;
+            temp = temp.next;
+        }
+        return null;
     }
 }

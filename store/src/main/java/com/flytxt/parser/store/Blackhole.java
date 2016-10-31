@@ -8,7 +8,7 @@ import com.flytxt.parser.marker.Marker;
 
 public class Blackhole implements Store {
 
-    public void set(String folderName, String file, String... headers) {
+    public Blackhole(String file, String... headers) {
     }
 
     @Override
@@ -18,5 +18,9 @@ public class Blackhole implements Store {
     @Override
     public String done() throws IOException {
         return null;
+    }
+
+    @Override
+    public void set(String fileName) {
     }
 }

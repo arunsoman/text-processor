@@ -18,8 +18,8 @@ import com.flytxt.parser.translator.TpString;
 import java.io.IOException;
 
 public class %(name) implements LineProcessor{
-	public final MarkerFactory mf;
-	private ImmutableMarker fileName;
+	public final MarkerFactory mf = new MarkerFactory();
+	private Marker fileName;
 	private Marker m_inter = TpConstant.INTERDATATYPE;
      private Marker m_intra = TpConstant.INTRADATATYPE;
      private String str_inter = new String(TpConstant.INTERDATATYPE.getData());
@@ -37,7 +37,6 @@ public class %(name) implements LineProcessor{
 	
 	public %(name)(){
 	%(init)
-	mf = new MarkerFactory();
 	line = mf.getLineMarker();
 	mnull = mf.createMarker(" ".getBytes(), 0, 0);
 	}
@@ -46,7 +45,7 @@ public class %(name) implements LineProcessor{
      public void init(String fileName){
           store.set(fileName);
           byte[] tt = fileName.getBytes();
-          fileName = mf.createMarker(tt, 0, tt.length);          
+          this.fileName = mf.createMarker(tt, 0, tt.length);          
 	}
 	
 	public String getSourceFolder(){

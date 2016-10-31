@@ -14,10 +14,3 @@ liquibase:
 
 server:
   port: 9000
-
-loc:
-  jarHome: /tmp/jar/
-  scriptHome: /tmp/scripts/
-  javaHome: /tmp/java/
-  classHome: /tmp/class/
-  watchOutput: /tmp/%(hostname)/%(name)/
