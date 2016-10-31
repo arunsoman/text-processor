@@ -2,8 +2,9 @@ package com.flytxt.parser.marker;
 
 public final class MarkerFactory {
 
-	private final FlyPool<Marker> markerPool = new FlyPool<Marker>();
-	private final FlyPool<ImmutableMarker> markerImmutablePool = new FlyPool<ImmutableMarker>();
+	private final FlyPool<Router, int[]> routerPool = new FlyPool<Router, int[]>();
+	private final FlyPool<Marker, byte[]> markerPool = new FlyPool<Marker, byte[]>();
+	private final FlyPool<ImmutableMarker, byte[]> markerImmutablePool = new FlyPool<ImmutableMarker, byte[]>();
 	private CurrentObject currentObject;
 
 	public Marker createMarker(byte[] data, int index, int length) {
@@ -42,5 +43,15 @@ public final class MarkerFactory {
 		} 
 		m.setLineAttribute(index, length);
 		return m;
+	}
+	
+	public Router findRouter(int[] order){
+		Router r =routerPool.find(order);
+		if(r == null){
+			r = new Router();
+			r.set(order);
+			routerPool.add(r);
+		}
+		return r;
 	}
 }

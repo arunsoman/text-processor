@@ -1,6 +1,6 @@
 package com.flytxt.parser.marker;
 
-public final class Router {
+public final class Router  implements Comparable<int[]> {
 
     private int[] markerPosition;
 
@@ -31,4 +31,15 @@ public final class Router {
     public int getMarkerPosition(int pointer) {
         return markerPosition[indexPosition[pointer]];
     }
+
+	@Override
+	public int compareTo(int[] o) {
+		if(markerPosition.length!= o.length)
+			return -1;
+		for(int i = 0; i < o.length; i++){
+			if(markerPosition[i] != o[i])
+				return-1;
+		}
+		return 0;
+	}
 }

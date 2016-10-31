@@ -1,12 +1,11 @@
 package com.flytxt.parser.marker;
 
-public class Marker {
+public class Marker implements Comparable<byte[]>{
 
     public int index;
 
     public int length;
 
-    private Router router;
 
     private CurrentObject currentObject;
     
@@ -27,7 +26,7 @@ public class Marker {
     }
     protected void find( byte[] data,  byte[] token,  int[] indexOfMarker,  MarkerFactory mf, Marker... markers){
         int count = 1, lastIndex = this.index, currentIndex = this.index, tokenIndex, index = 0;
-        router.set(indexOfMarker);
+        Router router = mf.findRouter(indexOfMarker);
         while (currentIndex < this.index + length) {
             for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++)
                 ;
@@ -56,4 +55,10 @@ public class Marker {
     public String toString() {
         return new String(currentObject.getLineMarker(), index, length);
     }
+
+	@Override
+	public int compareTo(byte[] o) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
