@@ -18,32 +18,35 @@ import com.flytxt.parser.translator.TpString;
 import java.io.IOException;
 
 public class %(name) implements LineProcessor{
-	public MarkerFactory mf;
+	public final MarkerFactory mf;
 	private ImmutableMarker fileName;
 	private Marker m_inter = TpConstant.INTERDATATYPE;
-    private Marker m_intra = TpConstant.INTRADATATYPE;
-    private String str_inter = new String(TpConstant.INTERDATATYPE.getData());
+     private Marker m_intra = TpConstant.INTRADATATYPE;
+     private String str_inter = new String(TpConstant.INTERDATATYPE.getData());
 	private TpString tpString = new TpString();
 	private TpDate tpDate = new TpDate();
 	private TpMath tpMath = new TpMath();
 	private TpLogic tpLogic = new TpLogic();
-	private Marker line = new Marker();
+	private Marker line;
+	private Marker mnull;
 	public final String outputFolder = "%(outputfolder)";
 	public final String regex = "%(regex)";
 	public final String inputFolder = "%(inputFolder)";
+	
 	%(absProcessor)
 	
 	public %(name)(){
 	%(init)
+	mf = new MarkerFactory();
+	line = mf.getLineMarker();
+	mnull = mf.createMarker(" ".getBytes(), 0, 0);
 	}
 	
 	@Override
-     public void init(String fileName, MarkerFactory mf){
+     public void init(String fileName){
           store.set(fileName);
           byte[] tt = fileName.getBytes();
-          this.mf = mf;
-          this.fileName = mf.createMarker(tt, 0, tt.length);
-
+          fileName = mf.createMarker(tt, 0, tt.length);          
 	}
 	
 	public String getSourceFolder(){
@@ -58,8 +61,11 @@ public class %(name) implements LineProcessor{
 	}
 
 	public String done() throws IOException{
-		return neonStore.done();
-		//TODO
+	    StringBuilder sb = new StringBuilder("[");
+	    %(done)
+	    sb.deleteCharAt(sb.length() - 1);
+	    sb.append(']');
+	    return sb.toString();
 	}
 
 	public String getFilter(){
@@ -69,10 +75,6 @@ public class %(name) implements LineProcessor{
 	public MarkerFactory getMf() {
 	    return mf;
 	}
-
-	 public int getMaxListSize() {
-        return mf.getListSize();
-    }
 	
 	public void process(final byte[] data){
 		%(extract)

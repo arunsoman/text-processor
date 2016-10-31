@@ -25,10 +25,10 @@ public class WorkflowDTO {
 		prep(workflow);
 		LineProcessor lp = (LineProcessor) RealtimeCompiler.getClass(workflow.getName()).newInstance();
 		MarkerFactory mf = new MarkerFactory();
-		CurrentObject obj = new CurrentObject();
+		CurrentObject obj = mf.getCurrentObject();
 		obj.init("", "");
-		mf.init(obj);
-		lp.init(workflow.getName(), mf);
+		
+		lp.init(workflow.getName());
 		for (String aLine : workflow.getSample().split("\n")) {
 			byte[] data = aLine.getBytes();
 			obj.setCurrentLine(data, 0, data.length);

@@ -19,14 +19,10 @@ import org.slf4j.LoggerFactory;
 
 import com.flytxt.parser.marker.CurrentObject;
 import com.flytxt.parser.marker.LineProcessor;
-import com.flytxt.parser.marker.MarkerFactory;
 
 import lombok.Getter;
 
 public class FlyReader implements Callable<FlyReader> {
-
-	private MarkerFactory markerFactory = new MarkerFactory();
-	private CurrentObject currentObject = new CurrentObject();
 
     private LineProcessor lp;
 
@@ -52,7 +48,7 @@ public class FlyReader implements Callable<FlyReader> {
     }
 
     public void run() {
-        final Path folderP = Paths.get(currentObject.getFolderName());
+        final Path folderP = Paths.get(lp.getSourceFolder());
         if (!Files.exists(folderP))
             try {
                 Files.createDirectories(folderP);
@@ -60,18 +56,18 @@ public class FlyReader implements Callable<FlyReader> {
                 appLog.info("could not create input folder, stopping this FlyReader ", e1);
                 stopRequested = true;
             }
-        appLog.debug("Starting file reader @ " + currentObject.getFolderName());
+        appLog.debug("Starting file reader @ " + lp.getSourceFolder());
         final ByteBuffer buf = ByteBuffer.allocate(51200);
 
         while (!stopRequested){
-        	String folder = currentObject.getFolderName();
+        	String folder = lp.getSourceFolder();
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder))) {
                 for (final Path path : directoryStream) {
                     final RandomAccessFile file = new RandomAccessFile(path.toString(), "rw");
                     appLog.debug("picked up " + path.toString());
                     try {
-                    	currentObject.init(folder, path.getFileName().toString());
-                        lp.init(path.getFileName().toString(), markerFactory);
+                    	lp.getMf().getCurrentObject().init(folder, path.getFileName().toString());
+                        lp.init(path.getFileName().toString());
                         processFile(buf, path, file.getChannel());
                         buf.clear();
                         if (stopRequested) {
@@ -88,7 +84,7 @@ public class FlyReader implements Callable<FlyReader> {
                 ex.printStackTrace();
             }
             }
-        appLog.debug("Worker down " + currentObject.getFolderName());
+        appLog.debug("Worker down " + lp.getSourceFolder());
     }
 
     private void processFile(final ByteBuffer buf, final Path path, final FileChannel file) throws IOException {
@@ -106,6 +102,7 @@ public class FlyReader implements Callable<FlyReader> {
     }
 
     private final void readLines(final FileChannel file, final ByteBuffer buf) throws IOException {
+        CurrentObject currentObject = new CurrentObject();
         int readCnt;
         final byte[] data = buf.array();
         while ((readCnt = file.read(buf)) > 0) {

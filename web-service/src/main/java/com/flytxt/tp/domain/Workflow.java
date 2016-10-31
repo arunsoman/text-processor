@@ -11,9 +11,11 @@ public class Workflow {
 
     final String init;
 
-    String absProcessor;
+    final String absProcessor;
 
     final String extract;
+
+    final String done;
 
     final String transformation;
 
@@ -22,6 +24,10 @@ public class Workflow {
     final String type; // single,hybrid
 
     final String sample;
+    final String outputfolder;
+    final String regex;
+    final String inputFolder;
+
 
     public Map<String, String> toMap() {
         final Map<String, String> values = new HashMap<>();
@@ -32,6 +38,10 @@ public class Workflow {
         values.put("transformation", transformation);
         values.put("store", store);
         values.put("type", type); // single,hybrid
+        values.put("outputfolder",outputfolder);
+        values.put("regex",regex);
+        values.put("inputFolder",inputFolder);
+        values.put("done",done);
         values.put("sample", sample);
         return values;
     }

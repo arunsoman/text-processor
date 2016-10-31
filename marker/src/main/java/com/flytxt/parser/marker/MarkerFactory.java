@@ -1,11 +1,13 @@
 package com.flytxt.parser.marker;
 
+import lombok.Getter;
+
 public final class MarkerFactory {
 
 	private final FlyPool<Router, int[]> routerPool = new FlyPool<Router, int[]>();
 	private final FlyPool<Marker, byte[]> markerPool = new FlyPool<Marker, byte[]>();
 	private final FlyPool<ImmutableMarker, byte[]> markerImmutablePool = new FlyPool<ImmutableMarker, byte[]>();
-	private CurrentObject currentObject;
+	@Getter private CurrentObject currentObject = new CurrentObject();
 
 	public Marker createMarker(byte[] data, int index, int length) {
 		return (data == null) ? create(index, length) : createImmutable(data, index, length);
@@ -14,10 +16,6 @@ public final class MarkerFactory {
 	public void reclaim() {
 		markerPool.reset();
 		markerImmutablePool.reset();
-	}
-
-	public void init(CurrentObject currentObject) {
-		this.currentObject = currentObject;
 	}
 
 	public Marker getLineMarker(){

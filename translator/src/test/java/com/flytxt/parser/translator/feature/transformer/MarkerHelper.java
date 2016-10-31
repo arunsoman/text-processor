@@ -1,6 +1,5 @@
 package com.flytxt.parser.translator.feature.transformer;
 
-import com.flytxt.parser.marker.CurrentObject;
 import com.flytxt.parser.marker.Marker;
 import com.flytxt.parser.marker.MarkerFactory;
 
@@ -14,10 +13,7 @@ public class MarkerHelper {
 	
 	public Marker getMarker(MarkerFactory mf){
 		byte[] data = str.getBytes();
-		CurrentObject currentObject = new CurrentObject();
-		currentObject.setCurrentLine(data, 0, str.length());
-		mf.init(currentObject);
-		
+		mf.getCurrentObject().setCurrentLine(data, 0, str.length());
 		return mf.createMarker(null,0, data.length);
 	}
 
