@@ -1,17 +1,15 @@
 package com.flytxt.parser.processor;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.jar.JarInputStream;
-import java.util.zip.ZipEntry;
 
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -39,56 +37,45 @@ public class ProxyScripts {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private Class<?> folderListener;
+    @Autowired
+    JobRepo repo;
 
     public List<LineProcessor> getLPInstance() {
         return lps;
     }
-
+    static class DbClassLoader extends ClassLoader{
+		Class <?>getClass(byte[] d){
+			return defineClass(d, 0, d.length);
+		}
+	}
     @PostConstruct
     public void init() throws Exception {
-        final URL url = new URL(remoteHost + getJar + "?host=" + hostName);
-        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        // final URL url = new URL("file:///tmp/jar/demo/demo.jar");
-        try (JarInputStream jIs = new JarInputStream(url.openStream())) {
-            ZipEntry zipEntry;
-            String aClass;
-            lps = new ArrayList<>();
-
-            try (URLClassLoader loader = new URLClassLoader(new URL[] { url }, contextClassLoader)) {
-                while ((zipEntry = jIs.getNextEntry()) != null)
-                    if (!zipEntry.isDirectory()) {
-                        aClass = zipEntry.getName().replaceAll("/", ".");
-                        aClass = aClass.substring(0, aClass.length() - ".class".length());
-                        logger.debug("loading class:" + aClass);
-                        // @SuppressWarnings("unchecked")
-                        if (loader.loadClass(aClass).getName().contains("FolderListener"))
-                            folderListener = loader.loadClass(aClass);
-                        else {
-                            @SuppressWarnings("unchecked")
-                            final Class<LineProcessor> loadClass = (Class<LineProcessor>) loader.loadClass(aClass);
-                            lps.add(loadClass.newInstance());
-                        }
-                    }
-                return;
-            }
-        } catch (final Exception e) {
-            logger.error("can't load classes ", e);
-            throw e;
-        }
+    	DbClassLoader loader = new DbClassLoader();
+    	List<Job> jobs = repo.findByhostNameAndActiveTrueAndStatusTrue(getHostname());
+    	for(Job aJob: jobs){
+    		lps.add((LineProcessor)loader.getClass(aJob.getByteCode()).newInstance());
+    	}
     }
-
+    private String getHostname()
+    {
+      try (BufferedInputStream in = new BufferedInputStream(Runtime.getRuntime().exec("hostname").getInputStream()))
+      {
+        byte[] b = new byte[256];
+        in.read(b, 0, b.length); //guaranteed to read all data before returning
+        return new String(b);
+      }
+      catch (IOException e)
+      {
+        String message = "Error reading hostname";
+        throw new RuntimeException(message, e);
+      }
+    }
     class FolderWatch {
     }
 
     @SuppressWarnings("unchecked")
     public List<com.flytxt.parser.processor.FolderEventListener.Watch> getFolderWatch() {
-        try {
-            return (List<Watch>) folderListener.getMethod("getList").invoke(folderListener.newInstance());
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        
         return null;
     }
 }
