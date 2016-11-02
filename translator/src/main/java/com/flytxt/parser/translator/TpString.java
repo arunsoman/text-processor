@@ -172,6 +172,17 @@ public class TpString {
         return indexOf(m1, m2) > -1;
     }
 
+    public boolean equals(final Marker m1, final Marker m2) {
+        if (m1.length != m2.length)
+            return false;
+
+        byte[] d1 = m1.getData(), d2 = m2.getData();
+        for (int i = 0; i < m1.length; i++)
+            if (d1[m1.index + i] != d2[m2.index + i])
+                return false;
+        return true;
+    }
+
     public int indexOf(final Marker m1, final Marker m2) {
         final byte[] d1 = m1.getData();
         final byte[] d2 = m2.getData();
