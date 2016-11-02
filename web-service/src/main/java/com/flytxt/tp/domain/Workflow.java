@@ -2,6 +2,7 @@ package com.flytxt.tp.domain;
 
 import java.util.HashMap;
 
+@SuppressWarnings("serial")
 public class Workflow extends HashMap<String, String> {
 
     public final String name = "name";

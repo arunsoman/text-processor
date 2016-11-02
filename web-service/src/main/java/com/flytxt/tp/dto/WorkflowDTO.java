@@ -51,12 +51,13 @@ public class WorkflowDTO {
     private byte[] prep(Workflow workflow) throws Exception {
         StrSubstitutor sub = new StrSubstitutor(workflow, "%(", ")");
         String result = sub.replace(scriptlp);
+        result = Utils.replaceWithConsoleStore(result);
         // TODO replace input Location to link location
         return RealtimeCompiler.compileToBytes(workflow.get(workflow.name), result);
     }
 
     public Workflow convert(Job job) {
-        Workflow wf = parseScript(job.getSchema());
+        Workflow wf = parseScript(job.getDkSchema());
         wf.put(wf.name, job.getName());
         wf.put(wf.regex, job.getRegex());
         wf.put(wf.outputfolder, job.getOutputPath());
