@@ -47,9 +47,13 @@ public class Job {
     private String regex;
 
     @Lob
+    @Column(name = "dkschema")
+    private String dkSchema;
+
+    @Lob
     @Column(name = "byte_code")
     private byte[] byteCode;
-    
+
     @Lob
     @Column(name = "schema", columnDefinition="TEXT")
     private String schema;

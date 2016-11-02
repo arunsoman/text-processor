@@ -18,19 +18,18 @@ public class FlyClassLoader extends ClassLoader {
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
         CompiledCode cc = customCompiledCode.get(name);
-        if (cc == null) {
+        if (cc == null)
             return super.findClass(name);
-        }
         byte[] byteCode = cc.getByteCode();
-        return defineClass(name, byteCode, 0, byteCode.length);
+        Class<?> classN = defineClass(name, byteCode, 0, byteCode.length);
+        return classN;
     }
-    
+
     protected byte[] getBytes(String name) throws ClassNotFoundException {
         CompiledCode cc = customCompiledCode.get(name);
-        if (cc == null) {
+        if (cc == null)
             return null;
-        }
-       return cc.getByteCode();
+        return cc.getByteCode();
     }
-    
+
 }
