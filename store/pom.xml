@@ -28,7 +28,6 @@
             <artifactId>marker</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-        
         <dependency>
             <groupId>com.flytxt.parser</groupId>
             <artifactId>translator</artifactId>
@@ -38,6 +37,16 @@
             <groupId>info.cukes</groupId>
             <artifactId>gherkin</artifactId>
             <version>2.12.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.flytxt</groupId>
+            <artifactId>commons-rte</artifactId>
+            <version>1.0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.flytxt</groupId>
+            <artifactId>commons-chronicle</artifactId>
+            <version>1.0.2-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
