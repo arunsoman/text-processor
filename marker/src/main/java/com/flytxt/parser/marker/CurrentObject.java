@@ -5,7 +5,7 @@ import lombok.Getter;
 public final class CurrentObject {
 	@Getter private String folderName;
 	@Getter private String fileName;
-	@Getter private byte[] lineMarker;
+	@Getter private byte[] line;
 	@Getter private int index;
 	@Getter private int length;
 	
@@ -14,7 +14,7 @@ public final class CurrentObject {
 		this.folderName = folderName;
 	}
 	public void setCurrentLine(byte[] data, int index, int length){
-		this.lineMarker = data;
+		this.line = data;
 		this.index = index;
 		this.length = length;
 	}

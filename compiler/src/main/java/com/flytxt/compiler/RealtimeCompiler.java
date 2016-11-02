@@ -14,11 +14,11 @@ import org.slf4j.LoggerFactory;
 
 public class RealtimeCompiler {
     static JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
-    static FlyClassLoader cl = new FlyClassLoader(ClassLoader.getSystemClassLoader());
     private static org.slf4j.Logger logger = LoggerFactory.getLogger(RealtimeCompiler.class);
     private static org.slf4j.Logger javaLogger = LoggerFactory.getLogger("applicationLog");
 
     public static byte[] compileToBytes(String className, String sourceCodeInText) throws Exception {
+        FlyClassLoader cl = new FlyClassLoader(ClassLoader.getSystemClassLoader());
         FlyJavaFileObject sourceCode = new FlyJavaFileObject(className, sourceCodeInText);
         CompiledCode compiledCode = new CompiledCode(className);
         Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(sourceCode);
@@ -43,6 +43,7 @@ public class RealtimeCompiler {
     }
 
     public static Class<?> getClass(String className) throws ClassNotFoundException{
+        FlyClassLoader cl = new FlyClassLoader(ClassLoader.getSystemClassLoader());
         return cl.findClass(className);
     }
 

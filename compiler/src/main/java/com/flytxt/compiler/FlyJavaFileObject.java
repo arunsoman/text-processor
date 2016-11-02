@@ -17,86 +17,89 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.tools.JavaFileObject;
 
-public class FlyJavaFileObject implements JavaFileObject{
-	
-	private URI uri;
-	private String name;
-	private String content;
-	private ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-	
-	public FlyJavaFileObject(String fileName, String content) {
-		this.name = name;
-		this.content = content;
-	}
-	@Override
-	public InputStream openInputStream() throws IOException {
-		return new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
-	}
+public class FlyJavaFileObject implements JavaFileObject {
 
-	@Override
-	public OutputStream openOutputStream() throws IOException {
-		return byteArrayOutputStream;
-	}
+    private String name;
 
-	@Override
-	public Reader openReader(boolean ignoreEncodingErrors) throws IOException {
-		return new StringReader(content);
-	}
+    private String content;
 
-	@Override
-	public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
-		CharSequence cs = content;
-		return cs;
-	}
+    private ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-	@Override
-	public Writer openWriter() throws IOException {
-		return new StringWriter();
-	}
+    public FlyJavaFileObject(String fileName, String content) {
+        this.name = fileName;
+        this.content = content;
+    }
 
-	@Override
-	public long getLastModified() {
-		return System.currentTimeMillis();
-	}
+    @Override
+    public InputStream openInputStream() throws IOException {
+        return new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
+    }
 
-	@Override
-	public boolean delete() {
-		return false;
-	}
+    @Override
+    public OutputStream openOutputStream() throws IOException {
+        return byteArrayOutputStream;
+    }
 
-	@Override
-	public Kind getKind() {
-		return Kind.SOURCE;
-	}
+    @Override
+    public Reader openReader(boolean ignoreEncodingErrors) throws IOException {
+        return new StringReader(content);
+    }
 
-	@Override
-	public boolean isNameCompatible(String simpleName, Kind kind) {
-		return true;
-	}
+    @Override
+    public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
+        CharSequence cs = content;
+        return cs;
+    }
 
-	@Override
-	public NestingKind getNestingKind() {
-		return NestingKind.TOP_LEVEL;
-	}
+    @Override
+    public Writer openWriter() throws IOException {
+        return new StringWriter();
+    }
 
-	@Override
-	public Modifier getAccessLevel() {
-		// TODO Auto-generated method stub
-		return Modifier.PUBLIC;
-	}
+    @Override
+    public long getLastModified() {
+        return System.currentTimeMillis();
+    }
 
-	@Override
-	public URI toUri() {
-		try {
-			return new URI("./"+name);
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}return null;
-	}
+    @Override
+    public boolean delete() {
+        return false;
+    }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    @Override
+    public Kind getKind() {
+        return Kind.SOURCE;
+    }
+
+    @Override
+    public boolean isNameCompatible(String simpleName, Kind kind) {
+        return true;
+    }
+
+    @Override
+    public NestingKind getNestingKind() {
+        return NestingKind.TOP_LEVEL;
+    }
+
+    @Override
+    public Modifier getAccessLevel() {
+        // TODO Auto-generated method stub
+        return Modifier.PUBLIC;
+    }
+
+    @Override
+    public URI toUri() {
+        try {
+            return new URI("./" + name);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
 
 }

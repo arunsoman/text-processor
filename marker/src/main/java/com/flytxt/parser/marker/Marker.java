@@ -1,30 +1,31 @@
 package com.flytxt.parser.marker;
 
-public class Marker implements Comparable<byte[]>{
+public class Marker implements Comparable<byte[]> {
 
     public int index;
 
     public int length;
 
-
     private CurrentObject currentObject;
-    
-    Marker(){}
-    
-    public Marker(CurrentObject currentObject){
-    	this.currentObject = currentObject;
+
+    Marker() {
     }
-    
-    public void setLineAttribute(int index, int length){
-    	this.index = index;
-    	this.length = length;
+
+    public Marker(CurrentObject currentObject) {
+        this.currentObject = currentObject;
     }
-    
-    public void splitAndGetMarkers( final byte[] token, final int[] indexOfMarker, final MarkerFactory mf, Marker... markers) {
-    	byte[] data = currentObject.getLineMarker();
-    	find(data, token, indexOfMarker, mf, markers);
+
+    public void setLineAttribute(int index, int length) {
+        this.index = index;
+        this.length = length;
     }
-    protected void find( byte[] data,  byte[] token,  int[] indexOfMarker,  MarkerFactory mf, Marker... markers){
+
+    public void splitAndGetMarkers(final byte[] token, final int[] indexOfMarker, final MarkerFactory mf, Marker... markers) {
+        byte[] data = currentObject.getLine();
+        find(data, token, indexOfMarker, mf, markers);
+    }
+
+    protected void find(byte[] data, byte[] token, int[] indexOfMarker, MarkerFactory mf, Marker... markers) {
         int count = 1, lastIndex = this.index, currentIndex = this.index, tokenIndex, index = 0;
         Router router = mf.findRouter(indexOfMarker);
         while (currentIndex < this.index + length) {
@@ -48,17 +49,19 @@ public class Marker implements Comparable<byte[]>{
             markers[index].length = this.length - lastIndex;
         }
     }
+
     public byte[] getData() {
-        return currentObject.getLineMarker();
-    }
-    
-    public String toString() {
-        return new String(currentObject.getLineMarker(), index, length);
+        return currentObject.getLine();
     }
 
-	@Override
-	public int compareTo(byte[] o) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public String toString() {
+        return new String(currentObject.getLine(), index, length);
+    }
+
+    @Override
+    public int compareTo(byte[] o) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 }

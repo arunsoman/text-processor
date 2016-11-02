@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class FlyClassLoader extends ClassLoader {
 
-    private Map<String, CompiledCode> customCompiledCode = new HashMap<>();
+    private static Map<String, CompiledCode> customCompiledCode = new HashMap<>();
 
     public FlyClassLoader(ClassLoader parent) {
         super(parent);
@@ -17,6 +17,7 @@ public class FlyClassLoader extends ClassLoader {
 
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
+        System.gc();
         CompiledCode cc = customCompiledCode.get(name);
         if (cc == null)
             return super.findClass(name);

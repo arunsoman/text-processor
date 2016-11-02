@@ -25,8 +25,9 @@ public final class MarkerFactory {
     }
 
     public Marker getLineMarker() {
-
-        return lineMarker == null ? createMarker(currentObject.getLineMarker(), currentObject.getIndex(), currentObject.getLength()) : lineMarker;
+        lineMarker = (lineMarker == null ? new Marker(currentObject) : lineMarker);
+        lineMarker.setLineAttribute(currentObject.getIndex(), currentObject.getLength());
+        return lineMarker;
     }
 
     private ImmutableMarker createImmutable(byte[] data, int index, int length) {

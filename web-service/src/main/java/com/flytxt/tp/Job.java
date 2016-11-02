@@ -32,7 +32,7 @@ public class Job {
     @Column(name = "active")
     private boolean active;
 
-    @Column(name = "status")
+    @Column(name = "compile_status", columnDefinition="tinyint(4) default 0")
     private boolean status;
 
     @Column(name = "hostname")
@@ -55,7 +55,7 @@ public class Job {
     private byte[] byteCode;
 
     @Lob
-    @Column(name = "schema", columnDefinition="TEXT")
+    @Column(name = "blockly_conf", columnDefinition = "TEXT")
     private String schema;
 
     @PostLoad

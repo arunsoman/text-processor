@@ -25,11 +25,34 @@
             </Pattern>
         </layout>
     </appender>
+    <appender name="SQLROLLINGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/tmp/sql.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            rollover daily
+            <fileNamePattern>${DEV_HOME}/sql/debug.%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <layout>
+            <Pattern>%-4date | %msg %n</Pattern>
+        </layout>
+    </appender>
     <logger name="transactionLog" level="debug" additivity="false">
         <appender-ref ref="FILE-AUDIT" />
     </logger>
     <logger name="applicationLog" level="debug" additivity="false">
         <appender-ref ref="FILE-AUDIT" />
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="SQLROLLINGFILE" />
+    </logger>
+    <logger name="org.hibernate.SQL" additivity="false">
+        <level value="DEBUG" />
+        <appender-ref ref="SQLROLLINGFILE" />
+    </logger>
+    <logger name="org.hibernate.type" additivity="false">
+        <level value="TRACE" />
+        <appender-ref ref="SQLROLLINGFILE" />
     </logger>
 </configuration>
