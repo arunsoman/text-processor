@@ -76,6 +76,12 @@
                 <version>1.4.0.RELEASE</version>
                 <configuration>
                     <useProjectReferences>false</useProjectReferences>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>
