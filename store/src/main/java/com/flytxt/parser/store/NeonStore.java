@@ -23,6 +23,7 @@ public class NeonStore implements Store {
     private Semaphore semaphore = new Semaphore(1);
 
     private OutputStreamWriter writer;
+    private byte[] data = new byte[128 * 1024 * 1024];
 
     public NeonStore(String folderName, String... headers) throws FileNotFoundException, IOException {
         out = new RandomAccessFile("hadoopData.dat", "rw").getChannel().map(FileChannel.MapMode.READ_WRITE, 0, 128 * 1024 * 1024);
@@ -53,7 +54,6 @@ public class NeonStore implements Store {
     }
 
     private void writeToHdfs(int startIndex, int lastIndex) throws IOException {
-        byte[] data = new byte[128 * 1024 * 1024];
         out.get(data, startIndex, lastIndex - startIndex);
         writer.write(data);
     }
