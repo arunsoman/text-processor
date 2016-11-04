@@ -1,7 +1,7 @@
 package com.flytxt.tp.controller;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.flytxt.tp.EntityMetaData;
+import com.flytxt.tp.EntityMetaData.KeyValue;
+import com.flytxt.tp.NeonMeta;
+import com.flytxt.tp.dao.WorkflowDao;
 import com.flytxt.tp.domain.Workflow;
 import com.flytxt.tp.dto.WorkflowDTO;
 
@@ -22,6 +26,9 @@ public class WorkflowController {
 
     @Autowired
     private WorkflowDTO workflowDto;
+  
+    @Autowired
+    private WorkflowDao dao;
 
     private HttpHeaders headers;
 
@@ -50,16 +57,14 @@ public class WorkflowController {
 
     @CrossOrigin(origins = "*")
     @PostMapping(path = "/neonMeta")
-    public ResponseEntity<Map<String, Map<Long, String>>> neonMeta() {
-        Map<String, Map<Long, String>> neonMetaDetails = new HashMap<String, Map<Long, String>>();
+    public ResponseEntity<List<NeonMeta>> neonMeta() {
+        
         try {
-            Map<Long, String> entityMap = new HashMap<>();
-            entityMap.put((long) 12, "{name:Recharge,type:Event}");
-            entityMap.put((long) 1, "{name:Handset,type:Profile}");
-            neonMetaDetails.put("GlobalPartner", entityMap);
+           	
             return ResponseEntity.ok().headers(headers).contentType(MediaType.parseMediaType("application/json"))
-                    .body(neonMetaDetails);
+                    .body(dao.retrieveNeonMeta());
         } catch (Exception e) {
+        	System.out.println(e);
             return ResponseEntity.status(500).headers(headers).contentType(MediaType.parseMediaType("application/json"))
                     .body(null);
         }
