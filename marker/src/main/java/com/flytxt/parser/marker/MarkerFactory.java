@@ -15,6 +15,14 @@ public final class MarkerFactory {
 
     private Marker lineMarker;
 
+    public Marker createMarker(int val){
+    	return createMarker(String.valueOf(val));
+    }
+    public Marker createMarker(String str){
+    	byte[] data = str.getBytes();
+    	return createMarker(data, 0, data.length);
+    }
+    
     public Marker createMarker(byte[] data, int index, int length) {
         return (data == null) ? create(index, length) : createImmutable(data, index, length);
     }
