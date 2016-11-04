@@ -17,26 +17,7 @@ import org.springframework.data.hadoop.store.strategy.naming.RollingFileNamingSt
 import com.flytxt.parser.marker.Marker;
 
 public class NeonStore implements Store {
-
-    // @Override
-    // public void set(String fileName) {
-    // // TODO Auto-generated method stub
-    //
-    // }
-    //
-    // @Override
-    // public void save(byte[] data, String fileName, Marker... markers) throws IOException {
-    // // TODO Auto-generated method stub
-    //
-    // }
-    //
-    // @Override
-    // public String done() throws IOException {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
-
-    private MappedByteBuffer out;
+        private MappedByteBuffer out;
 
     // read and write indexes are stored in this buffer in ((int)readIndex, (int)writeIndex) format
     private MappedByteBuffer meta;
@@ -64,7 +45,7 @@ public class NeonStore implements Store {
         RollingFileNamingStrategy fileNamingStrategy = new RollingFileNamingStrategy().createInstance();
 
         writer = new OutputStreamWriter(config, path, null);
-        writer.setFileNamingStrategy(fileNamingStrategy); // rollingStrategy to be tested}
+        writer.setFileNamingStrategy(fileNamingStrategy);
 
     }
 
