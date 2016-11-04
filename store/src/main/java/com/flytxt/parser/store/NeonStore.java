@@ -18,14 +18,20 @@ public class NeonStore implements Store {
 
     private MappedByteBuffer out;
 
+    // read and write indexes are stored in this buffer in ((int)readIndex, (int)writeIndex) format
     private MappedByteBuffer meta;
 
     private Semaphore semaphore = new Semaphore(1);
 
     private OutputStreamWriter writer;
 
+    private static final int bufSize = 128 * 1024 * 1024;
+
+    private byte[] data = new byte[bufSize];
+
+    @SuppressWarnings("resource")
     public NeonStore(String folderName, String... headers) throws FileNotFoundException, IOException {
-        out = new RandomAccessFile("hadoopData.dat", "rw").getChannel().map(FileChannel.MapMode.READ_WRITE, 0, 128 * 1024 * 1024);
+        out = new RandomAccessFile("hadoopData.dat", "rw").getChannel().map(FileChannel.MapMode.READ_WRITE, 0, bufSize);
         meta = new RandomAccessFile("hadoopMeta.dat", "rw").getChannel().map(FileChannel.MapMode.READ_WRITE, 0, 8);
 
         Path path = new Path("/tmp/output");
@@ -33,37 +39,28 @@ public class NeonStore implements Store {
         RollingFileNamingStrategy fileNamingStrategy = new RollingFileNamingStrategy().createInstance();
 
         writer = new OutputStreamWriter(config, path, null);
-        writer.setFileNamingStrategy(fileNamingStrategy);
+        writer.setFileNamingStrategy(fileNamingStrategy); // rollingStrategy to be tested
     }
 
     @Override
     public void save(byte[] data, String fileName, Marker... markers) throws IOException {
         try {
             semaphore.acquire();
-            int lastWrite = getLastWriteIndex();
+            if (out.position() + data.length > bufSize) // checking for bufSize boundary
+                writeToHdfs();
             out.put(data);
-            writeToHdfs(0, lastWrite);
-            updateLastWrite(lastWrite + data.length);
+            meta.putInt(4, out.position()); // update writeIndex in meta
             semaphore.release();
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
     }
 
-    private void writeToHdfs(int startIndex, int lastIndex) throws IOException {
-        byte[] data = new byte[128 * 1024 * 1024];
-        out.get(data, startIndex, lastIndex - startIndex);
+    private void writeToHdfs() throws IOException {
+        int lastReadIndex = meta.getInt(0), lastWriteIndex = meta.getInt(4);
+        out.get(data, lastReadIndex, lastWriteIndex - lastReadIndex);
         writer.write(data);
-    }
-
-    private void updateLastWrite(int i) {
-        meta.putInt(4, i);
-    }
-
-    private int getLastWriteIndex() {
-        return meta.getInt(0);
+        meta.putInt(0, lastWriteIndex + 1); // update readIndex in meta
     }
 
     @Override
@@ -76,5 +73,4 @@ public class NeonStore implements Store {
         // TODO Auto-generated method stub
         return null;
     }
-
 }
