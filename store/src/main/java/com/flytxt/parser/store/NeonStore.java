@@ -13,27 +13,37 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.springframework.data.hadoop.store.output.OutputStreamWriter;
 import org.springframework.data.hadoop.store.strategy.naming.RollingFileNamingStrategy;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import com.flytxt.parser.marker.Marker;
 
+@Component
 public class NeonStore implements Store {
-        private MappedByteBuffer out;
+        private static MappedByteBuffer out;
 
     // read and write indexes are stored in this buffer in ((int)readIndex, (int)writeIndex) format
-    private MappedByteBuffer meta;
+    private static MappedByteBuffer meta;
 
-    private Semaphore semaphore = new Semaphore(1);
+    private static Semaphore semaphore = new Semaphore(1);
 
-    private OutputStreamWriter writer;
+    private static OutputStreamWriter writer;
 
-    private static final int bufSize = 128 * 1024 * 1024;
+    private  static final int bufSize = 128 * 1024 * 1024;
 
-    private byte[] data = new byte[bufSize];
+    private static byte[] data = new byte[bufSize];
 
-    private UserGroupInformation ugi = UserGroupInformation.createRemoteUser("root");
+    private static UserGroupInformation ugi = UserGroupInformation.createRemoteUser("root");
 
     @SuppressWarnings("resource")
-    public NeonStore(String folderName, String... headers) throws FileNotFoundException, IOException {
+    public static void init() throws FileNotFoundException, IOException, InterruptedException {
+    	if(out != null)
+    		return;
+    	semaphore.acquire();
+    	if(out != null){
+    		semaphore.release();
+    		return;
+    	}
         out = new RandomAccessFile("hadoopData.dat", "rw").getChannel().map(FileChannel.MapMode.READ_WRITE, 0, bufSize);
         meta = new RandomAccessFile("hadoopMeta.dat", "rw").getChannel().map(FileChannel.MapMode.READ_WRITE, 0, 8);
 
@@ -46,15 +56,15 @@ public class NeonStore implements Store {
 
         writer = new OutputStreamWriter(config, path, null);
         writer.setFileNamingStrategy(fileNamingStrategy);
-
+        semaphore.release();
     }
 
     @Override
     public void save(byte[] data, String fileName, Marker... markers) throws IOException {
         try {
-            semaphore.acquire();
             if (out.position() + data.length > bufSize) // checking for bufSize boundary
                 writeToHdfs();
+            semaphore.acquire();
             out.put(data);
             meta.putInt(4, out.position()); // update writeIndex in meta
             semaphore.release();
@@ -63,25 +73,27 @@ public class NeonStore implements Store {
         }
     }
 
-    private void writeToHdfs() throws IOException {
+    private static void writeToHdfs() throws IOException {
         int lastReadIndex = meta.getInt(0), lastWriteIndex = meta.getInt(4);
-        out.get(data, lastReadIndex, lastWriteIndex - lastReadIndex);
+        if(lastReadIndex == lastWriteIndex)
+        	return;
         try {
             ugi.doAs(new PrivilegedExceptionAction<Void>() {
 
                 @Override
                 public Void run() throws Exception {
-                    data = "test this thing".getBytes();
-                    writer.write(data);
+                	semaphore.acquire();
+                	out.get(data, lastReadIndex, lastWriteIndex - lastReadIndex);
+                	writer.write(data);
                     writer.close();
+                    meta.putInt(0, lastWriteIndex + 1); // update readIndex in meta
+                    semaphore.release();
                     return null;
                 }
             });
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        meta.putInt(0, lastWriteIndex + 1); // update readIndex in meta
     }
 
     @Override
@@ -94,17 +106,14 @@ public class NeonStore implements Store {
         // TODO Auto-generated method stub
         return null;
     }
-
-    public static void main(String[] args) {
-        try {
-            NeonStore ns = new NeonStore("", "");
-            ns.writeToHdfs();
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
+    
+    @Scheduled(fixedDelay=5*60*1000)
+    public void timer(){
+    	try {
+			writeToHdfs();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
-
 }
