@@ -16,7 +16,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import com.flytxt.parser.marker.LineProcessor;
 import com.flytxt.parser.processor.FolderEventListener.Watch;
 
 @Configuration
@@ -33,7 +32,7 @@ public class ProxyScripts {
 
     public String hostName;
 
-    private List<LineProcessor> lps;
+    private List<LineProcessor> lps = new ArrayList<>();
 
     private List<com.flytxt.parser.processor.FolderEventListener.Watch> folderWatch;
 
@@ -60,10 +59,12 @@ public class ProxyScripts {
         String hostName = getHostname();
         logger.debug("who am i ? :" + hostName);
         List<Job> jobs = repo.findByhostNameAndActiveTrueAndStatusTrue(hostName);
+
         folderWatch = new ArrayList<>(jobs.size());
         for (Job aJob : jobs) {
             lps.add(loader.getClass(aJob.getByteCode(), aJob.getName()).newInstance());
-            com.flytxt.parser.processor.FolderEventListener.Watch w = new Watch(aJob.getInputPath(), aJob.getRegex(), aJob.getOutputPath());
+            String destination = "/tmp/" + aJob.getName() + "/" + aJob.getInputPath();
+            com.flytxt.parser.processor.FolderEventListener.Watch w = new Watch(aJob.getInputPath(), aJob.getRegex(), destination);
             folderWatch.add(w);
         }
     }
@@ -72,6 +73,7 @@ public class ProxyScripts {
         try (BufferedInputStream in = new BufferedInputStream(Runtime.getRuntime().exec("hostname").getInputStream())) {
             byte[] b = new byte[256];
             in.read(b, 0, b.length);
+            in.read(b);
             return new String(b);
         } catch (IOException e) {
             String message = "Error reading hostname";

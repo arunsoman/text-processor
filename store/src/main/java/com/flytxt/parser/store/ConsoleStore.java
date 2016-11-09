@@ -1,12 +1,8 @@
 package com.flytxt.parser.store;
 
-import gherkin.deps.com.google.gson.JsonArray;
-import gherkin.deps.com.google.gson.JsonObject;
-
 import java.io.IOException;
 
 import com.flytxt.parser.marker.Marker;
-import com.flytxt.parser.translator.TpConstant;
 
 public class ConsoleStore implements Store {
 
@@ -14,7 +10,7 @@ public class ConsoleStore implements Store {
 
     public final static String TMP = ".tmp";
 
-    private JsonArray array = new JsonArray();
+    private StringBuilder array = new StringBuilder("[");
 
     public ConsoleStore(String outputFolder, String... headers) {
         this.headers = headers;
@@ -22,22 +18,44 @@ public class ConsoleStore implements Store {
 
     @Override
     public void save(final byte[] data, String fileName, final Marker... markers) throws IOException {
-        JsonObject object = new JsonObject();
         StringBuilder currentProperty = new StringBuilder();
-        for (int i = 0, j = 0; i < markers.length; i++) {
-            currentProperty.append(markers[i].toString()).append(',');
-            if (i == markers.length - 1 || markers[i + 1].getData() == TpConstant.INTERDATATYPE.getData()) {
-                currentProperty.deleteCharAt(currentProperty.length() - 1);
-                object.addProperty(headers[j], currentProperty.toString());
-                currentProperty.delete(0, currentProperty.length() - 1);
-                j += 2;
+        if (headers.length == markers.length) {
+            currentProperty.append("{");
+
+            for (int i = 0; i < markers.length; i++) {
+                String str = markers[i].toString();
+                if (str == null || str.length() == 0)
+                    str = "null";
+                else
+                    str = "\"" + str + "\"";
+                currentProperty.append("\"").append(headers[i]).append("\":").append(str).append(",");
             }
+            if (currentProperty.length() > 0)
+                currentProperty.deleteCharAt(currentProperty.length() - 1);
+            currentProperty.append("},");
+        } else {
+            currentProperty.append("{");
+            for (int i = 0; i < markers.length; i++) {
+                String str = markers[i].toString();
+                if (str == null || str.length() == 0)
+                    str = "null";
+                else
+                    str = "\"" + str + "\"";
+                currentProperty.append("\"Key").append(i).append("\":").append(str).append(",");
+            }
+            if (currentProperty.length() > 0)
+                currentProperty.deleteCharAt(currentProperty.length() - 1);
+            currentProperty.append("},");
         }
-        array.add(object);
+        array.append(currentProperty.toString());
     }
 
     @Override
     public String done() throws IOException {
+        if (array.length() > 0)
+            array.deleteCharAt(array.length() - 1);
+        array.append("]");
+        System.out.println(array.toString());
         return array.toString();
     }
 

@@ -21,6 +21,10 @@ public class RealtimeCompiler {
 
     public static byte[] compileToBytes(String className, String sourceCodeInText) throws Exception {
 
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println(sourceCodeInText);
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
         FlyClassLoader cl = new FlyClassLoader( Thread.currentThread().getContextClassLoader());
         FlyJavaFileObject sourceCode = new FlyJavaFileObject(className, sourceCodeInText);
         CompiledCode compiledCode = new CompiledCode(className);

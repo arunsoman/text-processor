@@ -20,7 +20,8 @@ import com.flytxt.parser.marker.Marker;
 
 @Component
 public class NeonStore implements Store {
-        private static MappedByteBuffer out;
+
+    private static MappedByteBuffer out;
 
     // read and write indexes are stored in this buffer in ((int)readIndex, (int)writeIndex) format
     private static MappedByteBuffer meta;
@@ -29,7 +30,7 @@ public class NeonStore implements Store {
 
     private static OutputStreamWriter writer;
 
-    private  static final int bufSize = 128 * 1024 * 1024;
+    private static final int bufSize = 128 * 1024 * 1024;
 
     private static byte[] data = new byte[bufSize];
 
@@ -37,13 +38,13 @@ public class NeonStore implements Store {
 
     @SuppressWarnings("resource")
     public static void init() throws FileNotFoundException, IOException, InterruptedException {
-    	if(out != null)
-    		return;
-    	semaphore.acquire();
-    	if(out != null){
-    		semaphore.release();
-    		return;
-    	}
+        if (out != null)
+            return;
+        semaphore.acquire();
+        if (out != null) {
+            semaphore.release();
+            return;
+        }
         out = new RandomAccessFile("hadoopData.dat", "rw").getChannel().map(FileChannel.MapMode.READ_WRITE, 0, bufSize);
         meta = new RandomAccessFile("hadoopMeta.dat", "rw").getChannel().map(FileChannel.MapMode.READ_WRITE, 0, 8);
 
@@ -65,7 +66,11 @@ public class NeonStore implements Store {
             if (out.position() + data.length > bufSize) // checking for bufSize boundary
                 writeToHdfs();
             semaphore.acquire();
-            out.put(data);
+            for (Marker marker : markers) {
+                out.put(marker.getData(), marker.index, marker.length);
+                out.putChar(',');
+            }
+            out.put("\n".getBytes());
             meta.putInt(4, out.position()); // update writeIndex in meta
             semaphore.release();
         } catch (InterruptedException e) {
@@ -75,16 +80,16 @@ public class NeonStore implements Store {
 
     private static void writeToHdfs() throws IOException {
         int lastReadIndex = meta.getInt(0), lastWriteIndex = meta.getInt(4);
-        if(lastReadIndex == lastWriteIndex)
-        	return;
+        if (lastReadIndex == lastWriteIndex)
+            return;
         try {
             ugi.doAs(new PrivilegedExceptionAction<Void>() {
 
                 @Override
                 public Void run() throws Exception {
-                	semaphore.acquire();
-                	out.get(data, lastReadIndex, lastWriteIndex - lastReadIndex);
-                	writer.write(data);
+                    semaphore.acquire();
+                    out.get(data, lastReadIndex, lastWriteIndex - lastReadIndex);
+                    writer.write(data);
                     writer.close();
                     meta.putInt(0, lastWriteIndex + 1); // update readIndex in meta
                     semaphore.release();
@@ -106,14 +111,14 @@ public class NeonStore implements Store {
         // TODO Auto-generated method stub
         return null;
     }
-    
-    @Scheduled(fixedDelay=5*60*1000)
-    public void timer(){
-    	try {
-			writeToHdfs();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+    @Scheduled(fixedDelay = 5 * 60 * 1000)
+    public void timer() {
+        try {
+            writeToHdfs();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

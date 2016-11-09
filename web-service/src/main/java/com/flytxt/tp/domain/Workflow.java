@@ -31,4 +31,6 @@ public class Workflow extends HashMap<String, String> {
 
     public final String hostName = "hostName";
 
+    public final String setStore = "setStore";
+
 }

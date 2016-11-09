@@ -4,15 +4,15 @@ public class ImmutableMarker extends Marker {
 
     private byte[] data;
 
-    public ImmutableMarker(byte[] currentLine){
-    	this.data = currentLine;
+    public ImmutableMarker(byte[] currentLine) {
+        this.data = currentLine;
         this.index = 0;
         this.length = data.length;
     }
-    
+
     @Override
-    public void splitAndGetMarkers( final byte[] token, final int[] indexOfMarker, final MarkerFactory mf, Marker... markers) {
-    	find(data, token, indexOfMarker, mf, markers);
+    public void splitAndGetMarkers(final byte[] token, final int[] indexOfMarker, final MarkerFactory mf, Marker... markers) {
+        find(data, token, indexOfMarker, mf, markers);
     }
 
     @Override
@@ -22,6 +22,11 @@ public class ImmutableMarker extends Marker {
 
     @Override
     public String toString() {
-        return new String(this.data, this.index, this.length);
+        try {
+            return new String(this.data, this.index, this.length);
+        } catch (StringIndexOutOfBoundsException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

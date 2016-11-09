@@ -64,4 +64,16 @@ public class Marker implements Comparable<byte[]> {
         // TODO Auto-generated method stub
         return 0;
     }
+
+    public int asInt(){
+        return Integer.parseInt(toString());
+    }
+
+    public long asLong(){
+        return Long.parseLong(toString());
+    }
+
+    public double asDouble(){
+        return Double.parseDouble(toString());
+    }
 }

@@ -247,8 +247,12 @@ public class TpString {
         final byte[] d2 = m2.getData();
         final byte[] result = new byte[m1.length + m2.length];
         // TODO
-        System.arraycopy(d1, m1.index, result, 0, m1.length);
-        System.arraycopy(d2, m2.index, result, m1.length, m2.length);
+        try {
+            System.arraycopy(d1, m1.index, result, 0, m1.length);
+            System.arraycopy(d2, m2.index, result, m1.length, m2.length);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
         return mf.createMarker(result, 0, result.length);
     }
 }

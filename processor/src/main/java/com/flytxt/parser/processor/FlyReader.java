@@ -9,6 +9,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
 
@@ -18,10 +19,11 @@ import lombok.Getter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.flytxt.parser.marker.CurrentObject;
-import com.flytxt.parser.marker.LineProcessor;
 
+@Component
 public class FlyReader implements Callable<FlyReader> {
 
     private LineProcessor lp;
@@ -65,8 +67,11 @@ public class FlyReader implements Callable<FlyReader> {
                     final RandomAccessFile file = new RandomAccessFile(path.toString(), "rw");
                     appLog.debug("picked up " + path.toString());
                     try {
-                        lp.getMf().getCurrentObject().init(folder, path.getFileName().toString());
-                        lp.init(path.getFileName().toString());
+                        String fileName = path.getFileName().toString();
+                        lp.getMf().getCurrentObject().init(folder, fileName);
+                        BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
+
+                        lp.init(fileName, attr.lastModifiedTime().toMillis());
                         processFile(buf, path, file.getChannel());
                         buf.clear();
                         if (stopRequested) {
@@ -86,7 +91,7 @@ public class FlyReader implements Callable<FlyReader> {
         appLog.debug("Worker down " + lp.getSourceFolder());
     }
 
-    private void processFile(final ByteBuffer buf, final Path path, final FileChannel file) throws IOException {
+    private void processFile(final ByteBuffer buf, final Path path, final FileChannel file) throws Exception {
         final long t1 = System.currentTimeMillis();
         final long fileSize = Files.size(path);
         final String inputFile = Files.readSymbolicLink(path).toString();
@@ -100,7 +105,7 @@ public class FlyReader implements Callable<FlyReader> {
         // mf.printstat(); TODO
     }
 
-    private final void readLines(final FileChannel file, final ByteBuffer buf) throws IOException {
+    private final void readLines(final FileChannel file, final ByteBuffer buf)  throws Exception {
         CurrentObject currentObject = lp.getMf().getCurrentObject();
         int readCnt;
         final byte[] data = buf.array();

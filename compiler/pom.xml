@@ -11,6 +11,11 @@
     </parent>
     <dependencies>
         <dependency>
+            <groupId>com.flytxt</groupId>
+            <artifactId>commons-rte</artifactId>
+            <version>1.0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.4</version>

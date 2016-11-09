@@ -1,6 +1,5 @@
 package com.flytxt.tp.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.flytxt.tp.EntityMetaData;
-import com.flytxt.tp.EntityMetaData.KeyValue;
 import com.flytxt.tp.NeonMeta;
 import com.flytxt.tp.dao.WorkflowDao;
 import com.flytxt.tp.domain.Workflow;
@@ -26,7 +23,7 @@ public class WorkflowController {
 
     @Autowired
     private WorkflowDTO workflowDto;
-  
+
     @Autowired
     private WorkflowDao dao;
 
@@ -58,13 +55,13 @@ public class WorkflowController {
     @CrossOrigin(origins = "*")
     @PostMapping(path = "/neonMeta")
     public ResponseEntity<List<NeonMeta>> neonMeta() {
-        
+
         try {
-           	
+
             return ResponseEntity.ok().headers(headers).contentType(MediaType.parseMediaType("application/json"))
                     .body(dao.retrieveNeonMeta());
         } catch (Exception e) {
-        	System.out.println(e);
+            System.out.println(e);
             return ResponseEntity.status(500).headers(headers).contentType(MediaType.parseMediaType("application/json"))
                     .body(null);
         }
