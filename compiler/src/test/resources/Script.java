@@ -1,7 +1,7 @@
 package com.flytxt.utils.parser;
 import java.util.ArrayList;
-import com.flytxt.parser.store.*;
-import com.flytxt.parser.marker.*;
+import com.flytxt.tp.store.*;
+import com.flytxt.tp.marker.*;
 import java.io.IOException;
 public  class Script implements LineProcessor{
 private Store wcStore = new Store("/tmp/out/wc.csv");

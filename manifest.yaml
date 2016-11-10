@@ -1,0 +1,2 @@
+artifact_filename: processor/target/processor-0.0.1-SNAPSHOT.jar
+build_command: mvn clean install
