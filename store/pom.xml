@@ -34,11 +34,6 @@
 			<artifactId>marker</artifactId>
 			<version>${tp.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.flytxt.tp</groupId>
-			<artifactId>translator</artifactId>
-			<version>${tp.version}</version>
-		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.data</groupId>
