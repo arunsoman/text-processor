@@ -24,22 +24,23 @@ public class WorkflowDao {
 	@Autowired
 	private JdbcTemplate template;
 
+	private static final String profileInformation = "SELECT o.ENTITY_ID entity_id,a.PARTNER_PROFILE_FIELD_ID attribute_id, a.PARTNER_PROFILE_FIELD_NAME entity_name, p.partner_id partner_id,  p.PARTNER_NAME partner_name,o.ENTITY_TYPE_ID entity_type_id, a.opt_type opt_type, a.agg_type agg_type FROM oz_entity o,  app_partner_profile_field a, oz_entity_attribute oa,  partner p WHERE o.external_reference_id = a.partner_id  AND a.partner_profile_field_id = oa.attribute_name  AND a.partner_id = p.partner_id";
+	private static final String list = "select B.ENTITY_ID entity_id,B.entity_name entity_name, c.partner_id partner_id, c.partner_name partner_name,B.ENTITY_TYPE_ID entity_type_id, a.opt_type opt_type, a.agg_type agg_type from oz_entity B, registration_list a , partner c where a.REGISTRATION_LIST_ID=B.EXTERNAL_REFERENCE_ID and B.ENTITY_TYPE_ID=3 and a.PARTNER_ID = c.partner_id";
+	private static final String event = "select B.ENTITY_ID entity_id ,B.entity_name entity_name, c.partner_id partner_id,c.partner_name partner_name,B.ENTITY_TYPE_ID entity_type_id ,A.opt_type opt_type, A.agg_type agg_type from  oz_entity B, track_event_type A, partner c where A.EVENT_TYPE_ID=B.EXTERNAL_REFERENCE_ID and B.ENTITY_TYPE_ID=4 and ifnull(A.PARTNER_ID,-1) = c.partner_id";
+	private static final String metric = "select B.ENTITY_ID entity_id,B.entity_name entity_name, c.partner_id partner_id, c.partner_name partner_name,B.ENTITY_TYPE_ID entity_type_id ,a.opt_type opt_type ,a.agg_type agg_type from metric_config a, oz_entity B , partner c where a.METRIC_ID=B.EXTERNAL_REFERENCE_ID and B.ENTITY_TYPE_ID=2 and a.PARTNER_ID = c.partner_id";
+
 	public List<NeonMeta> retrieveNeonMeta() {
 		Map<Long, KeyValue> retrieveDkConfig = retrieveDkConfig();
-		String profile = "SELECT o.ENTITY_ID entity_id,a.PARTNER_PROFILE_FIELD_ID attribute_id, a.PARTNER_PROFILE_FIELD_NAME entity_name, p.partner_id partner_id,  p.PARTNER_NAME partner_name,o.ENTITY_TYPE_ID entity_type_id, a.opt_type opt_type, a.agg_type agg_type FROM oz_entity o,  app_partner_profile_field a, oz_entity_attribute oa,  partner p WHERE o.external_reference_id = a.partner_id  AND a.partner_profile_field_id = oa.attribute_name  AND a.partner_id = p.partner_id";
 
 		List<NeonMeta> neonMetaDetails = new ArrayList<>();
 
-		setNeonMetaForProfileData(profile, neonMetaDetails, EntityMetaData.getkeyValueObject(1l, "Profile"), retrieveDkConfig);
-
-		String list = "select B.ENTITY_ID entity_id,B.entity_name entity_name, c.partner_id partner_id, c.partner_name partner_name,B.ENTITY_TYPE_ID entity_type_id, a.opt_type opt_type, a.agg_type agg_type from oz_entity B, registration_list a , partner c where a.REGISTRATION_LIST_ID=B.EXTERNAL_REFERENCE_ID and B.ENTITY_TYPE_ID=3 and a.PARTNER_ID = c.partner_id";
+		setNeonMetaForProfileData(profileInformation, neonMetaDetails, EntityMetaData.getkeyValueObject(1l, "Profile"),
+				retrieveDkConfig);
 
 		setNeonMeta(list, neonMetaDetails, EntityMetaData.getkeyValueObject(3l, "List"), retrieveDkConfig);
-		
-		String event = "select B.ENTITY_ID entity_id ,B.entity_name entity_name, c.partner_id partner_id,c.partner_name partner_name,B.ENTITY_TYPE_ID entity_type_id ,A.opt_type opt_type, A.agg_type agg_type from  oz_entity B, track_event_type A, partner c where A.EVENT_TYPE_ID=B.EXTERNAL_REFERENCE_ID and B.ENTITY_TYPE_ID=4 and ifnull(A.PARTNER_ID,-1) = c.partner_id";
+
 		setNeonMeta(event, neonMetaDetails, EntityMetaData.getkeyValueObject(4l, "Event"), retrieveDkConfig);
-		
-		String metric = "select B.ENTITY_ID entity_id,B.entity_name entity_name, c.partner_id partner_id, c.partner_name partner_name,B.ENTITY_TYPE_ID entity_type_id ,a.opt_type opt_type ,a.agg_type agg_type from metric_config a, oz_entity B , partner c where a.METRIC_ID=B.EXTERNAL_REFERENCE_ID and B.ENTITY_TYPE_ID=2 and a.PARTNER_ID = c.partner_id";
+
 		setNeonMeta(metric, neonMetaDetails, EntityMetaData.getkeyValueObject(2l, "Metric"), retrieveDkConfig);
 		return neonMetaDetails;
 	}
@@ -102,7 +103,7 @@ public class WorkflowDao {
 					NeonMeta neonMata = findPartnerInList(neonMetaData, partnerID);
 					if (neonMata == null) {
 						neonMata = new NeonMeta(partnerID, rs.getString("partner_name"), new ArrayList<>());
-
+						neonMetaData.add(neonMata);
 					}
 					List<EntityMetaData> entityMeta = neonMata.getData();
 					String opTypeStr = rs.getString("opt_type");
