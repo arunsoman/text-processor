@@ -1,9 +1,10 @@
 package com.flytxt.parser.store;
 
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 
-@ComponentScan
+@ComponentScan("com.flytxt.tp.store")
+@EnableAsync
 public class TestSpringApplciation {
 
 }

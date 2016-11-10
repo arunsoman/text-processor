@@ -20,7 +20,6 @@ import com.flytxt.tp.store.NeonStore;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={TestSpringApplciation.class})
-@EnableScheduling
 public class NeonStoreTest {
 
 	@Autowired
@@ -30,7 +29,6 @@ public class NeonStoreTest {
 	@Before
 	public void before() throws FileNotFoundException, IOException, InterruptedException {
 		NeonStore.init();
-		store = new NeonStore();
 		mf = new MarkerFactory();
 
 	}
