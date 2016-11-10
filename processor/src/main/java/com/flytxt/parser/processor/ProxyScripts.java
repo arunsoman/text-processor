@@ -1,13 +1,11 @@
 package com.flytxt.parser.processor;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-
-import lombok.Data;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +15,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 
 import com.flytxt.parser.processor.FolderEventListener.Watch;
+
+import lombok.Data;
 
 @Configuration
 @EnableConfigurationProperties
@@ -70,16 +70,27 @@ public class ProxyScripts {
     }
 
     private String getHostname() {
-        try (BufferedInputStream in = new BufferedInputStream(Runtime.getRuntime().exec("hostname").getInputStream())) {
-            byte[] b = new byte[256];
-            in.read(b, 0, b.length);
-            in.read(b);
-            return new String(b);
-        } catch (IOException e) {
-            String message = "Error reading hostname";
-            throw new RuntimeException(message, e);
-        }
-    }
+    	 Process p;
+    	 StringBuilder result = new StringBuilder();
+         try {
+               p = Runtime.getRuntime().exec("hostname");
+               p.waitFor();
+ 
+               BufferedReader reader = new BufferedReader(
+                                 new InputStreamReader(
+                                 p.getInputStream()));
+ 
+ 
+               String line = "";
+               while ((line = reader.readLine()) != null) {
+                     result.append(line + "\n");
+               }
+                p.destroy();
+         } catch (Exception e) {
+               e.printStackTrace();
+         }
+         return result.toString();
+     }
 
     public List<com.flytxt.parser.processor.FolderEventListener.Watch> getFolderWatch() {
         return folderWatch;
