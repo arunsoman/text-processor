@@ -9,11 +9,11 @@ import java.nio.file.Paths;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.flytxt.compiler.RealtimeCompiler;
-import com.flytxt.parser.marker.CurrentObject;
-import com.flytxt.parser.marker.LineProcessor;
-import com.flytxt.parser.marker.MarkerFactory;
+import com.flytxt.tp.compiler.RealtimeCompiler;
 import com.flytxt.tp.domain.Workflow;
+import com.flytxt.tp.marker.CurrentObject;
+import com.flytxt.tp.marker.MarkerFactory;
+import com.flytxt.tp.processor.LineProcessor;
 
 public class WorkflowDTOTest {
 
@@ -46,7 +46,7 @@ public class WorkflowDTOTest {
             MarkerFactory mf = lp.getMf();
             CurrentObject obj = mf.getCurrentObject();
             obj.init("", "");
-            lp.init(className);
+            lp.init(className, System.currentTimeMillis());
             for (String aLine : sample.split("\n")) {
                 byte[] data = aLine.getBytes();
                 obj.setCurrentLine(data, 0, data.length);

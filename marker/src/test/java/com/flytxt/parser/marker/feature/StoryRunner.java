@@ -2,7 +2,7 @@ package com.flytxt.parser.marker.feature;
 
 /*
 @RunWith(Cucumber.class)
-@CucumberOptions( features = "classpath:features",glue = "com.flytxt.parser.marker.feature",
+@CucumberOptions( features = "classpath:features",glue = "com.flytxt.tp.marker.feature",
 	snippets=SnippetType.CAMELCASE,
 	strict=false)
 @ComponentScan

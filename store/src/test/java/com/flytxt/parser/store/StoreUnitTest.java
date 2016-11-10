@@ -7,8 +7,10 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.flytxt.parser.marker.Marker;
-import com.flytxt.parser.marker.MarkerFactory;
+import com.flytxt.tp.marker.Marker;
+import com.flytxt.tp.marker.MarkerFactory;
+import com.flytxt.tp.store.LocalFileStore;
+import com.flytxt.tp.store.Store;
 
 public class StoreUnitTest {
 

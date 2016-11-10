@@ -4,9 +4,9 @@
     <packaging>jar</packaging>
     <name>compiler</name>
     <parent>
-        <groupId>com.flytxt.parser</groupId>
+        <groupId>com.flytxt.tp</groupId>
         <artifactId>text-processor</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>${tp.version}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <dependencies>
@@ -16,24 +16,24 @@
             <version>3.4</version>
         </dependency>
         <dependency>
-            <groupId>com.flytxt.parser</groupId>
+            <groupId>com.flytxt.tp</groupId>
             <artifactId>marker</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${tp.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.flytxt.parser</groupId>
+            <groupId>com.flytxt.tp</groupId>
             <artifactId>translator</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${tp.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.flytxt.parser</groupId>
+            <groupId>com.flytxt.tp</groupId>
             <artifactId>processor</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${tp.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.flytxt.parser</groupId>
+            <groupId>com.flytxt.tp</groupId>
             <artifactId>store</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${tp.version}</version>
         </dependency>
     </dependencies>
 </project>
