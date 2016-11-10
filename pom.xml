@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.flytxt.tp</groupId>
 	<artifactId>text-processor</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>${tp.version}</version>
 	<packaging>pom</packaging>
 	<name>text-processor</name>
 	<properties>
@@ -12,7 +12,7 @@
 		<junit.version>4.12</junit.version>
 		<slf4j.version>1.7.21</slf4j.version>
 		<logback.version>1.1.7</logback.version>
-		<snapshot.version>0.0.1-SNAPSHOT</snapshot.version>
+		<tp.version>0.0.1-SNAPSHOT</tp.version>
 		<cucumber.version>1.2.5</cucumber.version>
 	</properties>
 	<scm>

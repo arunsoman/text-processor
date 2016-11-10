@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.flytxt.tp</groupId>
         <artifactId>text-processor</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>${tp.version}</version>
     </parent>
     <artifactId>web-service</artifactId>
     <dependencyManagement>
@@ -65,7 +65,7 @@
         <dependency>
             <groupId>com.flytxt.tp</groupId>
             <artifactId>compiler</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${tp.version}</version>
         </dependency>
     </dependencies>
     <build>
