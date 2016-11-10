@@ -9,11 +9,11 @@ import java.nio.file.Paths;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.flytxt.compiler.RealtimeCompiler;
-import com.flytxt.parser.marker.CurrentObject;
-import com.flytxt.parser.marker.MarkerFactory;
-import com.flytxt.parser.processor.LineProcessor;
+import com.flytxt.tp.compiler.RealtimeCompiler;
 import com.flytxt.tp.domain.Workflow;
+import com.flytxt.tp.marker.CurrentObject;
+import com.flytxt.tp.marker.MarkerFactory;
+import com.flytxt.tp.processor.LineProcessor;
 
 public class WorkflowDTOTest {
 

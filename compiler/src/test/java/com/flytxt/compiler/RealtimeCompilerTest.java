@@ -3,6 +3,8 @@ package com.flytxt.compiler;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.flytxt.tp.compiler.RealtimeCompiler;
+
 public class RealtimeCompilerTest {
 
 	@Test

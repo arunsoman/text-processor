@@ -7,7 +7,7 @@
 	<name>marker</name>
 	<url>http://maven.apache.org</url>
 	<parent>
-		<groupId>com.flytxt.parser</groupId>
+		<groupId>com.flytxt.tp</groupId>
 		<artifactId>text-processor</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
