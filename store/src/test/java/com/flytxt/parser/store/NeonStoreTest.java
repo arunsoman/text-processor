@@ -33,6 +33,10 @@ public class NeonStoreTest {
 	}
 
 	@Test
+	public void skiptest(){
+		
+	}
+	
 	public void test() throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader("app/test/testFile"));
 		String string = null;
