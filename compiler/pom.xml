@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.flytxt.tp</groupId>
         <artifactId>text-processor</artifactId>
-        <version>${tp.version}</version>
+        <version>[0,99)</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <dependencies>
