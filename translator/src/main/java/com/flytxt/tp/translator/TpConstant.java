@@ -1,6 +1,7 @@
 package com.flytxt.tp.translator;
 
 import com.flytxt.tp.marker.ImmutableMarker;
+import com.flytxt.tp.marker.Marker;
 
 public interface TpConstant {
 
@@ -37,5 +38,7 @@ public interface TpConstant {
     ImmutableMarker SEPARATOR = new ImmutableMarker(delim3);
 
     ImmutableMarker VALUESEPARATOR = new ImmutableMarker(delim4);
+    
+    Marker mnull = new ImmutableMarker(new byte[0]);
 
 }
