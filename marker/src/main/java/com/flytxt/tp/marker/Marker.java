@@ -28,7 +28,16 @@ public class Marker implements Comparable<byte[]> {
     protected void find(byte[] data, byte[] token, int[] indexOfMarker, MarkerFactory mf, Marker... markers) {
         int count = 1, lastIndex = this.index, currentIndex = this.index, tokenIndex, index = 0;
         Router router = mf.findRouter(indexOfMarker);
+        int i =0;
+        for(; i < token.length; i++){
+        	if(data[index+i] != token[i]){
+        		break;
+        	}
+        }
+        currentIndex = (i == token.length)? token.length:this.index;
+        
         while (currentIndex < this.index + length) {
+        	
             for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++)
                 ;
             if (tokenIndex == token.length) { // true if token found at currentIndex
