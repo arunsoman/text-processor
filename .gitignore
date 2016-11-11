@@ -1,6 +1,7 @@
 .settings
 .project
 .classpath
+.dat
 target
 bin
 log

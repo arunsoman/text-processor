@@ -24,6 +24,9 @@ public class TpDate extends com.flytxt.tp.translator.Translator {
     private static HashMap<String, Translator> planMap = new HashMap<String, Translator>();
 
     public Marker convertDate(final Marker m, final MarkerFactory mf, final String format) throws ParseException {
+    	if(m.length == 0){
+    		throw new ParseException("no data in parker to parse with format" +format, 0);
+    	}
         Translator translator = planMap.get(format);
         if (translator == null) {
             translator = tpDateUtil.Formater(format);
