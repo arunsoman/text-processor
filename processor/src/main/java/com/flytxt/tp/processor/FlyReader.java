@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 
 import com.flytxt.tp.marker.CurrentObject;
 
-@Component
+
 public class FlyReader implements Callable<FlyReader> {
 
     private LineProcessor lp;
