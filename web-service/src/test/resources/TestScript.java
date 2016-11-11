@@ -5,7 +5,7 @@ import com.flytxt.tp.marker.MarkerFactory;
 import com.flytxt.tp.processor.LineProcessor;
 import com.flytxt.tp.store.ConsoleStore;
 import com.flytxt.tp.store.Store;
-import com.flytxt.tp.translator.TpConstant;
+import com.flytxt.tp.marker.ConstantMarker;
 import com.flytxt.tp.translator.TpDate;
 import com.flytxt.tp.translator.TpLogic;
 import com.flytxt.tp.translator.TpMath;
@@ -13,11 +13,11 @@ import com.flytxt.tp.translator.TpString;
 
 import liquibase.structure.core.DataType;
 
-public class TestScript implements LineProcessor {
+public class TestScript implements LineProcessor,ConstantMarker {
 	public final String outputFolder = "TestScript1478773614567";
 	public final String regex = "TestScript1478773614567";
 	public final String inputFolder = "TestScript1478773614567";
-	private String str_inter = new String(TpConstant.INTERDATATYPE.getData());
+	private String str_inter = new String(ConstantMarker.INTERDATATYPE.getData());
 
 	public final MarkerFactory mf = new MarkerFactory();
 
@@ -26,8 +26,8 @@ public class TestScript implements LineProcessor {
 	private TpString tpString = new TpString();
 	private TpLogic tpLogic = new TpLogic();
 
-	private Marker m_inter = TpConstant.INTERDATATYPE;
-	private Marker m_intra = TpConstant.INTRADATATYPE;
+	private Marker m_inter = ConstantMarker.INTERDATATYPE;
+	private Marker m_intra = ConstantMarker.INTRADATATYPE;
 	private Marker line;
 	
 	private Marker fileName;
@@ -69,8 +69,6 @@ public class TestScript implements LineProcessor {
 	private Marker mRecharge;
 
 	private Marker mRecharge10;
-
-	private Marker mRechargemnull;
 
 	private Marker mRecharge_at_;
 
@@ -187,7 +185,6 @@ public class TestScript implements LineProcessor {
 				mOFFNET_FINAL_MOU_Metric_opType_b.length);
 
 		line = mf.getLineMarker();
-		mnull = mf.createMarker(" ".getBytes(), 0, 0);
 	}
 
 	@Override

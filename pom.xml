@@ -80,10 +80,10 @@
 	</build>
 	<modules>
 		<module>marker</module>
+		<module>translator</module>
 		<module>store</module>
 		<module>processor</module>
 		<module>compiler</module>
 		<module>web-service</module>
-		<module>translator</module>
 	</modules>
 </project>
