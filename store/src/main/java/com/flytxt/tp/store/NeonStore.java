@@ -37,7 +37,8 @@ public class NeonStore implements Store {
 
 	private static final int bufSize = 1 * 1024 * 1024;
 
-	private static byte[] data = new byte[bufSize];
+	//private static byte[] data = new byte[bufSize];
+	private static byte[] data;
 
 	private static UserGroupInformation ugi = UserGroupInformation.createRemoteUser("root");
 
@@ -102,11 +103,15 @@ public class NeonStore implements Store {
 
 				@Override
 				public Void run() throws Exception {
-					semaphore.acquire();	
+					semaphore.acquire();
+					
+					out.position(lastReadIndex);
+					data= new byte[lastWriteIndex - lastReadIndex];
 					out.get(data, lastReadIndex, lastWriteIndex - lastReadIndex);
 					writer.write(data);
 					writer.close();
-					meta.putInt(0, lastWriteIndex + 1); // update readIndex in meta
+					out.position(lastReadIndex);
+					meta.putInt(0, lastReadIndex); // update readIndex in meta
 					semaphore.release();
 					return null;
 				}

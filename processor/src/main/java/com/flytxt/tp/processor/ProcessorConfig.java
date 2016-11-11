@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Profile;
 @EnableConfigurationProperties
 public class ProcessorConfig {
 
-	
 	@Bean
 	public ProxyScripts proxyScripts() {
 		return new ProxyScripts();
@@ -29,10 +28,16 @@ public class ProcessorConfig {
 	public FolderEventListener folderEventListener() {
 		return new FolderEventListener();
 	}
-	
+
 	@Bean
 	@Lazy
-	public FlyReader FlyReader(){
+	public FlyReader FlyReader() {
 		return new FlyReader();
+	}
+
+	@Bean
+	public Controller controller() {
+		return new Controller();
+
 	}
 }
