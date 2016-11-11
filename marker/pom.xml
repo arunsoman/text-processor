@@ -7,9 +7,9 @@
 	<name>marker</name>
 	<url>http://maven.apache.org</url>
 	<parent>
-		<relativePath>../pom.xml</relativePath>
 		<groupId>com.flytxt.tp</groupId>
 		<artifactId>text-processor</artifactId>
-		<version>[0,99)</version>
+		<version>${tp.version}</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 </project>

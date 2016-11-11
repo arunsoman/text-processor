@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.flytxt.tp</groupId>
         <artifactId>text-processor</artifactId>
-        <version>[0,99)</version>
+        <version>${tp.version}</version>
     </parent>
     <artifactId>web-service</artifactId>
     <dependencyManagement>
