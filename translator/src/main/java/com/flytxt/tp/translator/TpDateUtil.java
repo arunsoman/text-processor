@@ -105,6 +105,7 @@ X	Time zone	ISO 8601 time zone	-08; -0800; -08:00
             CharCnt cc;
             for(int i = 0; i <6;  i++){
                 cc = list[i];
+                if(cc == null) continue;
                 plan[i][0] = cc.loc;
                 plan[i][1] = cc.desLoc;
                 plan[i][2] = cc.cnt;

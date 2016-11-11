@@ -65,15 +65,24 @@ public class Marker implements Comparable<byte[]> {
         return 0;
     }
 
-    public int asInt(){
+    public int asInt() {
+        if (length == 0) {
+            return 0;
+        }
         return Integer.parseInt(toString());
     }
 
-    public long asLong(){
+    public long asLong() {
+        if (length == 0) {
+            return 0;
+        }
         return Long.parseLong(toString());
     }
 
-    public double asDouble(){
+    public double asDouble() {
+        if (length == 0) {
+            return 0;
+        }
         return Double.parseDouble(toString());
     }
 }

@@ -1,8 +1,9 @@
 package com.flytxt.tp.translator;
 
 import com.flytxt.tp.marker.Marker;
+import com.flytxt.tp.marker.ConstantMarker;
 
-public class Translator implements TpConstant {
+public class Translator implements ConstantMarker {
 	public static final byte[] asByteArray(double lVal){
 		//need to find cleaner way
 		return String.valueOf(lVal).getBytes();

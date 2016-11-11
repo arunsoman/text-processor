@@ -10,20 +10,19 @@ import com.flytxt.tp.store.LocalFileStore;
 import com.flytxt.tp.store.NeonStore;
 import com.flytxt.tp.store.Store;
 import com.flytxt.tp.store.StreamStore;
-import com.flytxt.tp.translator.TpConstant;
+import com.flytxt.tp.marker.ConstantMarker;
 import com.flytxt.tp.translator.TpDate;
 import com.flytxt.tp.translator.TpLogic;
 import com.flytxt.tp.translator.TpMath;
 import com.flytxt.tp.translator.TpString;
-import com.flytxt.realtime.commons.*;
 
 import java.io.IOException;
 
-public class %(name) implements LineProcessor{
+public final class %(name) implements LineProcessor,ConstantMarker {
 	public final String outputFolder = "%(outputfolder)";
 	public final String regex = "%(regex)";
 	public final String inputFolder = "%(inputFolder)";
-     private String str_inter = new String(TpConstant.INTERDATATYPE.getData());
+     private String str_inter = new String(ConstantMarker.INTERDATATYPE.getData());
 
 	public final MarkerFactory mf = new MarkerFactory();
 
@@ -32,10 +31,9 @@ public class %(name) implements LineProcessor{
 	private TpString tpString = new TpString();
 	private TpLogic tpLogic = new TpLogic();
 
-	private Marker m_inter = TpConstant.INTERDATATYPE;
-     private Marker m_intra = TpConstant.INTRADATATYPE;
-	private Marker line;
-	private Marker mnull;
+	private Marker m_inter = ConstantMarker.INTERDATATYPE;
+     private Marker m_intra = ConstantMarker.INTRADATATYPE;
+	private Marker line;;
 	private Marker fileName;
 	private Marker mlastModifiedTime;
      private Marker mpickedTime;
@@ -45,7 +43,6 @@ public class %(name) implements LineProcessor{
 	public %(name)(){
 	%(init)
 	line = mf.getLineMarker();
-	mnull = mf.createMarker(" ".getBytes(), 0, 0);
 	}
 	
 	@Override
