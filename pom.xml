@@ -12,7 +12,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.flytxt.tp</groupId>
 	<artifactId>text-processor</artifactId>
-	<version>${tp.version}</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>text-processor</name>
 	<scm>
