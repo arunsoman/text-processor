@@ -34,70 +34,70 @@ public class TestScript implements LineProcessor,ConstantMarker {
 	private Marker mlastModifiedTime;
 	private Marker mpickedTime;
 
-	private Marker mmsisdn;
+	private Marker mmsisdn = mnull;
 
-	private Marker mMOU;
+	private Marker mMOU = mnull;
 
-	private Marker mdate;
+	private Marker mdate = mnull;
 
-	private Marker mREV;
+	private Marker mREV = mnull;
 
-	private Marker mservicetype;
+	private Marker mservicetype = mnull;
 
 	private byte[] token_124 = "|".getBytes();
 
-	private Marker mMSISDN_CHECK;
+	private Marker mMSISDN_CHECK = mnull;
 
-	private Marker mMSISDN_CHECK2;
+	private Marker mMSISDN_CHECK2 = mnull;
 
-	private Marker mONNET;
+	private Marker mONNET = mnull;
 
-	private Marker mOFFNET;
+	private Marker mOFFNET = mnull;
 
-	private Marker mMSISDN_FINAL;
+	private Marker mMSISDN_FINAL = mnull;
 
-	private Marker mFINAL_DATE;
+	private Marker mFINAL_DATE = mnull;
 
-	private Marker mOFFNET_FINAL_MOU;
+	private Marker mOFFNET_FINAL_MOU = mnull;
 
-	private Marker mOFFNET_REV_FINAL;
+	private Marker mOFFNET_REV_FINAL = mnull;
 
-	private Marker mONNET_FINAL_MOU;
+	private Marker mONNET_FINAL_MOU = mnull;
 
-	private Marker mONNET_FINAL_REV;
+	private Marker mONNET_FINAL_REV = mnull;
 
-	private Marker mRecharge;
+	private Marker mRecharge = mnull;
 
-	private Marker mRecharge10;
+	private Marker mRecharge10 = mnull;
 
-	private Marker mRecharge_at_;
+	private Marker mRecharge_at_ = mnull;
 
-	private Marker mRecharge_dt_;
+	private Marker mRecharge_dt_ = mnull;
 
 	private Store streamStore = new ConsoleStore(outputFolder, "undefined");
 
 	private Store localfileStore = new ConsoleStore(outputFolder, "MSISDN_FINAL", "OFFNET_FINAL_MOU",
 			"OFFNET_REV_FINAL", "FINAL_DATE", "ONNET_FINAL_REV", "ONNET_FINAL_REV");
 
-	private Marker mOFFNET_REV_FINAL_Metric_name;
+	private Marker mOFFNET_REV_FINAL_Metric_name = mnull;
 
-	private Marker mOFFNET_REV_FINAL_Metric_day;
+	private Marker mOFFNET_REV_FINAL_Metric_day = mnull;
 
-	private Marker mOFFNET_REV_FINAL_Metric_month;
+	private Marker mOFFNET_REV_FINAL_Metric_month = mnull;
 
-	private Marker mOFFNET_REV_FINAL_Metric_week;
+	private Marker mOFFNET_REV_FINAL_Metric_week = mnull;
 
-	private Marker mOFFNET_REV_FINAL_Metric_opType;
+	private Marker mOFFNET_REV_FINAL_Metric_opType = mnull;
 
-	private Marker mOFFNET_FINAL_MOU_Metric_name;
+	private Marker mOFFNET_FINAL_MOU_Metric_name = mnull;
 
-	private Marker mOFFNET_FINAL_MOU_Metric_day;
+	private Marker mOFFNET_FINAL_MOU_Metric_day = mnull;
 
-	private Marker mOFFNET_FINAL_MOU_Metric_month;
+	private Marker mOFFNET_FINAL_MOU_Metric_month = mnull;
 
-	private Marker mOFFNET_FINAL_MOU_Metric_week;
+	private Marker mOFFNET_FINAL_MOU_Metric_week = mnull;
 
-	private Marker mOFFNET_FINAL_MOU_Metric_opType;
+	private Marker mOFFNET_FINAL_MOU_Metric_opType = mnull;
 
 	private Store neonStore = new ConsoleStore(outputFolder, "__temp1");
 
