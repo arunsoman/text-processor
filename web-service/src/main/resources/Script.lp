@@ -10,7 +10,7 @@ import com.flytxt.tp.store.LocalFileStore;
 import com.flytxt.tp.store.NeonStore;
 import com.flytxt.tp.store.Store;
 import com.flytxt.tp.store.StreamStore;
-import com.flytxt.tp.translator.TpConstant;
+import com.flytxt.tp.marker.ConstantMarker;
 import com.flytxt.tp.translator.TpDate;
 import com.flytxt.tp.translator.TpLogic;
 import com.flytxt.tp.translator.TpMath;

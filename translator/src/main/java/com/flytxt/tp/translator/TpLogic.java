@@ -1,6 +1,8 @@
 package com.flytxt.tp.translator;
 
-public class TpLogic implements TpConstant{
+import com.flytxt.tp.marker.ConstantMarker;
+
+public class TpLogic implements ConstantMarker{
 	private final int ff = (falseToken*2);
 	private final int tt = (trueToken*2);
 	public boolean and(boolean m1, boolean m2){

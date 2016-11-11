@@ -1,9 +1,6 @@
-package com.flytxt.tp.translator;
+package com.flytxt.tp.marker;
 
-import com.flytxt.tp.marker.ImmutableMarker;
-import com.flytxt.tp.marker.Marker;
-
-public interface TpConstant {
+public interface ConstantMarker {
 
     byte negative = (byte) '-';
 
