@@ -32,6 +32,13 @@ public final class Router implements Comparable<int[]> {
         return markerPosition[indexPosition[pointer]];
     }
 
+    public String toString(){
+    	StringBuilder sb = new StringBuilder();
+    	for(int i = 0; i < markerPosition.length; i++){
+    		sb.append(i).append("=>").append(getMarkerPosition(i)).append("\n");
+    	}
+    	return sb.toString();
+    }
     @Override
     public int compareTo(int[] o) {
         if (markerPosition.length != o.length)
