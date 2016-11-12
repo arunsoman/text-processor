@@ -5,40 +5,23 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MarkerFunctionalTest {
-/*
-    final MarkerFactory markerFactory = new MarkerFactory();
-    
-    private CurrentObject currentObject;
-    
-    @Before
-    public void init(){
-    	currentObject = markerFactory.getCurrentObject();
-    	currentObject.setFileName("TestFile");
-    	currentObject.setFolderName("TestFolder");
-    }
-    
-    public Marker getMarker(String str){
-    	byte[] lineMarker = str.getBytes();
-    	currentObject.setLineMarker(lineMarker);
-    	currentObject.setCurrentLine(0, lineMarker.length);
-    	Marker line = markerFactory.createMarker(null,0, lineMarker.length);
-    	return line;
-    }
+import com.flytxt.tp.marker.ConstantMarker;
+import com.flytxt.tp.marker.Marker;
+
+public class MarkerFunctionalTest extends TestConstruct implements ConstantMarker{
     @Test
     public void test1() {        
         final String str = "1,,1,1,,45,30,2011-11-11T12:00:00-05:00,False,,,,,False,False,1,0,,,,,,,,,,,1,1";
-        final Marker line = getMarker(str);
-        final byte[] t1 = TokenFactory.create(",Fa");
-        final byte[] t2 = TokenFactory.create(",");
-        final Marker m1 = line.splitAndGetMarker(t1, 4, markerFactory);
-        final Marker m2 = m1.splitAndGetMarker(t2, 2, markerFactory);
-       
-        if (!m2.toString().equals("1")) {
-            assertEquals("1",m2.toString());
-        }
-    }
+        final Marker line = getLineMarker(str);
+        Marker m1 = mnull;
+        Marker m2 = mnull;
+        Marker m3 = mnull;
+        int [] indices = new int[]{1,4};
+        line.splitAndGetMarkers(",".getBytes(),indices , markerFactory, m1, m2);
+        validate(",", indices, str, m1,m2);
 
+    }
+/*s
     @Test
     public void test2() {
         final String str = "a,{b|c},d";

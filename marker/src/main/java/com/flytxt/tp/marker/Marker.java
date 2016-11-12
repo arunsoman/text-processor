@@ -26,7 +26,7 @@ public class Marker implements Comparable<byte[]> {
     }
 
     protected void find(byte[] data, byte[] token, int[] indexOfMarker, MarkerFactory mf, Marker... markers) {
-        int count = 1, lastIndex = this.index, currentIndex = this.index, tokenIndex, index = 0;
+        int currentIndex = this.index;
         Router router = mf.findRouter(indexOfMarker);
         int i =0;
         for(; i < token.length; i++){
@@ -34,28 +34,39 @@ public class Marker implements Comparable<byte[]> {
         		break;
         	}
         }
+        int stIndex, len = 0, count =0;
         currentIndex = (i == token.length)? token.length:this.index;
-        
+        stIndex = currentIndex;
         while (currentIndex < this.index + length) {
-        	
-            for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++)
-                ;
-            if (tokenIndex == token.length) { // true if token found at currentIndex
-                if (router.getMarkerPosition(index) == count++) { // true if current marker is to be stored
-                    markers[index].index = lastIndex;
-                    markers[index].length = currentIndex - lastIndex;
-                    index++;
+        	if(data[currentIndex] == token[0]){//probably a marker
+        		int stage = len;
+        		for(i = 1; i < token.length; i++){//is the rest part of token?
+                	if(data[currentIndex+i] != token[i]){
+                		break;
+                	}
                 }
-                if (index == indexOfMarker.length)
-                    return;
-                currentIndex = currentIndex + token.length;
-                lastIndex = currentIndex;
-            } else
-                currentIndex++;
-        }
-        if (lastIndex > this.index && indexOfMarker[index] == count) {
-            markers[index].index = lastIndex;
-            markers[index].length = this.length - lastIndex;
+        		if(i == token.length){//found marker
+        			//check if this marker is needed?
+ 
+        			//either way reset stIndex and len
+        			len = 0;
+        			stIndex = currentIndex;
+        			Marker m = mf.createMarker(data, stIndex, stage);
+        			int ptr = router.getMarkerPosition(count);
+        			markers[ptr] = m;
+        			count ++;
+        			if(count == markers.length)
+        				return;
+        		}
+        		else{//false alarm
+        			len = currentIndex;
+        		}
+        		
+        	}
+        	else{//move on
+        		len++;
+        	}
+        	currentIndex++;
         }
     }
 
