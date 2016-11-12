@@ -1,5 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.flytxt.tp</groupId>
+	<artifactId>text-processor</artifactId>
+	<version>${tp.version}</version>
+	<packaging>pom</packaging>
+	<name>text-processor</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
@@ -9,12 +15,6 @@
 		<tp.version>0.0.1-SNAPSHOT</tp.version>
 		<cucumber.version>1.2.5</cucumber.version>
 	</properties>
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.flytxt.tp</groupId>
-	<artifactId>text-processor</artifactId>
-	<version>${tp.version}</version>
-	<packaging>pom</packaging>
-	<name>text-processor</name>
 	<scm>
 		<connection>scm:git:https://github.com/arunsoman/text-processor.git</connection>
 		<developerConnection>scm:git:git@github.com:arunsoman/text-processor.git</developerConnection>
@@ -32,11 +32,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>${logback.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -86,4 +81,15 @@
 		<module>compiler</module>
 		<module>web-service</module>
 	</modules>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-parent</artifactId>
+				<version>1.4.0.RELEASE</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>
