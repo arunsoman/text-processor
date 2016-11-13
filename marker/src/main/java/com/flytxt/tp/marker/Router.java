@@ -24,6 +24,10 @@ public final class Router implements Comparable<int[]> {
      *  456=> indexPositionPtr
      *  102-> markerNATPosition
      */
+    
+    public int maxMarkers2Mine(){
+    	return indexPositionPtr[indexPositionPtr.length-1];
+    }
     public void set(int[] markerPosition) {
         this.markerPosition  = markerPosition;
     	indexPositionPtr = new int[markerPosition.length];
@@ -44,7 +48,7 @@ public final class Router implements Comparable<int[]> {
 	}
 
 	public int geNthtMarkerlocation(int index){
-    	return indexPositionPtr[index];
+    	return indexPositionPtr[index]; //"java starts with 0"
     }
 
 	public int getMarkerPosition(int locationIndex){

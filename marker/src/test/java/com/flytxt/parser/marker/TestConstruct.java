@@ -14,20 +14,24 @@ public abstract class TestConstruct {
 		Marker line = markerFactory.getLineMarker();
 		return line;
 	}
-	
+
 	protected Marker getImmutableMarker(String str) {
 		byte[] lineMarker = str.getBytes();
 		return markerFactory.createMarker(lineMarker, 0, lineMarker.length);
 	}
-	
-	protected void validate(String token, int[]indices, String str, Marker ...markers){
+
+	protected void validate(String token, int[] indices, String str, Marker... markers) {
 		String splits[] = str.split(token);
-		if(splits.length < indices.length ){
+		if (splits.length < indices.length) {
 			Assert.assertEquals("split size can't be less than indies", splits.length, indices);
 		}
-		for(int i = 0; i < indices.length; i++){
-			if(!splits[indices[i]].equals(markers[i].toString()))
-				Assert.assertEquals(splits[indices[i]], markers[i].toString());
+		for (int i = 0; i < indices.length; i++) {
+			try {
+				if (!splits[indices[i]].equals(markers[i].toString()))
+					Assert.assertEquals(splits[indices[i]], markers[i].toString());
+			} catch (ArrayIndexOutOfBoundsException e) {
+				Assert.assertEquals(0, markers[i].length);
+			}
 		}
 	}
 }
