@@ -51,8 +51,15 @@ public class Marker implements Comparable<byte[]> {
     	int counter = 0;
         for(int i =0; i <= markers2Mine; i++){
         	from = fm.findPreMarker(token, from+1, eol, data);
+        	if(from == -1){//there is no marker hence consider the whole ",NoCommaAfterThis."
+        		from = eol;
+        	}
         	int len = from-stx;
-        	System.out.println("{M:"+i +" from:"+from +" str: "+new String(data, stx, len) +" } ");
+        	if(len< 0){
+        		stx = 0;
+        		len = 0;
+        	}
+//        	System.out.println("{M:"+i +" from:"+from +" str: "+new String(data, stx, len) +" } ");
         	int nextPos = router.geNthtMarkerlocation(counter);
         	if(i == nextPos){
         		int ptr = router.getMarkerPosition(counter);

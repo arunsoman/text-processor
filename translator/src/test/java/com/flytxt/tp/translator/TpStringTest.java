@@ -6,9 +6,6 @@ import org.junit.Test;
 
 import com.flytxt.tp.marker.ConstantMarker;
 import com.flytxt.tp.marker.Marker;
-import com.flytxt.tp.translator.TpString;
-
-import ch.qos.logback.classic.pattern.MarkerConverter;
 
 public class TpStringTest extends TpAbsTest {
 
@@ -104,15 +101,10 @@ public class TpStringTest extends TpAbsTest {
 
     @Test
     public void testMergeImmutable() {
-        final String str1 = "first";
-        final String str2 = " second";
-        final Marker mocker1 = getMarker(str1);
-        final Marker mocker2 = getMarker(str2);
+        final Marker mocker1 = markerFactory.createMarker("first");
+        final Marker mocker2 = markerFactory.createMarker("second");;
         final Marker result = tpString.merge(mocker1, mocker2, markerFactory);
-        System.out.println(mocker1);
-        System.out.println(mocker2);
-        System.out.println(result);
-        assertEquals(str1.concat(str2), result.toString());
+        assertEquals("first".concat("second"), result.toString());
     }
 
     @Test
@@ -120,18 +112,13 @@ public class TpStringTest extends TpAbsTest {
         final String str1 = "first, second";
         Marker line = getMarker(str1);
 
-        final Marker mocker1 = ConstantMarker.mnull;
-        final Marker mocker2 = ConstantMarker.mnull;
+        final Marker mocker1 = markerFactory.createMarker(null, 0, 0);
+        Marker mocker2 = markerFactory.createMarker(null, 0, 0);;
         
-        line.splitAndGetMarkers(",".getBytes(), new int []{1,2}, markerFactory, mocker1,mocker2);
-        System.out.println(mocker1);
-        System.out.println(mocker2);
-        
-        final Marker result = tpString.merge(mocker1, mocker2, markerFactory);
-        System.out.println(mocker1);
-        System.out.println(mocker2);
-        System.out.println(result);
-
+        line.splitAndGetMarkers(",".getBytes(), new int []{0,1}, markerFactory, mocker1,mocker2);
+        Marker mocker3 = tpString.lTrim(mocker2, markerFactory);
+        final Marker result = tpString.merge(mocker1, mocker3, markerFactory);
+        assertEquals("first".concat("second"), result.toString());
     }
 
 }

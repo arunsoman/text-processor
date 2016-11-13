@@ -63,9 +63,9 @@ public class TpMathTest extends TpAbsTest {
 	@Test
 	public final void testSubLong() {
 		String str1 = "988";
-		Marker m1 = getMarker(str1);
+		Marker m1 = markerFactory.createMarker(str1);
 		String str2 = "9878";
-		Marker m2 = getMarker(str2);
+		Marker m2 = markerFactory.createMarker(str2);
 		Marker res = tpMath.subLong( m1,  m2, markerFactory);
 		String str3 = String.valueOf(Long.parseLong(str1)-Long.parseLong(str2));
 		assertEquals(str3, res.toString());
