@@ -3,18 +3,20 @@ package com.flytxt.parser.store;
 import java.io.IOException;
 
 import org.junit.Assert;
+import org.junit.Test;
 
 import com.flytxt.tp.marker.Marker;
 import com.flytxt.tp.marker.MarkerFactory;
-import com.flytxt.tp.marker.MarkerSerDer;
 import com.flytxt.tp.store.StreamStore;
 
 public class StreamTest {
 
+    @Test
     public void test() throws IOException {
         MarkerFactory markerFactory = new MarkerFactory();
         StreamStore ss = new StreamStore("/tmp");
-        String line = "";
+        ss.set("StreamTest-test");
+        String line = "1234567890,12,2,1,11,182745681129, ,1478771400000,1478771458907,1478771458907,recharge";
         String[] split = line.split("|");
         Marker[] markers = new Marker[split.length];
         int index = 0;

@@ -23,6 +23,7 @@ public class StreamStore implements Store {
         super();
         this.baseDir = baseDir.endsWith("/") ? baseDir : baseDir + "/";
         this.queueWriter = new ChronicleWriter<>(this.baseDir + fileName);
+        queueWriter.init();
     }
 
     @Override
