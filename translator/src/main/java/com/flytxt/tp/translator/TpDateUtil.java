@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+
+import com.flytxt.tp.marker.Marker;
 public class TpDateUtil {
 
     /**
@@ -62,15 +64,17 @@ X	Time zone	ISO 8601 time zone	-08; -0800; -08:00
             super();
             this.srcFmt = srcFmt;
         }
-        public byte[] translate(byte[] src, byte[] des) throws ParseException{
+        public byte[] translate(Marker src, byte[] des) throws ParseException{
             return (srcFmt == null)?translate(src, des, plan):translate(src, des, srcFmt);
         }
-        private byte[] translate(byte[] src, byte[] des,SimpleDateFormat srcfmt) throws ParseException{
-            return sdf.format(srcfmt.parse(new String(src))).getBytes();
+        private byte[] translate(Marker src, byte[] des,SimpleDateFormat srcfmt) throws ParseException{
+            return sdf.format(srcfmt.parse(new String(src.getData(), src.index, src.length))).getBytes();
         }
-        private byte[] translate(byte[] src, byte[] des,int[][]plan){
+        private byte[] translate(Marker srcM, byte[] des,int[][]plan){
             if(des == null|| des.length != flyDateFormatSize)
                 des = new byte[flyDateFormatSize];
+            byte[] src = new byte[srcM.length];
+            System.arraycopy(srcM.getData(), srcM.index, src, 0, srcM.length);
             for(int i=0; i < 6; i++)
                 System.arraycopy(src, plan[i][0], des, plan[i][1], plan[i][2]);
             return des;

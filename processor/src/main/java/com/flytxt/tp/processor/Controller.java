@@ -3,7 +3,7 @@ package com.flytxt.tp.processor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@org.springframework.stereotype.Controller
+
 public class Controller {
 	@Autowired
 	Processor processor;

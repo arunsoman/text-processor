@@ -43,7 +43,7 @@ import com.google.common.cache.RemovalNotification;
 
 import lombok.Data;
 
-@Component
+
 @ConfigurationProperties(prefix = "folder")
 @Data
 public class FolderEventListener {

@@ -10,9 +10,14 @@ public class ImmutableMarker extends Marker {
         this.length = data.length;
     }
 
+    public void setData(byte[] currentLine) {
+        this.data = currentLine;
+        this.index = 0;
+        this.length = data.length;
+    }
     @Override
     public void splitAndGetMarkers(final byte[] token, final int[] indexOfMarker, final MarkerFactory mf, Marker... markers) {
-        find(data, token, indexOfMarker, mf, markers);
+        find(true, data, token, indexOfMarker, mf, markers);
     }
 
     @Override

@@ -2,8 +2,8 @@ spring:
   application:
         name: remoteCompiler
   datasource:
-        url: jdbc:mysql://192.168.150.75:3306/tpe?useUnicode=true&characterEncoding=UTF-8&useSSL=false
-        username: root
+        url: jdbc:mysql://192.168.14.60:3306/tpe?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+        username: rte
         password: bullet
         driverClassName: com.mysql.jdbc.Driver
   logging:
@@ -15,6 +15,16 @@ hostname: demo
 
 liquibase:
   enabled: false
+  
+folder:
+  expireTimeInMinutes: 1
+  cacheCleanUpTime: 30000
 
+compiler:
+  getScript: /
+  getJar: /getJar
+  remoteHost: http://localhost:9000
+  hostName: demo
+  
 server:
   port: 9000

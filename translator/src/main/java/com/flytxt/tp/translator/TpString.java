@@ -118,10 +118,13 @@ public class TpString {
     public Marker lTrim(Marker m, MarkerFactory mf) {
         final byte[] data1 = m.getData();
         int start = m.index;
+        int spaceCounter = 0;
         final int end = start + m.length;
-        while ((start < end) && (data1[start] == space))
-            start++;
-        return mf.createMarker(null, start, m.length - start);
+        while ((start < end) && (data1[start] == space)){
+        	start++;
+        	spaceCounter++;
+        }
+        return mf.createMarker(null, start, m.length - spaceCounter);
     }
 
     public Marker rTrim(Marker m, MarkerFactory mf) {

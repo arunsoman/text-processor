@@ -5,7 +5,7 @@ public class Marker implements Comparable<byte[]> {
     public int index;
 
     public int length;
-
+    private FindMarker fm = new FindMarker();
     private CurrentObject currentObject;
 
     Marker() {
@@ -22,34 +22,79 @@ public class Marker implements Comparable<byte[]> {
 
     public void splitAndGetMarkers(final byte[] token, final int[] indexOfMarker, final MarkerFactory mf, Marker... markers) {
         byte[] data = currentObject.getLine();
-        find(data, token, indexOfMarker, mf, markers);
+        find(false,data, token, indexOfMarker, mf, markers);
     }
 
-    protected void find(byte[] data, byte[] token, int[] indexOfMarker, MarkerFactory mf, Marker... markers) {
-        int count = 1, lastIndex = this.index, currentIndex = this.index, tokenIndex, index = 0;
+    private void resetMarkerLength(Marker...markers){
+    	for(Marker aMarker: markers){
+    		aMarker.length = 0;
+    	}
+    }
+    protected void find(boolean assignData, byte[] data, byte[] token, int[] indexOfMarker, MarkerFactory mf, Marker... markers) {
+    	resetMarkerLength(markers);
+    	
         Router router = mf.findRouter(indexOfMarker);
-        while (currentIndex < this.index + length) {
-            for (tokenIndex = 0; tokenIndex < token.length && token[tokenIndex] == data[currentIndex + tokenIndex]; tokenIndex++)
-                ;
-            if (tokenIndex == token.length) { // true if token found at currentIndex
-                if (router.getMarkerPosition(index) == count++) { // true if current marker is to be stored
-                    markers[index].index = lastIndex;
-                    markers[index].length = currentIndex - lastIndex;
-                    index++;
-                }
-                if (index == indexOfMarker.length)
-                    return;
-                currentIndex = currentIndex + token.length;
-                lastIndex = currentIndex;
-            } else
-                currentIndex++;
-        }
-        if (lastIndex > this.index && indexOfMarker[index] == count) {
-            markers[index].index = lastIndex;
-            markers[index].length = this.length - lastIndex;
-        }
+        int markers2Mine = router.maxMarkers2Mine();
+        
+        if(token.length==1)
+        	fromByteArray(assignData, markers2Mine, token[0], data, router, markers);
+        else
+        	fromByteArray(assignData, markers2Mine, token, data, router, markers);
+        System.out.println("\n");
     }
 
+    private void fromByteArray(boolean assignData, int markers2Mine, byte token, byte[] data, Router router, Marker...markers){
+    	int eol = this.index + length;
+        int from = this.index;
+        int stx = this.index;
+        
+    	int counter = 0;
+        for(int i =0; i <= markers2Mine; i++){
+        	from = fm.findPreMarker(token, from+1, eol, data);
+        	if(from == -1){//there is no marker hence consider the whole ",NoCommaAfterThis."
+        		from = eol;
+        	}
+        	int len = from-stx;
+        	if(len< 0){
+        		stx = 0;
+        		len = 0;
+        	}
+//        	System.out.println("{M:"+i +" from:"+from +" str: "+new String(data, stx, len) +" } ");
+        	int nextPos = router.geNthtMarkerlocation(counter);
+        	if(i == nextPos){
+        		int ptr = router.getMarkerPosition(counter);
+        		Marker m = markers[ptr];
+        		m.setLineAttribute(stx, len);
+        		if(assignData)
+        			((ImmutableMarker)m).setData(data);
+    			counter++;
+        	}
+        	stx = from+1;
+        }
+    	
+    }
+    private void fromByteArray(boolean assignData, int markers2Mine, byte[] token, byte[] data, Router router, Marker...markers){
+    	int eol = this.index + length;
+        int from = this.index;
+        int stx = this.index;
+        
+    	int counter = 0;
+        for(int i =0; i <= markers2Mine; i++){
+        	from = fm.findPreMarker(token, from+1, eol, data);
+        	int len = from-stx-token.length;
+        	System.out.println("{M:"+i +" from:"+from +" str: "+new String(data, stx, len) +" } ");
+        	int nextPos = router.geNthtMarkerlocation(counter);
+        	if(i == nextPos){
+        		int ptr = router.getMarkerPosition(counter);
+        		Marker m = markers[ptr];
+        		m.setLineAttribute(stx, len);
+        		if(assignData)
+        			((ImmutableMarker)m).setData(data);
+    			counter++;
+        	}
+        	stx = from;
+        }
+    }
     public byte[] getData() {
         return currentObject.getLine();
     }

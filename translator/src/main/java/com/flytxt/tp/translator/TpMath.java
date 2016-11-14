@@ -9,7 +9,9 @@ import com.flytxt.tp.marker.Marker;
 import com.flytxt.tp.marker.MarkerFactory;
 public class TpMath extends Translator {
 
-    public final static byte dotByte = '.';
+    private static final int[] INDEX_OF_ZERO = new int[]{0};
+
+	public final static byte dotByte = '.';
 
     public final static byte dotToken[] = { dotByte };
 
@@ -123,7 +125,7 @@ public class TpMath extends Translator {
 
     public Marker extractDecimalIntegerPart(final Marker m, final MarkerFactory mf) {
         Marker result = mf.createMarker(m.getData(), m.index, m.length);
-        m.splitAndGetMarkers(dotToken, new int[]{1}, mf, result);
+        m.splitAndGetMarkers(dotToken, INDEX_OF_ZERO, mf, result);
         return result;
     }
 
