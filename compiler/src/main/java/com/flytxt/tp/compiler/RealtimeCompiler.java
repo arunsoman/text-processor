@@ -32,9 +32,9 @@ public class RealtimeCompiler {
         final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
 
         final List<String> optionList = new ArrayList<>();
-        System.out.println("CLASSPATH:" + System.getProperty("java.class.path"));
-        String location = System.getProperty("user.dir");
-        System.out.println(location);
+//        System.out.println("CLASSPATH:" + System.getProperty("java.class.path"));
+//        String location = System.getProperty("user.dir");
+//        System.out.println(location);
         // optionList.addAll(Arrays.asList("-classpath", System.getProperty("java.class.path")));
         optionList.addAll(Arrays.asList("-classpath", "./target/tp-web.jar:" + System.getProperty("java.class.path")));
 

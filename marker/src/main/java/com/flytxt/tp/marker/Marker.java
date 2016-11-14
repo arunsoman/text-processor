@@ -56,7 +56,7 @@ public class Marker implements Comparable<byte[]> {
         	fromByteArray(assignData, markers2Mine, token[0], data, router, markers);
         else
         	fromByteArray(assignData, markers2Mine, token, data, router, markers);
-        System.out.println("\n");
+//        System.out.println("\n");
     }
     
     private void fromByteArray(boolean assignData, int markers2Mine, byte token, byte[] data, Router router, Marker...markers){
@@ -98,7 +98,7 @@ public class Marker implements Comparable<byte[]> {
         for(int i =0; i <= markers2Mine; i++){
         	from = fm.findPreMarker(token, from+1, eol, data);
         	int len = from-stx-token.length;
-        	System.out.println("{M:"+i +" from:"+from +" str: "+new String(data, stx, len) +" } ");
+//        	System.out.println("{M:"+i +" from:"+from +" str: "+new String(data, stx, len) +" } ");
         	int nextPos = router.geNthtMarkerlocation(counter);
         	if(i == nextPos){
         		int ptr = router.getMarkerPosition(counter);

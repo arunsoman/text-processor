@@ -25,18 +25,14 @@ public class Utils {
                 //String str = new String(Files.readAllBytes(Paths.get(uri)));
                 //return str;
                 String valueOf = new String(findFile(name, i));
-                System.out.println("string value " + valueOf);
                 return valueOf;
             }catch(Exception e){
-                System.out.println("---------Not found @ "+loc[i]);
             }
         try{
             uri = fileFromReource(name);
-            System.out.println("-++++++++--------found @ ");
             String str = new String(Files.readAllBytes(Paths.get(uri)));
             return str;
         }catch(Exception e){
-            System.out.println("---------Not found @ ");
         }
 
         throw new RuntimeException("file not found "+name);
@@ -51,7 +47,6 @@ public class Utils {
     }
     private byte[] findFile(String name,int i) throws URISyntaxException{
         InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(name);
-        System.out.println("Found   " +resourceAsStream);
         try (ByteArrayOutputStream os = new ByteArrayOutputStream();)
         {
             byte[] buffer = new byte[0xFFFF];
@@ -75,7 +70,6 @@ public class Utils {
         Enumeration<URL> systemResources = ClassLoader.getSystemResources(name);
         while(systemResources.hasMoreElements()){
             URL nextElement = systemResources.nextElement();
-            System.out.println(("++++++++++++++++++++" + nextElement.toString()));
             return nextElement.toURI();
         }
         return null;

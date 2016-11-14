@@ -27,7 +27,8 @@ public class WorkflowDTOTest {
     // @Test
     public void compileFromMap() {
         try {
-            System.out.println(dto.execute(createFromString()));
+        	dto.execute(createFromString());
+            //System.out.println();
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

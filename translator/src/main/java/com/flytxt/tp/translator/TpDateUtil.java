@@ -87,7 +87,7 @@ X	Time zone	ISO 8601 time zone	-08; -0800; -08:00
             Integer val = validChars.get((int)aChar);
             int desLoc =0;
             if(val == null ||(val != cnt&& val !=-2 )){
-                System.out.println("not found : "+aChar);
+//                System.out.println("not found : "+aChar);
                 throw new ParseException(null, 0);
             } else
                 //"ddMMyyyy HH:mm:ss.S"
