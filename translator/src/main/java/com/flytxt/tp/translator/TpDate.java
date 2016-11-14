@@ -25,14 +25,14 @@ public class TpDate extends com.flytxt.tp.translator.Translator {
 
     public Marker convertDate(final Marker m, final MarkerFactory mf, final String format) throws ParseException {
     	if(m.length == 0){
-    		throw new ParseException("no data in parker to parse with format" +format, 0);
+    		throw new ParseException("no data in marker to parse with format" +format, 0);
     	}
         Translator translator = planMap.get(format);
         if (translator == null) {
             translator = tpDateUtil.Formater(format);
             planMap.put(format, translator);
         }
-        byte[] translate = translator.translate(m.getData(), null);
+        byte[] translate = translator.translate(m, null);
         return mf.createMarker(translate, 0, translate.length);
     }
 

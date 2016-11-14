@@ -3,9 +3,11 @@ package com.flytxt.tp.translator;
 import java.text.ParseException;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import com.flytxt.tp.translator.TpDateUtil;
+import com.flytxt.tp.marker.Marker;
+import com.flytxt.tp.marker.MarkerFactory;
 
 public class TpDateUtilTest {
 
@@ -15,32 +17,29 @@ public class TpDateUtilTest {
     public void setUp() throws Exception {
     }
 
+    @Ignore
     @Test
     public final void test2() {
-        try {
+/*        try {
+        	MarkerFactory mf = new MarkerFactory();
             final byte[] des = null;
-            String str = "ddMMyyyy HH:mm:ss";
-            byte[] src = str.getBytes();
+            Marker str = mf.createMarker("ddMMyyyy HH:mm:ss");
             byte[] translate = tpDu.Formater(str).translate(src, null);
             System.out.println(new String(translate));
 
-            str = "MMddyyyy HH:mm:ss";
-            src = str.getBytes();
+            str = mf.createMarker("MMddyyyy HH:mm:ss");
+            translate = tpDu.Formater(str.toString()).translate(src, null);
+            System.out.println(new String(translate));
+
+            str = mf.createMarker("yyyyMMdd HH:mm:ss");
             translate = tpDu.Formater(str).translate(src, null);
             System.out.println(new String(translate));
 
-            str = "yyyyMMdd HH:mm:ss";
-            src = str.getBytes();
+            str = mf.createMarker("MMddyyyyHH:mm:ss");
             translate = tpDu.Formater(str).translate(src, null);
             System.out.println(new String(translate));
 
-            str = "MMddyyyyHH:mm:ss";
-            src = str.getBytes();
-            translate = tpDu.Formater(str).translate(src, null);
-            System.out.println(new String(translate));
-
-            str = " yyyyMMdd HH mm:ss ";
-            src = str.getBytes();
+            str = mf.createMarker(" yyyyMMdd HH mm:ss ");
             translate = tpDu.Formater(str).translate(src, null);
             System.out.println(new String(translate));
 
@@ -48,6 +47,6 @@ public class TpDateUtilTest {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }
+ */   }
 
 }
