@@ -5,8 +5,7 @@ services:
 language: java
 jdk:
   - oraclejdk8
-
-before_script:
-  - bash .travis.install-mysql-5.7.sh
+mvn cobertura:cobertura
+ 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
