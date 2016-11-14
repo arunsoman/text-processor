@@ -50,4 +50,8 @@ public class FlyPool<T extends Comparable<J>, J> {
         }
         return null;
     }
+    
+    int getSize(){
+    	return size;
+    }
 }

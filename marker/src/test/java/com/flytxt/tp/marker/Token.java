@@ -1,4 +1,4 @@
-package com.flytxt.parser.marker;
+package com.flytxt.tp.marker;
 
 public class Token {
 	public final byte[] token;

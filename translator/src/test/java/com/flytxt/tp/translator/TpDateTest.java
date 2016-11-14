@@ -8,16 +8,12 @@ import java.text.SimpleDateFormat;
 import org.junit.Test;
 
 import com.flytxt.tp.marker.Marker;
+import com.flytxt.tp.marker.Router;
 import com.flytxt.tp.translator.TpDate;
 
 public class TpDateTest extends TpAbsTest {
 
 	TpDate tpDate = new TpDate();
-
-	@Test
-	public final void testConvertDate() {
-		//fail("Not yet implemented");
-	}
 
 	@Test
 	public final void testAfter() {
@@ -62,8 +58,8 @@ public class TpDateTest extends TpAbsTest {
         final Marker line = getMarker(str);
 		Marker tmp = markerFactory.createMarker(null, 0, 0);
 		Marker tmp1 = markerFactory.createMarker(null, 0, 0);
-		line.splitAndGetMarkers("$".getBytes(), new int[]{1}, markerFactory, tmp);
-		tmp.splitAndGetMarkers("+".getBytes(), new int[]{0}, markerFactory, tmp1);
+		line.splitAndGetMarkers("$".getBytes(), new Router(new int[]{1}), markerFactory, tmp);
+		tmp.splitAndGetMarkers("+".getBytes(), new Router(new int[]{0}), markerFactory, tmp1);
 		try {
 			tmp1 = tpDate.convertDate(tmp1, markerFactory, "yyyy-mm-dd'T'HH:mm:ss");
 		} catch (ParseException e) {
@@ -79,8 +75,8 @@ public class TpDateTest extends TpAbsTest {
         final Marker line = getMarker(str);
 		Marker tmp = markerFactory.createMarker(null, 0, 0);
 		Marker tmp1 = markerFactory.createMarker(null, 0, 0);
-		line.splitAndGetMarkers("$".getBytes(), new int[]{1}, markerFactory, tmp);
-		tmp.splitAndGetMarkers("+".getBytes(), new int[]{0}, markerFactory, tmp1);
+		line.splitAndGetMarkers("$".getBytes(), new Router(new int[]{1}), markerFactory, tmp);
+		tmp.splitAndGetMarkers("+".getBytes(), new Router(new int[]{0}), markerFactory, tmp1);
 		try {
 			tmp1 = tpDate.convertDate(tmp1, markerFactory, "yyyy-mm-dd'T'HH:mm:ssX");
 		} catch (ParseException e) {

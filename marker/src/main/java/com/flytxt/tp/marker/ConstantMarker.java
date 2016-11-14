@@ -1,5 +1,6 @@
 package com.flytxt.tp.marker;
 
+
 public interface ConstantMarker {
 
     byte negative = (byte) '-';

@@ -35,7 +35,7 @@ public class FindMarker {
 			return -1;
 		}
 	}
-	
+	/*
 	public int findNthPreMarker(int n, byte token[], int from, int end, byte[] data){
 		int stage = from;
 		int i = 0;
@@ -57,5 +57,5 @@ public class FindMarker {
 		if(i == n) return stage; else return -1;
 	}
 	
-	
+	*/
 }

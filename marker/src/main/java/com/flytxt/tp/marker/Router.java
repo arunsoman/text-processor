@@ -28,7 +28,7 @@ public final class Router implements Comparable<int[]> {
     public int maxMarkers2Mine(){
     	return indexPositionPtr[indexPositionPtr.length-1];
     }
-    public void set(int[] markerPosition) {
+    public Router (int[] markerPosition) {
         this.markerPosition  = markerPosition;
     	indexPositionPtr = new int[markerPosition.length];
         System.arraycopy(markerPosition, 0, this.indexPositionPtr, 0, markerPosition.length);

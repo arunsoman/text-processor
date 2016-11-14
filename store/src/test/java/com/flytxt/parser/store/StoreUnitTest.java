@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import com.flytxt.tp.marker.Marker;
 import com.flytxt.tp.marker.MarkerFactory;
+import com.flytxt.tp.marker.Router;
 import com.flytxt.tp.store.LocalFileStore;
 import com.flytxt.tp.store.Store;
 
@@ -32,7 +33,7 @@ public class StoreUnitTest {
         mf.getCurrentObject().setCurrentLine(strB, 0, strB.length);
         final Marker line = mf.createMarker(null, 0, strB.length - 1);
         final Marker aonM = mf.createMarker(null, 0, strB.length - 1), ageM = mf.createMarker(null, 0, strB.length - 1);
-        line.splitAndGetMarkers(",".getBytes(), new int[] { 1, 3 }, mf, aonM, ageM);
+        line.splitAndGetMarkers(",".getBytes(), new Router(new int[] { 1, 3 }), mf, aonM, ageM);
         try {
             store.save(strB, "testFile", aonM, ageM);
             store.done();

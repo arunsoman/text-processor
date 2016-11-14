@@ -4,8 +4,6 @@ import lombok.Getter;
 
 public final class MarkerFactory {
 
-    private final FlyPool<Router, int[]> routerPool = new FlyPool<Router, int[]>();
-
     private final FlyPool<Marker, byte[]> markerPool = new FlyPool<Marker, byte[]>();
 
 
@@ -55,14 +53,8 @@ public final class MarkerFactory {
         m.setLineAttribute(index, length);
         return m;
     }
-
-    public Router findRouter(int[] order) {
-        Router r = routerPool.find(order);
-        if (r == null) {
-            r = new Router();
-            r.set(order);
-            routerPool.add(r);
-        }
-        return r;
+    
+    int getMarkerPoolSize(){
+    	return markerPool.getSize();
     }
 }

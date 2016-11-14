@@ -1,4 +1,4 @@
-package com.flytxt.parser.marker;
+package com.flytxt.tp.marker;
 
 import org.junit.Test;
 
@@ -60,8 +60,7 @@ public class RouterFT {
 	}
 	
 	private void function(int[] input, Marker line, Marker...markers){
-		Router r = new Router();
-		r.set(input);
+		Router r = new Router(input);
 		for(int i = 0; i < input.length; i++){
 			Marker m = markers[r.getMarkerPosition(i)];
 			m.setLineAttribute(r.geNthtMarkerlocation(i), 1);

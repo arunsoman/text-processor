@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import com.flytxt.tp.marker.ConstantMarker;
 import com.flytxt.tp.marker.Marker;
+import com.flytxt.tp.marker.Router;
 
 public class TpStringTest extends TpAbsTest {
 
@@ -115,7 +116,7 @@ public class TpStringTest extends TpAbsTest {
         final Marker mocker1 = markerFactory.createMarker(null, 0, 0);
         Marker mocker2 = markerFactory.createMarker(null, 0, 0);;
         
-        line.splitAndGetMarkers(",".getBytes(), new int []{0,1}, markerFactory, mocker1,mocker2);
+        line.splitAndGetMarkers(",".getBytes(), new Router(new int []{0,1}), markerFactory, mocker1,mocker2);
         Marker mocker3 = tpString.lTrim(mocker2, markerFactory);
         final Marker result = tpString.merge(mocker1, mocker3, markerFactory);
         assertEquals("first".concat("second"), result.toString());

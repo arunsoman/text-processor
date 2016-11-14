@@ -7,9 +7,10 @@ import org.apache.commons.math3.util.Precision;
 
 import com.flytxt.tp.marker.Marker;
 import com.flytxt.tp.marker.MarkerFactory;
+import com.flytxt.tp.marker.Router;
 public class TpMath extends Translator {
 
-    private static final int[] INDEX_OF_ZERO = new int[]{0};
+    private static final Router INDEX_OF_ZERO = new Router(new int[]{0});
 
 	public final static byte dotByte = '.';
 

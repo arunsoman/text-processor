@@ -31,13 +31,13 @@ public class Marker implements Comparable<byte[]> {
     	this.length = length;
     }
 
-    public void splitAndGetMarkers(final byte[] token, final int[] indexOfMarker, final MarkerFactory mf, Marker... markers) {
+    public void splitAndGetMarkers(final byte[] token, final Router r, final MarkerFactory mf, Marker... markers) {
         if(localData == null){
         	byte[] data = currentObject.getLine();
-        	find(false,data, token, indexOfMarker, mf, markers);
+        	find(false,data, token, r, mf, markers);
         }
         else{
-        	find(true,localData, token, indexOfMarker, mf, markers);
+        	find(true,localData, token, r, mf, markers);
         }
     }
 
@@ -46,10 +46,9 @@ public class Marker implements Comparable<byte[]> {
     		aMarker.length = 0;
     	}
     }
-    protected void find(boolean assignData, byte[] data, byte[] token, int[] indexOfMarker, MarkerFactory mf, Marker... markers) {
+    protected void find(boolean assignData, byte[] data, byte[] token, final Router router, MarkerFactory mf, Marker... markers) {
     	resetMarkerLength(markers);
     	
-        Router router = mf.findRouter(indexOfMarker);
         int markers2Mine = router.maxMarkers2Mine();
         
         if(token.length==1)
