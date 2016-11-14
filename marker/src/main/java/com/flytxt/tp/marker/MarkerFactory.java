@@ -8,7 +8,6 @@ public final class MarkerFactory {
 
     private final FlyPool<Marker, byte[]> markerPool = new FlyPool<Marker, byte[]>();
 
-    private final FlyPool<ImmutableMarker, byte[]> markerImmutablePool = new FlyPool<ImmutableMarker, byte[]>();
 
     @Getter
     private CurrentObject currentObject = new CurrentObject();
@@ -29,7 +28,6 @@ public final class MarkerFactory {
 
     public void reclaim() {
         markerPool.reset();
-        markerImmutablePool.reset();
     }
 
     public Marker getLineMarker() {
@@ -38,14 +36,13 @@ public final class MarkerFactory {
         return lineMarker;
     }
 
-    private ImmutableMarker createImmutable(byte[] data, int index, int length) {
-        ImmutableMarker m = markerImmutablePool.peek();
+    private Marker createImmutable(byte[] data, int index, int length) {
+        Marker m = markerPool.peek();
         if (m == null) {
-            m = new ImmutableMarker(data);
-            markerImmutablePool.add(m);
-        } else
-            m.index = index;
-        m.length = length;
+            m = new Marker(data, index,length);
+            markerPool.add(m);
+        } 
+        m.setData(data, index, length);
         return m;
     }
 

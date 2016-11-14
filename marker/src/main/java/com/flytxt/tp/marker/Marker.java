@@ -7,8 +7,12 @@ public class Marker implements Comparable<byte[]> {
     public int length;
     private FindMarker fm = new FindMarker();
     private CurrentObject currentObject;
-
-    Marker() {
+    private byte[] localData;
+    
+    Marker(byte[] data, int index, int length) {
+    	localData = data;
+    	this.index = index;
+    	this.length = length;
     }
 
     public Marker(CurrentObject currentObject) {
@@ -18,11 +22,23 @@ public class Marker implements Comparable<byte[]> {
     public void setLineAttribute(int index, int length) {
         this.index = index;
         this.length = length;
+        localData = null;
+    }
+    
+    public void setData(byte[] data, int index, int length){
+    	localData = data;
+    	this.index = index;
+    	this.length = length;
     }
 
     public void splitAndGetMarkers(final byte[] token, final int[] indexOfMarker, final MarkerFactory mf, Marker... markers) {
-        byte[] data = currentObject.getLine();
-        find(false,data, token, indexOfMarker, mf, markers);
+        if(localData == null){
+        	byte[] data = currentObject.getLine();
+        	find(false,data, token, indexOfMarker, mf, markers);
+        }
+        else{
+        	find(true,localData, token, indexOfMarker, mf, markers);
+        }
     }
 
     private void resetMarkerLength(Marker...markers){
@@ -42,7 +58,7 @@ public class Marker implements Comparable<byte[]> {
         	fromByteArray(assignData, markers2Mine, token, data, router, markers);
         System.out.println("\n");
     }
-
+    
     private void fromByteArray(boolean assignData, int markers2Mine, byte token, byte[] data, Router router, Marker...markers){
     	int eol = this.index + length;
         int from = this.index;
@@ -66,7 +82,7 @@ public class Marker implements Comparable<byte[]> {
         		Marker m = markers[ptr];
         		m.setLineAttribute(stx, len);
         		if(assignData)
-        			((ImmutableMarker)m).setData(data);
+        			m.setData(data, stx,len);
     			counter++;
         	}
         	stx = from+1;
@@ -89,19 +105,19 @@ public class Marker implements Comparable<byte[]> {
         		Marker m = markers[ptr];
         		m.setLineAttribute(stx, len);
         		if(assignData)
-        			((ImmutableMarker)m).setData(data);
-    			counter++;
+        			m.setData(data, stx,len);
+        		counter++;
         	}
         	stx = from;
         }
     }
     public byte[] getData() {
-        return currentObject.getLine();
+        return (localData ==null)?currentObject.getLine():localData;
     }
 
     @Override
     public String toString() {
-        return new String(currentObject.getLine(), index, length);
+        return new String((localData ==null)?currentObject.getLine():localData, index, length);
     }
 
     @Override

@@ -2,8 +2,6 @@ package com.flytxt.parser.marker;
 
 import org.junit.Test;
 
-import com.flytxt.tp.marker.ConstantMarker;
-import com.flytxt.tp.marker.ImmutableMarker;
 import com.flytxt.tp.marker.Marker;
 import com.flytxt.tp.marker.MarkerFactory;
 import com.flytxt.tp.marker.Router;

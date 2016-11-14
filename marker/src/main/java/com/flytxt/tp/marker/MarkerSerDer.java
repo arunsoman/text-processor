@@ -18,7 +18,8 @@ public class MarkerSerDer {
             int dataSize = dIs.readInt();
             byte[] mData = new byte[dataSize];
             dIs.read(mData);
-            markers[index++] = new ImmutableMarker(mData);
+            Marker m = new Marker(mData, 0, dataSize);
+            markers[index++] = m;
         }
         return markers;
     }

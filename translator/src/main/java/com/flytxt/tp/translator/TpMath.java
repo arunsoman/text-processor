@@ -124,7 +124,7 @@ public class TpMath extends Translator {
     }
 
     public Marker extractDecimalIntegerPart(final Marker m, final MarkerFactory mf) {
-        Marker result = mf.createMarker(m.getData(), m.index, m.length);
+        Marker result = mf.createMarker(null, m.index, m.length);
         m.splitAndGetMarkers(dotToken, INDEX_OF_ZERO, mf, result);
         return result;
     }

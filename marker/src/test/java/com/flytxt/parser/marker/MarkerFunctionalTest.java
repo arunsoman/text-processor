@@ -1,8 +1,5 @@
 package com.flytxt.parser.marker;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Before;
 import org.junit.Test;
 
 import com.flytxt.tp.marker.ConstantMarker;

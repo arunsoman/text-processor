@@ -16,9 +16,9 @@ public interface ConstantMarker {
 
     byte dot = (byte) (0x2e - start);
 
-    ImmutableMarker booleanTrueMarker = new ImmutableMarker("T".getBytes());
+    Marker booleanTrueMarker = new Marker("T".getBytes(),0,1);
 
-    ImmutableMarker booleanFalseMarker = new ImmutableMarker("F".getBytes());
+    Marker booleanFalseMarker = new Marker("F".getBytes(),0,1);
 
     byte[] delim1 = { (byte) 0x01 };
 
@@ -28,14 +28,14 @@ public interface ConstantMarker {
 
     byte[] delim4 = { (byte) 0x06 };
 
-    ImmutableMarker INTERDATATYPE = new ImmutableMarker(delim1);
+    Marker INTERDATATYPE = new Marker(delim1,0,1);
 
-    ImmutableMarker INTRADATATYPE = new ImmutableMarker(delim2);
+    Marker INTRADATATYPE = new Marker(delim2,0,1);
 
-    ImmutableMarker SEPARATOR = new ImmutableMarker(delim3);
+    Marker SEPARATOR = new Marker(delim3,0,1);
 
-    ImmutableMarker VALUESEPARATOR = new ImmutableMarker(delim4);
+    Marker VALUESEPARATOR = new Marker(delim4,0,1);
     
-    Marker mnull = new ImmutableMarker(new byte[0]);
+    Marker mnull = new Marker(new byte[0],0,0);
 
 }

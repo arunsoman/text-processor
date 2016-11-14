@@ -1,14 +1,14 @@
 package com.flytxt.tp.marker;
 
-public class ImmutableMarker extends Marker {
+public class ImmutableMarker1 extends Marker {
 
-    private byte[] data;
+    ImmutableMarker1(byte[] data, int index, int length) {
+		super(data, index, length);
+		// TODO Auto-generated constructor stub
+	}
 
-    public ImmutableMarker(byte[] currentLine) {
-        this.data = currentLine;
-        this.index = 0;
-        this.length = data.length;
-    }
+	private byte[] data;
+
 
     public void setData(byte[] currentLine) {
         this.data = currentLine;
