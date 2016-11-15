@@ -5,30 +5,74 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
 import java.util.concurrent.Semaphore;
+import java.util.stream.Stream;
 
 import com.flytxt.tp.marker.Marker;
 
-
 public class FlyMemStore {
-	private  MappedByteBuffer out;
+	private MappedByteBuffer out;
 
 	// read and write indexes are stored in this buffer in ((int)readIndex,
 	// (int)writeIndex) format
-	private  MappedByteBuffer meta;
+	private MappedByteBuffer meta;
 
-	private  Semaphore semaphore = new Semaphore(1);
-	private  final int bufSize = 1 * 1024 * 1024;
+	private static final byte[] newLine = "\n".getBytes();
+	private static final byte[] comma = ",".getBytes();
+	private Semaphore semaphore = new Semaphore(1);
+	private final int bufSize = 1 * 1024 * 1024;
 
 	public FlyMemStore() throws FileNotFoundException, IOException {
 		out = new RandomAccessFile("hadoopData.dat", "rw").getChannel().map(FileChannel.MapMode.READ_WRITE, 0, bufSize);
 		meta = new RandomAccessFile("hadoopMeta.dat", "rw").getChannel().map(FileChannel.MapMode.READ_WRITE, 0, 8);
 	}
-	public void write(Marker... markers){
-		//keep on pushing data to out, when there is no more space to write throw Arrayoutofbound
+
+	public void write(Marker... markers) {
+		// keep on pushing data to out, when there is no more space to write
+		// throw Arrayoutofbound
+		int dataLenght = Arrays.stream(markers).mapToInt(mapper -> mapper.length).sum();
+		try {
+			semaphore.acquire();
+			
+			if (out.remaining() < dataLenght + markers.length + newLine.length - 1)
+				throw new ArrayIndexOutOfBoundsException();
+			boolean needDelimiter = false;
+			for (int i = 0; i < markers.length; i++) {
+				int start=out.position();
+				if (needDelimiter) {
+					out.put(comma);
+				}
+				out.put(markers[i].getData(), markers[i].index, markers[i].length);
+				needDelimiter = true;
+			}
+			out.put(newLine);
+			meta.putInt(4, out.position());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} finally {
+			semaphore.release();
+		}
+
 	}
-	
-	public byte[] read(){
-		throw new RuntimeException();
+
+	public byte[] read() {
+		byte[] data = null;
+		try {
+			semaphore.acquire();
+			int lastWriteIndex = meta.getInt(4);
+			int lastReadIndex = meta.getInt(1);
+			out.position(lastReadIndex);
+			int datalenght = lastWriteIndex - lastReadIndex;
+			data = new byte[datalenght];
+			out.get(data, lastReadIndex, lastWriteIndex - lastReadIndex);
+			out.position(lastReadIndex);
+			meta.putInt(1, lastReadIndex);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} finally {
+			semaphore.release();
+		}
+		return data;
 	}
 }
