@@ -7,8 +7,11 @@ import cucumber.api.SnippetType;
 import cucumber.api.junit.Cucumber;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features = "classpath:features", glue = "com.flytxt.parser.test.translator",
-snippets=SnippetType.CAMELCASE,plugin = {"pretty"},strict=false)
+@CucumberOptions(features = "classpath:features", 
+glue = "com.flytxt.parser.test.translator",
+snippets=SnippetType.CAMELCASE,
+plugin = {"pretty", "html:target/cucumber", "json:target/cucumber.json"},strict=false
+		)
 public class StoryRunnerTest {
 	
 
