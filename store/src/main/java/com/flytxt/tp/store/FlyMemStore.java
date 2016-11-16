@@ -9,8 +9,11 @@ import java.util.Arrays;
 import java.util.concurrent.Semaphore;
 import java.util.stream.Stream;
 
+import javax.annotation.concurrent.ThreadSafe;
+
 import com.flytxt.tp.marker.Marker;
 
+@ThreadSafe
 public class FlyMemStore {
 	private MappedByteBuffer out;
 

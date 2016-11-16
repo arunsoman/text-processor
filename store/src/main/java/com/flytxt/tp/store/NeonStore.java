@@ -26,23 +26,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class NeonStore implements Store {
 
-	private static Semaphore semaphore = new Semaphore(1);
-
 	private static OutputStreamWriter writer;
 
 	private static FlyMemStore fms ;
 	private static UserGroupInformation ugi = UserGroupInformation.createRemoteUser("root");
 	private static ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
 	@SuppressWarnings("resource")
-	public static void init() throws FileNotFoundException, IOException, InterruptedException {
-		if (fms != null)
-			return;
-		semaphore.acquire();
-		if (fms != null) {
-			semaphore.release();
-			return;
+	public static  void init() throws FileNotFoundException, IOException, InterruptedException {
+		
+		synchronized(NeonStore.class){
+		if (fms == null)
+			fms = new FlyMemStore();
 		}
-		fms = new FlyMemStore();
 
 		Path path = new Path("/tmp/output");
 		Configuration config = new Configuration();
@@ -53,19 +48,18 @@ public class NeonStore implements Store {
 
 		writer = new OutputStreamWriter(config, path, null);
 		writer.setFileNamingStrategy(fileNamingStrategy);
-		semaphore.release();
+		
 	}
 
 	@Override
 	public void save(byte[] data, String fileName, Marker... markers) throws IOException {
 		try {
-			rwl.readLock().lock();
 			fms.write(markers);
-			rwl.readLock().unlock();
 		} catch (ArrayIndexOutOfBoundsException e) {
 			rwl.writeLock().lock();
 			writeToHdfs(fms.read());
 			rwl.writeLock().unlock();
+			save( data,  fileName,  markers) ;
 		}
 	}
 
@@ -75,10 +69,10 @@ public class NeonStore implements Store {
 
 				@Override
 				public Void run() throws Exception {
-					semaphore.acquire();
+					rwl.writeLock().lock();
 					writer.write(data);
 					writer.close();
-					semaphore.release();
+					rwl.writeLock().lock();
 					return null;
 				}
 			});
