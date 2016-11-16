@@ -7,6 +7,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.PrivilegedExceptionAction;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.hadoop.conf.Configuration;
@@ -28,15 +29,16 @@ public class NeonStore implements Store {
 
 	private static OutputStreamWriter writer;
 
-	private static FlyMemStore fms ;
+	private static FlyMemStore fms;
 	private static UserGroupInformation ugi = UserGroupInformation.createRemoteUser("root");
 	private static ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
+
 	@SuppressWarnings("resource")
-	public static  void init() throws FileNotFoundException, IOException, InterruptedException {
-		
-		synchronized(NeonStore.class){
-		if (fms == null)
-			fms = new FlyMemStore();
+	public static void init() throws FileNotFoundException, IOException, InterruptedException {
+
+		synchronized (NeonStore.class) {
+			if (fms == null)
+				fms = new FlyMemStore();
 		}
 
 		Path path = new Path("/tmp/output");
@@ -48,7 +50,7 @@ public class NeonStore implements Store {
 
 		writer = new OutputStreamWriter(config, path, null);
 		writer.setFileNamingStrategy(fileNamingStrategy);
-		
+
 	}
 
 	@Override
@@ -57,9 +59,12 @@ public class NeonStore implements Store {
 			fms.write(markers);
 		} catch (ArrayIndexOutOfBoundsException e) {
 			rwl.writeLock().lock();
-			writeToHdfs(fms.read());
-			rwl.writeLock().unlock();
-			save( data,  fileName,  markers) ;
+			try {
+				writeToHdfs(fms.read());
+			} finally {
+				rwl.writeLock().unlock();
+			}
+			save(data, fileName, markers);
 		}
 	}
 
@@ -70,9 +75,13 @@ public class NeonStore implements Store {
 				@Override
 				public Void run() throws Exception {
 					rwl.writeLock().lock();
-					writer.write(data);
-					writer.close();
-					rwl.writeLock().lock();
+					try {
+						writer.write(data);
+					} finally {
+						writer.close();
+						rwl.writeLock().lock();
+					}
+
 					return null;
 				}
 			});
@@ -83,24 +92,32 @@ public class NeonStore implements Store {
 
 	@Override
 	public void set(String fileName) {
-		// TODO Auto-generated method stub
+		log.info(fileName);
 	}
 
 	@Override
 	public String done() throws IOException {
-		// TODO Auto-generated method stub
+		if (writer != null && writer.isRunning()) {
+			writer.flush();
+			writer.close();
+		}
 		return null;
 	}
 
+	// provided lower priority in hdfs write
 	@Scheduled(fixedDelay = 500)
 	public void timer() {
-		try {
-			rwl.writeLock().lock();
-			writeToHdfs(fms.read());
-			rwl.writeLock().unlock();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		boolean tryLock = rwl.writeLock().tryLock();
+		if (tryLock) {
+			try {
+				writeToHdfs(fms.read());
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				if (tryLock)
+					rwl.writeLock().unlock();
+			}
 		}
 	}
 }
