@@ -7,6 +7,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.PrivilegedExceptionAction;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -25,32 +26,59 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class NeonStore implements Store {
 
+	private static Semaphore semaphore = new Semaphore(1);
+
 	private static OutputStreamWriter writer;
 
-
+	private static FlyMemStore fms ;
 	private static UserGroupInformation ugi = UserGroupInformation.createRemoteUser("root");
-	
-	private static FlyMemStore store;
-
+	private static ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
 	@SuppressWarnings("resource")
 	public static void init() throws FileNotFoundException, IOException, InterruptedException {
-		store = new FlyMemStore();	
+		if (fms != null)
+			return;
+		semaphore.acquire();
+		if (fms != null) {
+			semaphore.release();
+			return;
+		}
+		fms = new FlyMemStore();
+
+		Path path = new Path("/tmp/output");
+		Configuration config = new Configuration();
+		// Hadoop configurations go here
+		config.addResource(new Path("/tmp/hdfs-site.xml"));
+		config.addResource(new Path("/tmp/core-site.xml"));
+		RollingFileNamingStrategy fileNamingStrategy = new RollingFileNamingStrategy().createInstance();
+
+		writer = new OutputStreamWriter(config, path, null);
+		writer.setFileNamingStrategy(fileNamingStrategy);
+		semaphore.release();
 	}
 
 	@Override
 	public void save(byte[] data, String fileName, Marker... markers) throws IOException {
-		store.write(markers);
+		try {
+			rwl.readLock().lock();
+			fms.write(markers);
+			rwl.readLock().unlock();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			rwl.writeLock().lock();
+			writeToHdfs(fms.read());
+			rwl.writeLock().unlock();
+		}
 	}
 
-	private static void writeToHdfs() throws IOException {
-		
+	private static void writeToHdfs(byte[] data) throws IOException {
 		try {
 			ugi.doAs(new PrivilegedExceptionAction<Void>() {
 
 				@Override
 				public Void run() throws Exception {
-					writer.write(store.read());
+					semaphore.acquire();
+					writer.write(data);
 					writer.close();
+					semaphore.release();
 					return null;
 				}
 			});
@@ -73,7 +101,9 @@ public class NeonStore implements Store {
 	@Scheduled(fixedDelay = 500)
 	public void timer() {
 		try {
-			writeToHdfs();
+			rwl.writeLock().lock();
+			writeToHdfs(fms.read());
+			rwl.writeLock().unlock();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
