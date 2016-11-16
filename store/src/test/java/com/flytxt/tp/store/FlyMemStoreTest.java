@@ -14,28 +14,31 @@ import com.flytxt.tp.marker.Marker;
 import com.flytxt.tp.marker.MarkerFactory;
 import com.flytxt.tp.store.FlyMemStore;
 
-
-@Ignore
 public class FlyMemStoreTest {
 	Random myRandom = new Random();
 	MarkerFactory mf = new MarkerFactory();
-	Marker newLine = mf.createMarker("\n");
 
 	private Marker[] generateMarkers() {
 		Marker[] mArray = new Marker[10];
+		int i = 0;
 		for (Marker aMarker : mArray) {
-			aMarker = mf.createMarker(makeString());
+			mArray[i++] = mf.createMarker(makeString());
 		}
-		mArray[mArray.length - 1] = newLine;
+
 		return mArray;
 	}
 
-	private byte[] toBytes(Marker... markers) {
+	private byte[] toBytes(Marker... markers) throws IOException {
 		ByteArrayOutputStream bOs = new ByteArrayOutputStream();
-
+		boolean ifComma = false;
 		for (Marker aMarker : markers) {
+			if (ifComma)
+				bOs.write(",".getBytes());
 			bOs.write(aMarker.getData(), aMarker.index, aMarker.length);
+			ifComma = true;
 		}
+
+		bOs.write("\n".getBytes());
 		return bOs.toByteArray();
 	}
 
@@ -53,7 +56,7 @@ public class FlyMemStoreTest {
 	}
 
 	@Test
-	public void unitTestW1R1() {
+	public void unitTestW1R1() throws IOException {
 		Marker[] ms = generateMarkers();
 		byte[] data = toBytes(ms);
 		mStore.write(ms);
@@ -83,7 +86,7 @@ public class FlyMemStoreTest {
 	}
 
 	@Test
-	public void unitTestWRMany() {
+	public void unitTestWRMany() throws IOException {
 		for (int i = 0; i < 10; i++) {
 			Marker[] ms = generateMarkers();
 			byte[] data = toBytes(ms);

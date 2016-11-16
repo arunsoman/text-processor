@@ -48,7 +48,6 @@ public class NeonStore implements Store {
 		config.addResource(new Path("/tmp/hdfs-site.xml"));
 		config.addResource(new Path("/tmp/core-site.xml"));
 		RollingFileNamingStrategy fileNamingStrategy = new RollingFileNamingStrategy().createInstance();
-
 		writer = new OutputStreamWriter(config, path, null);
 		writer.setFileNamingStrategy(fileNamingStrategy);
 

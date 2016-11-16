@@ -65,7 +65,7 @@ public class WorkflowDTOTest {
         String name = "TestScript1477050017694";
         String init = "mtemp1 = mf.createMarker(null,0, 0);m__temp2 = mf.createMarker(null,0, 0);m__temp6 = mf.createMarker(null,0, 0);store.set(\"TestScript\");\n";
         String absProcessor = "private Marker mtemp1;private Marker m__temp2;private byte[] token_124= \"|\".getBytes();private Marker m__temp6;private byte[] token_49= \"1\".getBytes();private boolean mtemp3;private boolean m__temp5;private Marker m__temp4;private Marker statefull = ConstantMarker.booleanFalseMarker;private Marker aggregatable = ConstantMarker.booleanTrueMarker;private Marker m__temp__1;private Marker m;private Marker passthrough = ConstantMarker.booleanFalseMarker;private Marker eventType = mf.createMarker(\"AGG_AND_TIME\".getBytes(), 0, 11);private Marker fieldType = mf.createMarker(\"SECONDS\".getBytes(), 0, 6);private Store store = new ConsoleStore(\"__temp6\",\"temp3\");\n";
-        String extract = "line.splitAndGetMarkers(token_124,new int[]{18,23},mf,mtemp1,m__temp2);fileName.splitAndGetMarkers(token_49,new int[]{1},mf,m__temp6);\n";
+        String extract = "Router router =new Router(new int[]{18,23});  Router router2 =new Router(new int[]{1}); line.splitAndGetMarkers(token_124,router,mf,mtemp1,m__temp2);fileName.splitAndGetMarkers(token_49,router2,mf,m__temp6);\n";
         String transformation = "mtemp3 = tpString.endsWith(mtemp1,  m__temp2); if (tpString.containsIgnoreCase( m__temp2, m__temp2) ) { m__temp5 = tpString.containsIgnoreCase( m__temp2,  m__temp2); }\n";
         String store = "store.save(data, fileName.toString(), m__temp6, mtemp3 ? ConstantMarker.booleanTrueMarker : ConstantMarker.booleanFalseMarker);\n";
         String type = "single";
