@@ -10,6 +10,9 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.security.UserGroupInformation;
@@ -34,12 +37,10 @@ public class NeonStore implements Store {
 	private static ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
 
 	@SuppressWarnings("resource")
-	public static void init() throws FileNotFoundException, IOException, InterruptedException {
+	@PostConstruct
+	public void init() throws FileNotFoundException, IOException, InterruptedException {
 
-		synchronized (NeonStore.class) {
-			if (fms == null)
-				fms = new FlyMemStore();
-		}
+		fms=FlyMemStore.getSingletonInstance();
 
 		Path path = new Path("/tmp/output");
 		Configuration config = new Configuration();
@@ -96,7 +97,10 @@ public class NeonStore implements Store {
 	}
 
 	@Override
+	@PreDestroy
 	public String done() throws IOException {
+		hdfswrite();
+		fms.close();
 		if (writer != null && writer.isRunning()) {
 			writer.flush();
 			writer.close();
@@ -107,6 +111,10 @@ public class NeonStore implements Store {
 	// provided lower priority in hdfs write
 	@Scheduled(fixedDelay = 500)
 	public void timer() {
+		hdfswrite();
+	}
+
+	private void hdfswrite() {
 		boolean tryLock = rwl.writeLock().tryLock();
 		if (tryLock) {
 			try {

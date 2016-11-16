@@ -23,26 +23,34 @@ public class FlyMemStore {
 
 	private static final byte[] newLine = "\n".getBytes();
 	private static final byte[] comma = ",".getBytes();
-	private Semaphore semaphore = new Semaphore(1);
+	private final Semaphore semaphore = new Semaphore(1);
 	private final int bufSize = 1 * 1024 * 1024;
+	private final RandomAccessFile outFile = new RandomAccessFile("hadoopData.dat", "rw");
+	private final RandomAccessFile metaFile = new RandomAccessFile("hadoopMeta.dat", "rw");
+	private static FlyMemStore instance;
 
-	public FlyMemStore() throws FileNotFoundException, IOException {
-		out = new RandomAccessFile("hadoopData.dat", "rw").getChannel().map(FileChannel.MapMode.READ_WRITE, 0, bufSize);
-		meta = new RandomAccessFile("hadoopMeta.dat", "rw").getChannel().map(FileChannel.MapMode.READ_WRITE, 0, 8);
+	private FlyMemStore() throws IOException {
+		out = outFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, bufSize);
+		meta = metaFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, 8);
+	}
+
+	public static synchronized FlyMemStore getSingletonInstance() throws FileNotFoundException, IOException {
+		if (instance == null)
+			instance = new FlyMemStore();
+		return instance;
 	}
 
 	public void write(Marker... markers) {
 		// keep on pushing data to out, when there is no more space to write
 		// throw Arrayoutofbound
 		int dataLenght = Arrays.stream(markers).mapToInt(mapper -> mapper.length).sum();
+
 		try {
 			semaphore.acquire();
-			
 			if (out.remaining() < dataLenght + markers.length + newLine.length - 1)
 				throw new ArrayIndexOutOfBoundsException();
 			boolean needDelimiter = false;
 			for (int i = 0; i < markers.length; i++) {
-				int start=out.position();
 				if (needDelimiter) {
 					out.put(comma);
 				}
@@ -77,5 +85,13 @@ public class FlyMemStore {
 			semaphore.release();
 		}
 		return data;
+	}
+
+	public void close() throws IOException {
+		if (outFile != null)
+			outFile.close();
+		if (metaFile != null)
+			metaFile.close();
+		instance = null;
 	}
 }

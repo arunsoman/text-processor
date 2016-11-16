@@ -49,7 +49,7 @@ public class FlyMemStoreTest {
 
 	@Before
 	public void init() throws FileNotFoundException, IOException {
-		mStore = new FlyMemStore();
+		mStore = FlyMemStore.getSingletonInstance();
 	}
 
 	@Test

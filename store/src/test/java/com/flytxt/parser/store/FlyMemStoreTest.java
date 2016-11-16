@@ -36,7 +36,7 @@ public class FlyMemStoreTest {
 
 	@Before
 	public void before() throws FileNotFoundException, IOException, NoSuchAlgorithmException {
-		store = new FlyMemStore();
+		store =FlyMemStore.getSingletonInstance();
 		mf = new MarkerFactory();
 		MessageDigest md1 = MessageDigest.getInstance("MD5");
 		md1.update(Files.readAllBytes(Paths.get("app/test/testFile")));
