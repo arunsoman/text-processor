@@ -2,6 +2,7 @@ package com.flytxt.tp.translator.tpdateutils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -30,41 +31,22 @@ public class TpDateUtil {
 
 		Translator translator = planMap.get(format);
 		if (translator == null) {
-			translator = formater(format);
+			translator = getTranslator(format);
 			planMap.put(format, translator);
 		}
 		byte[] translate = translator.translate(m, null);
 		return translate;
 	}
 
-	public Translator formater(String format) {
-		char[] charArray = format.toCharArray();
-		CoOccur coOccur = new CoOccur();
-		char preChar = charArray[0];
-		int cnt = 0;
-		int loc = 0;
-		int index = 0;
+	private Translator getTranslator(String format) {
 		try {
-			for (char c : charArray) {
-
-				if (c == preChar)
-					cnt++;
-				else {
-					coOccur.add(preChar, loc, cnt);
-					preChar = c;
-					cnt = 1;
-					loc = index;
-				}
-				index++;
-			}
-			coOccur.add(preChar, loc, cnt);
+			return new Translator(new CoOccur(format).toPlan());
 		} catch (Exception e) {
-			return new Translator(new SimpleDateFormat(format));
+			return new Translator(format);
 		}
-		return new Translator(coOccur.toPlan());
 	}
 
-	public Date parse(String string) throws ParseException {
+	public LocalDateTime parse(String string) throws ParseException {
 		return Translator.parse(string);
 	}
 }

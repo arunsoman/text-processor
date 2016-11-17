@@ -1,21 +1,21 @@
 package com.flytxt.tp.translator.tpdateutils;
 
-import static org.junit.Assert.*;
-
-import org.junit.Ignore;
+import org.junit.Assert;
 import org.junit.Test;
 
-@Ignore
 public class CharCntTest {
 
 	@Test
 	public void testCharCnt() {
-		fail("Not yet implemented");
+		CharCnt charCnt = new CharCnt('.', 1, 4, 5);
+		CharCnt charCnt1 = new CharCnt('.', 1, 4, 5);
+		Assert.assertEquals(charCnt, charCnt1);
 	}
 
 	@Test
-	public void testToString() {
-		fail("Not yet implemented");
+	public void testCharCntNotEq() {
+		CharCnt charCnt = new CharCnt('.', 1, 4, 5);
+		CharCnt charCnt1 = new CharCnt('+', 1, 4, 5);
+		Assert.assertNotEquals(charCnt, charCnt1);
 	}
-
 }

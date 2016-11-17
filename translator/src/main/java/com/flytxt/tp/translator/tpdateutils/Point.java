@@ -7,9 +7,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @AllArgsConstructor
 @ToString
-class CharCnt{
-   final char aChar;
-   final int desLoc;
-   final int srcLoc;
-   final int cnt;
+public class Point {
+	public final int count;
+	public final int position;
 }

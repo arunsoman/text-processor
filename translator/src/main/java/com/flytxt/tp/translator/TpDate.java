@@ -75,14 +75,17 @@ public class TpDate extends com.flytxt.tp.translator.Translator {
     }
 
     public Marker differenceInMillis(final Marker m, final Marker m2, MarkerFactory mf) throws ParseException {
-        long l = tpDateUtil.parse(m.toString()).getTime() - tpDateUtil.parse(m2.toString()).getTime();
-        byte[] data = asByteArray(l);
-        return mf.createMarker(data, 0, data.length);
-    }
+//        long l = tpDateUtil.parse(m.toString()).minus(amountToSubtract) tpDateUtil.parse(m2.toString()).getTime();
+//        byte[] data = asByteArray(l);
+//        return mf.createMarker(data, 0, data.length);
+//   
+    	throw new RuntimeException("no implementation");
+    	}
 
     public Marker toLong(final Marker m, MarkerFactory mf) throws ParseException {
-        long l = tpDateUtil.parse(m.toString()).getTime();
-        byte[] data = asByteArray(l);
-        return mf.createMarker(data, 0, data.length);
+//        long l = tpDateUtil.parse(m.toString()).getTime();
+//        byte[] data = asByteArray(l);
+//    	return mf.createMarker(data, 0, data.length);
+    	throw new RuntimeException("no implementation");
     }
 }
