@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import com.flytxt.tp.marker.Marker;
 import com.flytxt.tp.marker.MarkerFactory;
-import com.flytxt.tp.translator.TpDateUtil.Translator;
+import com.flytxt.tp.translator.tpdateutils.TpDateUtil;
 
 public class TpDate extends com.flytxt.tp.translator.Translator {
 
@@ -21,19 +21,12 @@ public class TpDate extends com.flytxt.tp.translator.Translator {
 
     private static int[] time = { 9, 10, 12, 13, 15, 16 };
 
-    private static HashMap<String, Translator> planMap = new HashMap<String, Translator>();
-
     public Marker convertDate(final Marker m, final MarkerFactory mf, final String format) throws ParseException {
     	if(m.length == 0){
     		throw new ParseException("no data in marker to parse with format" +format, 0);
     	}
-        Translator translator = planMap.get(format);
-        if (translator == null) {
-            translator = tpDateUtil.Formater(format);
-            planMap.put(format, translator);
-        }
-        byte[] translate = translator.translate(m, null);
-        return mf.createMarker(translate, 0, translate.length);
+    	byte[] translate = tpDateUtil.toDateBytes(m,format);
+    	return mf.createMarker(translate, 0, translate.length);
     }
 
     public boolean after(final Marker m, final Marker m2) {
@@ -82,14 +75,17 @@ public class TpDate extends com.flytxt.tp.translator.Translator {
     }
 
     public Marker differenceInMillis(final Marker m, final Marker m2, MarkerFactory mf) throws ParseException {
-        long l = tpDateUtil.parse(m.toString()).getTime() - tpDateUtil.parse(m2.toString()).getTime();
-        byte[] data = asByteArray(l);
-        return mf.createMarker(data, 0, data.length);
-    }
+//        long l = tpDateUtil.parse(m.toString()).minus(amountToSubtract) tpDateUtil.parse(m2.toString()).getTime();
+//        byte[] data = asByteArray(l);
+//        return mf.createMarker(data, 0, data.length);
+//   
+    	throw new RuntimeException("no implementation");
+    	}
 
     public Marker toLong(final Marker m, MarkerFactory mf) throws ParseException {
-        long l = tpDateUtil.parse(m.toString()).getTime();
-        byte[] data = asByteArray(l);
-        return mf.createMarker(data, 0, data.length);
+//        long l = tpDateUtil.parse(m.toString()).getTime();
+//        byte[] data = asByteArray(l);
+//    	return mf.createMarker(data, 0, data.length);
+    	throw new RuntimeException("no implementation");
     }
 }
