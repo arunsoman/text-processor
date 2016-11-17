@@ -141,9 +141,10 @@
 				<executions>
 					<execution>
 						<id>build-image</id>
-						<phase>install</phase>
+						<phase>validate</phase>
 						<goals>
 							<goal>build</goal>
+							<goal>push</goal>
 						</goals>
 					</execution>
 				</executions>
