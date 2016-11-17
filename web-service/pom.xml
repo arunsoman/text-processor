@@ -7,7 +7,13 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>web-service</artifactId>
-	 <packaging>jar</packaging>
+	<packaging>jar</packaging>
+	<properties>
+		<tp-ws.cpus>1</tp-ws.cpus>
+		<tp-ws.instances>1</tp-ws.instances>
+		<tp-ws.mem>2048</tp-ws.mem>
+		<gi.url></gi.url>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -50,6 +56,12 @@
 			<groupId>com.flytxt.tp</groupId>
 			<artifactId>compiler</artifactId>
 			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 	<build>
@@ -71,6 +83,31 @@
 						<goals>
 							<goal>repackage</goal>
 						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<resources>
+								<resource>
+									<directory>${basedir}</directory>
+									<includes>
+										<include>marathon.json</include>
+										<include>chronos.json</include>
+									</includes>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<useDefaultDelimiters>true</useDefaultDelimiters>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -111,6 +148,7 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
 				<groupId>com.holidaycheck</groupId>
 				<artifactId>marathon-maven-plugin</artifactId>
@@ -122,12 +160,10 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>deploy-image</id>
-						<phase>install</phase>
 						<goals>
-							<goal>processConfig</goal>
 							<goal>deploy</goal>
 						</goals>
+						<phase>validate</phase>
 					</execution>
 				</executions>
 			</plugin>
