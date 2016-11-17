@@ -16,6 +16,9 @@
 		<logback.version>1.1.7</logback.version>
 		<tp.version>0.0.1-SNAPSHOT</tp.version>
 		<cucumber.version>1.2.5</cucumber.version>
+		<docker-plugin.version>0.4.9</docker-plugin.version>
+		<versionNumber>${project.version}</versionNumber>
+		<marathon-plugin.version>0.0.3-SNAPSHOT</marathon-plugin.version>
 	</properties>
 	<scm>
 		<connection>scm:git:https://github.com/arunsoman/text-processor.git</connection>
@@ -76,7 +79,6 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.16.10</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

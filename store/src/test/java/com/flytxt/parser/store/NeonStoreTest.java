@@ -27,16 +27,11 @@ public class NeonStoreTest {
 
 	@Before
 	public void before() throws FileNotFoundException, IOException, InterruptedException {
-		NeonStore.init();
 		mf = new MarkerFactory();
 
 	}
 
-	@Test
-	public void skiptest(){
-		
-	}
-	
+	@Test	
 	public void test() throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader("app/test/testFile"));
 		String string = null;

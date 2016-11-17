@@ -11,7 +11,7 @@ wstream.write("testing ");
 var msisdn=9000000000,number=144044100,inc=0;
 var i=0;
 var random =Math.random();
-while(i< 10000){
+while(i< 1000){
 inc=i>100?(i/100)%8:i%8;;
 msisdn+= inc;
 number+= inc+Math.ceil(Math.random()*100);
