@@ -14,7 +14,7 @@ import com.flytxt.tp.translator.TpDate;
 import com.flytxt.tp.translator.TpLogic;
 import com.flytxt.tp.translator.TpMath;
 import com.flytxt.tp.translator.TpString;
-
+import com.flytxt.tp.marker.Router;
 import java.io.IOException;
 
 public final class TestScript implements LineProcessor,ConstantMarker {
@@ -64,7 +64,8 @@ hdfsStore.set("TestScript");
           mpickedTime = mf.createMarker(b2, 0 , b2.length);
           byte[] tt = fileNameStr.getBytes();
           this.fileName = mf.createMarker(tt, 0, tt.length); 
-           fileName.splitAndGetMarkers(token_124,new int[]{1},mf,mpr);
+          Router router = new Router(new int[]{1});
+           fileName.splitAndGetMarkers(token_124,router,mf,mpr);
 hdfsStore.set(fileNameStr);
          
 	}
@@ -98,7 +99,8 @@ hdfsStore.set(fileNameStr);
 	}
 	
 	public void process(final byte[] data) throws Exception {
-		line.splitAndGetMarkers(token_124,new int[]{1},mf,m__temp1);
+		Router router = new Router(new int[]{1});
+		line.splitAndGetMarkers(token_124,router,mf,m__temp1);
 
 	}
 	
