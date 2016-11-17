@@ -1,6 +1,8 @@
 package com.flytxt.tp.translator;
 
 import java.text.ParseException;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 
 import com.flytxt.tp.marker.Marker;
@@ -75,6 +77,7 @@ public class TpDate extends com.flytxt.tp.translator.Translator {
     }
 
     public Marker differenceInMillis(final Marker m, final Marker m2, MarkerFactory mf) throws ParseException {
+    	tpDateUtil.parse(m.toString()).toEpochSecond(ZoneOffset.UTC)
 //        long l = tpDateUtil.parse(m.toString()).minus(amountToSubtract) tpDateUtil.parse(m2.toString()).getTime();
 //        byte[] data = asByteArray(l);
 //        return mf.createMarker(data, 0, data.length);

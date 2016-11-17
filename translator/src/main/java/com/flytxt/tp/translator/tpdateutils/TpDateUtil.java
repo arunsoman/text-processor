@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.joda.time.DateTime;
+
 import com.flytxt.tp.marker.Marker;
 
 public class TpDateUtil {
@@ -46,7 +48,7 @@ public class TpDateUtil {
 		}
 	}
 
-	public LocalDateTime parse(String string) throws ParseException {
+	public DateTime parse(String string) throws ParseException {
 		return Translator.parse(string);
 	}
 }

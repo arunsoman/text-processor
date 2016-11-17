@@ -1,17 +1,19 @@
 package com.flytxt.tp.translator.tpdateutils;
 
 import java.text.ParseException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import com.flytxt.tp.marker.Marker;
 
 class Translator{
     public static final String flyDateFormat = "ddMMyyyy HH:mm:ss.SZ";
      static final int flyDateFormatSize = flyDateFormat.length();
-    public static final DateTimeFormatter sdf = DateTimeFormatter.ofPattern(flyDateFormat);
 
 	private int[][]plan;
+    private static DateTimeFormatter flyFmt = DateTimeFormat.forPattern(flyDateFormat);
     private DateTimeFormatter srcFmt;
     
     Translator(int[][] plan) {
@@ -19,18 +21,20 @@ class Translator{
         this.plan = plan;
     }
     
-    Translator(String srcFmt) {
+    Translator(String fmt) {
         super();
-        this.srcFmt = DateTimeFormatter.ofPattern(srcFmt);
+        this.srcFmt  = DateTimeFormat.forPattern(fmt);
     }
     public byte[] translate(Marker src, byte[] des) throws ParseException{
         return (srcFmt == null)?convert(src, des, plan):convert(src, des);
     }
-    public static LocalDateTime parse(String dateStr) throws ParseException{
-    	return LocalDateTime.parse(dateStr,sdf);
+    public static DateTime parse(String dateStr) throws ParseException{
+    	 return flyFmt.parseDateTime(dateStr);
     }
     private byte[] convert(Marker src, byte[] des) throws ParseException{
-    	return LocalDateTime.parse(src.toString(),srcFmt).format(sdf).getBytes();
+    	String dateStr = src.toString();
+		DateTime parseDateTime = srcFmt.parseDateTime(dateStr);
+		return flyFmt.print(parseDateTime).getBytes();
     }
     private byte[] convert(Marker srcM, byte[] des,int[][]plan){
         if(des == null|| des.length != flyDateFormatSize)
