@@ -44,6 +44,10 @@ public class FlyMemStoreTest {
 	}
 
 	@Test
+	public void sefTest(){
+		
+	}
+	
 	public void testReadAndWrite() throws IOException, NoSuchAlgorithmException {
 		File temp =File.createTempFile("testFile", null);
 		temp.deleteOnExit();
