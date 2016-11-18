@@ -139,14 +139,6 @@
 					</resources>
 				</configuration>
 				<executions>
-					<execution>
-						<id>build-image</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>build</goal>
-							<goal>push</goal>
-						</goals>
-					</execution>
 				</executions>
 			</plugin>
 
@@ -160,12 +152,6 @@
 					<marathonHost>${gi.url}</marathonHost>
 				</configuration>
 				<executions>
-					<execution>
-						<goals>
-							<goal>deploy</goal>
-						</goals>
-						<phase>validate</phase>
-					</execution>
 				</executions>
 			</plugin>
 		</plugins>
