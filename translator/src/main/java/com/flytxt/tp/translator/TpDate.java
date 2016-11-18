@@ -1,15 +1,14 @@
 package com.flytxt.tp.translator;
 
 import java.text.ParseException;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
-import java.util.HashMap;
+
+import org.joda.time.DateTime;
 
 import com.flytxt.tp.marker.Marker;
 import com.flytxt.tp.marker.MarkerFactory;
 import com.flytxt.tp.translator.tpdateutils.TpDateUtil;
 
-public class TpDate extends com.flytxt.tp.translator.Translator {
+public class TpDate extends Translator {
 
     public static String flyDateFormat = "ddMMyyyy HH:mm:ss";
 
@@ -77,18 +76,11 @@ public class TpDate extends com.flytxt.tp.translator.Translator {
     }
 
     public Marker differenceInMillis(final Marker m, final Marker m2, MarkerFactory mf) throws ParseException {
-    	tpDateUtil.parse(m.toString()).toEpochSecond(ZoneOffset.UTC)
-//        long l = tpDateUtil.parse(m.toString()).minus(amountToSubtract) tpDateUtil.parse(m2.toString()).getTime();
-//        byte[] data = asByteArray(l);
-//        return mf.createMarker(data, 0, data.length);
-//   
-    	throw new RuntimeException("no implementation");
-    	}
+    	DateTime diff = tpDateUtil.parse(m.toString()).minus(tpDateUtil.parse(m2.toString()).getMillis());
+    	return mf.createMarker(String.valueOf(diff));
+   	}
 
-    public Marker toLong(final Marker m, MarkerFactory mf) throws ParseException {
-//        long l = tpDateUtil.parse(m.toString()).getTime();
-//        byte[] data = asByteArray(l);
-//    	return mf.createMarker(data, 0, data.length);
-    	throw new RuntimeException("no implementation");
+    public long toLong(final Marker m, MarkerFactory mf) throws ParseException {
+    	return tpDateUtil.parse(m.toString()).getMillis();
     }
 }
