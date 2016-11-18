@@ -2,6 +2,7 @@ package com.flytxt.tp.translator;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.flytxt.tp.marker.Marker;
@@ -195,10 +196,8 @@ public class TpStringTest extends TpAbsTest {
 		}
 		try {
 			final Marker result3 = tpString.extractTrailing(mocker2, -1, markerFactory);
-			assertEquals("", result3.toString());
+			Assert.fail();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 

@@ -1,5 +1,6 @@
 package com.flytxt.tp.translator;
 
+import com.flytxt.tp.marker.ConstantMarker;
 import com.flytxt.tp.marker.Marker;
 import com.flytxt.tp.marker.MarkerFactory;
 
@@ -236,7 +237,9 @@ public class TpString {
     }
 
     public Marker extractTrailing(Marker m1, final int extractCnt, MarkerFactory mf) {
-        if (extractCnt < 0)
+        if(m1 == null || m1 == ConstantMarker.mnull)
+        	return ConstantMarker.mnull;
+    	if (extractCnt < 0)
             throw new RuntimeException("extractCnt should be greater than 0 current:" + extractCnt);
         final byte[] data1 = m1.getData();
         if (data1 == null)
