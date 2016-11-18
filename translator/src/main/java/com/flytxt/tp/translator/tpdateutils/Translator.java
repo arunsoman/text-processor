@@ -17,15 +17,15 @@ class Translator{
 	private int[][]plan;
     private DateTimeFormatter srcFmt;
     private byte[] template = new byte[]{
-    		0,0, 
-    		0,0, 
-    		0,0,0,0, 
+    		48,48, 
+    		48,48, 
+    		48,48,48,48, 
     		((byte)' '),
-    		0,0, ((byte)':'),
-    		0,0, ((byte)':'),
-    		0,0, ((byte)'.'), 
-    		0, 
-    		0,0,0,0,0 };
+    		48,48, ((byte)':'),
+    		48,48, ((byte)':'),
+    		48,48, ((byte)'.'), 
+    		48, 
+    		48,48,48,48,48 };
     Translator(int[][] plan) {
         super();
         this.plan = plan;
@@ -47,14 +47,14 @@ class Translator{
 		return flyFmt.print(parseDateTime).getBytes();
     }
     private byte[] convert(Marker srcM, byte[] des,int[][]plan){
-        byte[] res = new byte[template.length];
+        byte[] res = (des == null || des.length != template.length)?
+        		new byte[template.length]: des;
         
         byte[] src = srcM.getData();
         System.arraycopy(template, 0, res, 0, template.length);
-        for(int i=0; i < CoOccur.size; i++){
+        for(int i=0; i < plan.length; i++){
             System.arraycopy(src, plan[i][0], res, plan[i][1], plan[i][2]);
-            System.out.println(Arrays.toString(res));
         }
-        return des;
+        return res;
     }
 }
