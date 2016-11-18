@@ -29,13 +29,14 @@ public class TranslatorTest {
 		public DateTime date;
 	}
 	String[] goodFmts = {
+//			"yyyy.MM.ddHH",
 			"yyyy.MM.ddHH:mm:ssSZ" 
 			," MM.yyyy.ddHH:mm:ssSZ"
 	};
 
 	String[] badFmts = {
-			"Zyyyy.MM.ddHH:mm:ssS " 
-			," yyyyy.MMMMM.dd GGG hh:mm aaa ",
+		//	"Zyyyy.MM.ddHH:mm:ssS " ,
+		//	" yyyyy.MMMMM.dd GGG hh:mm aaa ",
 			
 			"yyyy.MM.ddHH:mm:ssSZ ",
 			"yyyy.MM.ddHH:mm:ss ",
@@ -67,6 +68,13 @@ public class TranslatorTest {
 		byte[] result = t.translate(m, null);
 		return result;
 	}
+	
+	private byte[] convertToFlyFmtSDF(String fmtStr, String dateAsstr) throws ParseException {
+		Translator t = new Translator(fmtStr);
+		Marker m = mf.createMarker(dateAsstr);
+		byte[] result = t.translate(m, null);
+		return result;
+	}
 
 	private String toString(DateTime dt, String fmtStr) {
 		DateTimeFormatter fmt = DateTimeFormat.forPattern(fmtStr);
@@ -81,16 +89,17 @@ public class TranslatorTest {
 			String input = list.get(i).input;
 			String expected = toString(list.get(i).date, Translator.flyDateFormat);
 			try {
-
+				
 				byte[] result = convertToFlyFmt(list.get(i).fmt, input);
 //				System.out.println(list.get(i).fmt);
 //				System.out.println("input     :" + input);
-//				System.out.println("expected  :" + expected);
-//				System.out.println("result    :" + new String(result));
+				System.out.println("expected  :" + expected);
+				System.out.println("result    :" + new String(result));
 			if (!expected.equals(new String(result))) {
 					Assert.assertEquals(expected, new String(result));
 				}
 			} catch (ParseException e) {
+				System.out.println(e.getMessage()); 
 				System.out.println(list.get(i).input+" : "+list.get(i).fmt);
 				Assert.fail();
 			}
@@ -106,10 +115,44 @@ public class TranslatorTest {
 			try {
 
 				byte[] result = convertToFlyFmt(list.get(i).fmt, input);
-				Assert.fail();
+				//Assert.fail();
 			} catch (ParseException e) {
 			}
 		}
 	}
+	@Test
+	public void testbadSDF() {
+		List<Sample> list = genSamples(badFmts);
+		for (int i = 0; i < list.size(); i++) {
+			String input = list.get(i).input;
+			String expected = toString(list.get(i).date, Translator.flyDateFormat);
+			try {
+               System.out.println("index " + i);
+				byte[] result = convertToFlyFmtSDF(list.get(i).fmt, input);
+				if (!expected.equals(new String(result))) {
+					Assert.assertEquals(expected, new String(result));
+				}
+			} catch (ParseException e) {
+				Assert.fail();
+			}
+		}
+	}
+	
+	@Test
+	public void testGoodSDF() {
+		List<Sample> list = genSamples(goodFmts);
+		for (int i = 0; i < list.size(); i++) {
+			String input = list.get(i).input;
+			String expected = toString(list.get(i).date, Translator.flyDateFormat);
+			try {
 
+				byte[] result = convertToFlyFmtSDF(list.get(i).fmt, input);
+				if (!expected.equals(new String(result))) {
+					Assert.assertEquals(expected, new String(result));
+				}
+			} catch (ParseException e) {
+				Assert.fail();
+			}
+		}
+	}
 }

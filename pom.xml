@@ -19,6 +19,7 @@
 		<docker-plugin.version>0.4.9</docker-plugin.version>
 		<versionNumber>${project.version}</versionNumber>
 		<marathon-plugin.version>0.0.3-SNAPSHOT</marathon-plugin.version>
+	    <dockerhub.url>dhub.trv.flytxt.com</dockerhub.url>
 	</properties>
 	<scm>
 		<connection>scm:git:https://github.com/arunsoman/text-processor.git</connection>

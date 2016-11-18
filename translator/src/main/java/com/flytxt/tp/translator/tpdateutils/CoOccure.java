@@ -27,7 +27,7 @@ class CoOccur {
 	public CoOccur(String format) throws ParseException {
 		String tStr = format.trim();
 		int zIndex =tStr.indexOf('Z');
-		if(zIndex != tStr.length() && zIndex != -1 )
+		if(zIndex+1 != tStr.length() && zIndex != -1 )
 			throw new ParseException("Z should be @ last", zIndex);
 		char[] charArray = format.toCharArray();
 		char preChar = charArray[0];
