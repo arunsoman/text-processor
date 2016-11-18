@@ -117,7 +117,7 @@
 				<version>${docker-plugin.version}</version>
 				<configuration>
 					<dockerDirectory>${project.build.directory}/..</dockerDirectory>
-					<imageName>dhub.trv.flytxt.com/${project.build.finalName}:${versionNumber}</imageName>
+					<imageName>${dockerhub.url}/${project.artifactId}:${versionNumber}</imageName>
 					<exposes>
 						<expose>9000</expose>
 					</exposes>
@@ -139,19 +139,30 @@
 					</resources>
 				</configuration>
 				<executions>
+					<execution>
+						<id>build-image</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>build</goal>
+							<goal>push</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<groupId>com.holidaycheck</groupId>
 				<artifactId>marathon-maven-plugin</artifactId>
 				<version>${marathon-plugin.version}</version>
 				<configuration>
-					<id>/${project.artifactId}</id>
-					<image>dhub.trv.flytxt.com/${project.build.finalName}:${versionNumber}</image>
 					<marathonHost>${gi.url}</marathonHost>
 				</configuration>
 				<executions>
+					<execution>
+						<goals>
+							<goal>deploy</goal>
+						</goals>
+						<phase>deploy</phase>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>
