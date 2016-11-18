@@ -25,7 +25,7 @@ class Translator{
     		48,48, ((byte)':'),
     		48,48, ((byte)'.'), 
     		48, 
-    		48,48,48,48,48 };
+    		((byte)'+'),48,48,48,48 };
     Translator(int[][] plan) {
         super();
         this.plan = plan;
