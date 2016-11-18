@@ -22,8 +22,8 @@ public class TpMath extends Translator {
     public Marker abs(final Marker m, final MarkerFactory mf) {
         byte[]data = m.getData();
         if (data[m.index] == negative)
-            return mf.createMarker(null,m.index + 1, m.length - 1);
-        return mf.createMarker(null,m.index, m.length);
+            return mf.createMarker(data,m.index + 1, m.length - 1);
+        return mf.createMarker(data,m.index, m.length);
     }
 
     public boolean lessThan(final Marker m1, final Marker m2, final MarkerFactory mf) {
@@ -125,7 +125,7 @@ public class TpMath extends Translator {
     }
 
     public Marker extractDecimalIntegerPart(final Marker m, final MarkerFactory mf) {
-        Marker result = mf.createMarker(null, m.index, m.length);
+        Marker result = mf.createMarker(m.getData(), m.index, m.length);
         m.splitAndGetMarkers(dotToken, INDEX_OF_ZERO, mf, result);
         return result;
     }
@@ -150,7 +150,7 @@ public class TpMath extends Translator {
             System.arraycopy(data, index, result, 0, result.length);
             return mf.createMarker(data, 0, size);
         } else
-            return mf.createMarker(null,index, m.length-index);
+            return mf.createMarker(m.getData(),index, m.length-index);
     }
 
     public boolean isNumber(final Marker m, final MarkerFactory mf) {
