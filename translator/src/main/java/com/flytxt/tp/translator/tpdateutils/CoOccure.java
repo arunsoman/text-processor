@@ -25,6 +25,10 @@ class CoOccur {
 	private List<CharCnt> list = new ArrayList<CharCnt>(size);
 
 	public CoOccur(String format) throws ParseException {
+		String tStr = format.trim();
+		int zIndex =tStr.indexOf('Z');
+		if(zIndex != tStr.length() && zIndex != -1 )
+			throw new ParseException("Z should be @ last", zIndex);
 		char[] charArray = format.toCharArray();
 		char preChar = charArray[0];
 		int cnt = 0;
@@ -52,7 +56,7 @@ class CoOccur {
 		if (val.count != cnt) {
 			throw new ParseException("expected count for " + aChar + " actual:" + val.count + " found:" + cnt, 0);
 		}
-//		System.out.println("char:"+aChar+ " @:"+loc+" n:"+cnt);
+		System.out.println("char:"+aChar+ " @:"+loc+" n:"+cnt);
 		list.add(new CharCnt(aChar, val.position, loc, val.chars));
 	}
 

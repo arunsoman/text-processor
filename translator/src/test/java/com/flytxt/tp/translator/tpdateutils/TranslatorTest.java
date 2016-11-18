@@ -16,17 +16,11 @@ import com.flytxt.tp.marker.MarkerFactory;
 
 //@Ignore
 public class TranslatorTest {
-	private ArrayList<String> list = new ArrayList<>();
 	private MarkerFactory mf = new MarkerFactory();
 
 	@Before
 	public void init() {
-		list.add("yyyy.MM.ddHH:mm:ssSZ ");// 2001.07.04 AD at 12:08:56 PDT
-		list.add("yyyy.MM.ddHH:mm:ss ");// 2001.07.04 AD at 12:08:56 PDT
-		list.add("yyyyy.MMMMM.dd GGG hh:mm aaa");// 02001.July.04 AD 12:08 PM
-		list.add("EEE, d MMM yyyy HH:mm:ss Z");// Wed, 4 Jul 2001 12:08:56 -0700
-		list.add("yyMMddHHmmssZ");// 010704120856-0700
-		list.add("yyyy-MM-dd'T'HH:mm:ss.SSSZ");// 2001-07-04T12:08:56.235-0700
+
 	}
 
 	class Sample{
@@ -34,13 +28,25 @@ public class TranslatorTest {
 		String fmt;
 		public DateTime date;
 	}
-	private List<Sample>genPositiveTranslateSamples(){
-		String[] fmts = {
-				//"yyyy.MM.ddHH:mm:ssSZ " 
-				//," MM.yyyy.ddHH:mm:ssSZ "
-				//,
-				" MM.yyyy.ddHH:ssSZ :mm"
-				};
+	String[] goodFmts = {
+			"yyyy.MM.ddHH:mm:ssSZ" 
+			," MM.yyyy.ddHH:mm:ssSZ"
+	};
+
+	String[] badFmts = {
+			"Zyyyy.MM.ddHH:mm:ssS " 
+			," yyyyy.MMMMM.dd GGG hh:mm aaa ",
+			
+			"yyyy.MM.ddHH:mm:ssSZ ",
+			"yyyy.MM.ddHH:mm:ss ",
+			"EEE, d MMM yyyy HH:mm:ss Z",
+
+			"yyMMddHHmmssZ",
+
+			"yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+
+	};
+	private List<Sample>genSamples(String[] fmts){
 		DateTime dt = new DateTime();
 		List<Sample> list = new ArrayList<Sample>(fmts.length);
 		int i = 0;
@@ -70,48 +76,38 @@ public class TranslatorTest {
 
 	@Test
 	public void testTranslation() {
-		List<Sample> list = genPositiveTranslateSamples();
+		List<Sample> list = genSamples(goodFmts);
 		for (int i = 0; i < list.size(); i++) {
 			String input = list.get(i).input;
 			String expected = toString(list.get(i).date, Translator.flyDateFormat);
 			try {
 
 				byte[] result = convertToFlyFmt(list.get(i).fmt, input);
-				System.out.println(list.get(i).fmt);
-				System.out.println("input     :" + input);
-				System.out.println("expected  :" + expected);
-				System.out.println("result    :" + new String(result));
-				if (!expected.equals(new String(result))) {
+//				System.out.println(list.get(i).fmt);
+//				System.out.println("input     :" + input);
+//				System.out.println("expected  :" + expected);
+//				System.out.println("result    :" + new String(result));
+			if (!expected.equals(new String(result))) {
 					Assert.assertEquals(expected, new String(result));
 				}
 			} catch (ParseException e) {
+				System.out.println(list.get(i).input+" : "+list.get(i).fmt);
 				Assert.fail();
 			}
 		}
 	}
 
-	public void testTranslatorSimpleDateFormat() {
-		DateTime dt = new DateTime();
-		DateTimeFormatter flyfmt = DateTimeFormat.forPattern(Translator.flyDateFormat);
-		String dateAsFlystr = flyfmt.print(dt);
-		System.out.println("\t" + dateAsFlystr);
+	@Test
+	public void testbadTranslation() {
+		List<Sample> list = genSamples(badFmts);
 		for (int i = 0; i < list.size(); i++) {
-			String fmtStr = list.get(i);
-			System.out.println(fmtStr);
-			Translator t = new Translator(fmtStr);
-			DateTimeFormatter fmt = DateTimeFormat.forPattern(fmtStr);
-			String dateAsstr = fmt.print(dt);
-			System.out.println("\t" + dateAsstr);
-			Marker m = mf.createMarker(dateAsstr);
+			String input = list.get(i).input;
+//			String expected = toString(list.get(i).date, Translator.flyDateFormat);
 			try {
-				byte[] result = t.translate(m, null);
-				System.out.println("\t\t" + new String(result));
-				if (!dateAsFlystr.equals(new String(result))) {
-					// Assert.assertEquals(dateAsFlystr, new String(result));
-				}
+
+				byte[] result = convertToFlyFmt(list.get(i).fmt, input);
+				Assert.fail();
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		}
 	}

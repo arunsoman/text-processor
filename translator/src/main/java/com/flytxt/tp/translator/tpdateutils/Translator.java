@@ -54,10 +54,11 @@ class Translator{
         System.arraycopy(template, 0, res, 0, template.length);
         for(int i=0; i < plan.length; i++){
  //       	System.out.println("i:"+i +" :"+plan.length);
-        	System.out.println("Copying..." +new String(src, plan[i][0], plan[i][2])+"  ; "+
-        Arrays.toString(new String(src, plan[i][0], plan[i][2]).getBytes()));
+//        	System.out.println("Copying..." +new String(src, plan[i][0], plan[i][2])
+//        			+" from  ; "+ plan[i][0] +" byte"+
+//        Arrays.toString(new String(src, plan[i][0], plan[i][2]).getBytes()));
             System.arraycopy(src, plan[i][0], res, plan[i][1], plan[i][2]);
-            System.out.println(Arrays.toString(res)+" : "+new String(res));
+//            System.out.println(Arrays.toString(res)+" : "+new String(res));
         }
         return res;
     }
