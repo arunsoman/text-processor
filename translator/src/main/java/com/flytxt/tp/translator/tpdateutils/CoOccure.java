@@ -12,14 +12,14 @@ class CoOccur {
 
 		// "ddMMyyyy HH:mm:ss.S Z "
 		// "01234567890123456789012345"
-		validChars.put((int) 'd', new Point(2, 0));
-		validChars.put((int) 'M', new Point(2, 2));
-		validChars.put((int) 'y', new Point(4, 4));
-		validChars.put((int) 'H', new Point(2, 9));
-		validChars.put((int) 'm', new Point(2, 12));
-		validChars.put((int) 's', new Point(2, 15));
-		validChars.put((int) 'S', new Point(1, 18));
-		validChars.put((int) 'Z', new Point(1, 19));
+		validChars.put((int) 'd', new Point(2, 0,2));
+		validChars.put((int) 'M', new Point(2, 2,2));
+		validChars.put((int) 'y', new Point(4, 4,4));
+		validChars.put((int) 'H', new Point(2, 9,2));
+		validChars.put((int) 'm', new Point(2, 12,2));
+		validChars.put((int) 's', new Point(2, 15,2));
+		validChars.put((int) 'S', new Point(1, 18,1));
+		validChars.put((int) 'Z', new Point(1, 19,5));
 	}
 	public static final int size = "dMyHmsSZ".length();
 	private List<CharCnt> list = new ArrayList<CharCnt>(size);
@@ -52,13 +52,14 @@ class CoOccur {
 		if (val.count != cnt) {
 			throw new ParseException("expected count for " + aChar + " actual:" + val.count + " found:" + cnt, 0);
 		}
-		//System.out.println("char:"+aChar+ " @:"+loc+" n:"+cnt);
-		list.add(new CharCnt(aChar, val.position, loc, cnt));
+//		System.out.println("char:"+aChar+ " @:"+loc+" n:"+cnt);
+		list.add(new CharCnt(aChar, val.position, loc, val.chars));
 	}
 
 	final int[][] toPlan() {
 		int[][] plan = new int[list.size()][3];
 		CharCnt cc;
+//System.out.println(":"+list.size());
 		for (int i = 0; i < list.size(); i++) {
 			cc = list.get(i);
 			plan[i][0] = cc.srcLoc;

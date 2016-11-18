@@ -2,6 +2,7 @@ package com.flytxt.tp.translator.tpdateutils;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -28,6 +29,31 @@ public class TranslatorTest {
 		list.add("yyyy-MM-dd'T'HH:mm:ss.SSSZ");// 2001-07-04T12:08:56.235-0700
 	}
 
+	class Sample{
+		String input;
+		String fmt;
+		public DateTime date;
+	}
+	private List<Sample>genPositiveTranslateSamples(){
+		String[] fmts = {
+				//"yyyy.MM.ddHH:mm:ssSZ " 
+				//," MM.yyyy.ddHH:mm:ssSZ "
+				//,
+				" MM.yyyy.ddHH:ssSZ :mm"
+				};
+		DateTime dt = new DateTime();
+		List<Sample> list = new ArrayList<Sample>(fmts.length);
+		int i = 0;
+		Sample sample;
+		for (String fmt : fmts) {
+			sample = new Sample();
+			sample.input= toString(dt, fmt);
+			sample.fmt = fmts[i++];
+			sample.date = dt;
+			list.add(sample);
+		}
+		return list;
+	}
 	private byte[] convertToFlyFmt(String fmtStr, String dateAsstr) throws ParseException {
 		CoOccur coOccur = new CoOccur(fmtStr);
 		Translator t = new Translator(coOccur.toPlan());
@@ -43,24 +69,23 @@ public class TranslatorTest {
 	}
 
 	@Test
-	public void t() {
-		DateTime dt = new DateTime();
+	public void testTranslation() {
+		List<Sample> list = genPositiveTranslateSamples();
 		for (int i = 0; i < list.size(); i++) {
-			String fmtStr = list.get(i);
-			System.out.println(fmtStr);
-			String input = toString(dt, fmtStr);
-			String expected = toString(dt, Translator.flyDateFormat);
+			String input = list.get(i).input;
+			String expected = toString(list.get(i).date, Translator.flyDateFormat);
 			try {
 
-				byte[] result = convertToFlyFmt(fmtStr, input);
-				System.out.println("input:" + input);
-				System.out.println("expected:" + expected);
-				System.out.println("result:" + new String(result));
+				byte[] result = convertToFlyFmt(list.get(i).fmt, input);
+				System.out.println(list.get(i).fmt);
+				System.out.println("input     :" + input);
+				System.out.println("expected  :" + expected);
+				System.out.println("result    :" + new String(result));
 				if (!expected.equals(new String(result))) {
-					//Assert.assertEquals(expected, new String(result));
+					Assert.assertEquals(expected, new String(result));
 				}
 			} catch (ParseException e) {
-				System.out.println(e.getMessage());
+				Assert.fail();
 			}
 		}
 	}
