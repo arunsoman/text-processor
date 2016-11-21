@@ -15,13 +15,12 @@ import java.util.regex.Pattern;
 
 import javax.annotation.PreDestroy;
 
-import lombok.Getter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import com.flytxt.tp.marker.CurrentObject;
+
+import lombok.Getter;
 
 
 public class FlyReader implements Callable<FlyReader> {
@@ -37,7 +36,8 @@ public class FlyReader implements Callable<FlyReader> {
     @Getter
     private Status status;
 
-    byte[] eol = System.lineSeparator().getBytes();
+    byte[] eol = "\n".getBytes();// System.lineSeparator().getBytes();
+    final ByteBuffer buf = ByteBuffer.allocate(51200);
 
     private final Logger appLog = LoggerFactory.getLogger("applicationLog");
 
@@ -49,39 +49,30 @@ public class FlyReader implements Callable<FlyReader> {
     }
 
     public void run() {
+    	String folder = lp.getSourceFolder();
+    	assert folder != null;
+    	
         final Path folderP = Paths.get(lp.getSourceFolder());
-        if (!Files.exists(folderP))
-            try {
-                Files.createDirectories(folderP);
-            } catch (final IOException e1) {
-                appLog.info("could not create input folder, stopping this FlyReader ", e1);
-                stopRequested = true;
-            }
-        appLog.debug("Starting file reader @ " + lp.getSourceFolder());
-        final ByteBuffer buf = ByteBuffer.allocate(51200);
-
+        assert Files.exists(folderP);
+        
         while (!stopRequested) {
-            String folder = lp.getSourceFolder();
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder))) {
                 for (final Path path : directoryStream) {
-                    final RandomAccessFile file = new RandomAccessFile(path.toString(), "rw");
-                    appLog.debug("picked up " + path.toString());
-                    try {
+                	try{
+                		appLog.debug("picked up " + path.toString());
+                		buf.clear();
                         String fileName = path.getFileName().toString();
                         lp.getMf().getCurrentObject().init(folder, fileName);
                         BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
-
                         lp.init(fileName, attr.lastModifiedTime().toMillis());
-                        processFile(buf, path, file.getChannel());
-                        buf.clear();
+                        processFile(path);
+                        Files.delete(path);
                         if (stopRequested) {
                             appLog.debug("shutting down Worker @ :" + folder);
                             break;
                         }
                     } catch (final OverlappingFileLockException e) {
                         appLog.error("Could not process " + path.toString(), e);
-                    } finally {
-                        file.close();
                     }
                 }
             } catch (final Exception ex) {
@@ -91,18 +82,20 @@ public class FlyReader implements Callable<FlyReader> {
         appLog.debug("Worker down " + lp.getSourceFolder());
     }
 
-    private void processFile(final ByteBuffer buf, final Path path, final FileChannel file) throws Exception {
+    private void processFile(final Path path) throws Exception {
         final long t1 = System.currentTimeMillis();
         final long fileSize = Files.size(path);
-        final String inputFile = Files.readSymbolicLink(path).toString();
-        readLines(file, buf);
-        lp.done();
-        file.close();
-        Files.delete(path);
+        final String inputFile = path.toString();
+        try(final RandomAccessFile file = new RandomAccessFile(inputFile, "rw")){
+        	readLines(file.getChannel(), buf);
+        	lp.done();
+        	file.close();        
+        }catch (Exception e) {
+			throw e;
+		}
         final long totalTimeTaken = System.currentTimeMillis() - t1;
         appLog.debug("total time taken: " + totalTimeTaken);
         transLog.debug("{},{},{}", inputFile, fileSize, totalTimeTaken);
-        // mf.printstat(); TODO
     }
 
     private final void readLines(final FileChannel file, final ByteBuffer buf)  throws Exception {
