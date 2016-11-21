@@ -131,17 +131,7 @@ public class Marker implements Comparable<byte[]> {
     }
 
     public int asInt() {
-        if (length == 0) {
-            return 0;
-        }
-        int value = 0;
-        byte[] data = getData();
-        int power = length;
-        for (int i = index; i < index + length; i++) {
-            power = power - 1;
-            value += Math.pow(10, power) * Character.getNumericValue(data[i]);
-        }
-        return value;
+    		return (int)asLong();
     }
 
     public long asLong() {
