@@ -52,20 +52,20 @@ public class Marker {
     protected void find(boolean assignData, byte[] data, byte[] token, final Router router, MarkerFactory mf, Marker... markers) {
         resetMarkerLength(markers);
 
-        int markers2Mine = router.maxMarkers2Mine();
 
         if (token.length == 1)
-            fromByteArray(assignData, markers2Mine, token[0], data, router, markers);
+            fromByteArray(assignData, token[0], data, router, markers);
         else
-            fromByteArray(assignData, markers2Mine, token, data, router, markers);
+            fromByteArray(assignData, token, data, router, markers);
         // System.out.println("\n");
     }
 
-    private void fromByteArray(boolean assignData, int markers2Mine, byte token, byte[] data, Router router, Marker... markers) {
+    private void fromByteArray(boolean assignData,  byte token, byte[] data, Router router, Marker... markers) {
         int eol = this.index + length;
         int from = this.index;
         int stx = this.index;
 
+        int markers2Mine = router.maxMarkers2Mine();
         int counter = 0;
         for (int i = 0; i <= markers2Mine; i++) {
             from = fm.findPreMarker(token, from + 1, eol, data);
@@ -92,11 +92,11 @@ public class Marker {
 
     }
 
-    private void fromByteArray(boolean assignData, int markers2Mine, byte[] token, byte[] data, Router router, Marker... markers) {
+    private void fromByteArray(boolean assignData,  byte[] token, byte[] data, Router router, Marker... markers) {
         int eol = this.index + length;
         int from = this.index;
         int stx = this.index;
-
+        int markers2Mine = router.maxMarkers2Mine();
         int counter = 0;
         for (int i = 0; i <= markers2Mine; i++) {
             from = fm.findPreMarker(token, from + 1, eol, data);
