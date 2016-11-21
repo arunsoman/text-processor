@@ -40,7 +40,7 @@ public class Processor {
             List<LineProcessor> lpInstance = proxy.getLPInstance();
             if (lpInstance.size() < 1) {
                 logger.info("No jobs configured... will exit");
-                throw new InterruptedException("No jobs configured");
+                return;
             }
             executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(lpInstance.size());
             String folder;
