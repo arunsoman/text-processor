@@ -39,7 +39,8 @@ public class ProxyScripts {
 
 	@Autowired
 	private JobRepo repo;
-
+	private final Logger appLog = LoggerFactory.getLogger("applicationLog");
+	
 	public List<LineProcessor> getLPInstance() {
 		return lps;
 	}
@@ -57,6 +58,10 @@ public class ProxyScripts {
 		DbClassLoader loader = new DbClassLoader();
 		String hostName = getHostname();
 		log.debug("who am i ? :" + hostName);
+		if(hostName == null || hostName.trim().length() == 0){
+			appLog.error("getHostName returned null, This reader will not function");
+			throw new RuntimeException("getHostName returned null, This reader will not function");
+		}
 		List<Job> jobs = repo.findByhostNameAndActiveTrueAndStatusTrue(hostName);
 
 		folderWatch = new ArrayList<>(jobs.size());
