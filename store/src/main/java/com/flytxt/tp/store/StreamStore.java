@@ -17,18 +17,15 @@ public class StreamStore implements Store {
 
     private String baseDir = "/tmp/tx-processor";
 
-    private String fileName;
-
     public StreamStore(String baseDir) {
         super();
         this.baseDir = baseDir.endsWith("/") ? baseDir : baseDir + "/";
-        this.queueWriter = new ChronicleWriter<>(this.baseDir + fileName);
+        this.queueWriter = new ChronicleWriter<>(this.baseDir);
         queueWriter.init();
     }
 
     @Override
     public void set(String fileName) {
-        this.fileName = fileName;
     }
 
     @Override
