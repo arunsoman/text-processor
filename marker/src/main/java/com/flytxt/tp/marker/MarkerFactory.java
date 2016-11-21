@@ -4,7 +4,7 @@ import lombok.Getter;
 
 public final class MarkerFactory {
 
-	private final FlyPool<Marker, byte[]> markerPool = new FlyPool<Marker, byte[]>();
+	private final FlyPool<Marker> markerPool = new FlyPool<Marker>();
 
 	@Getter
 	private CurrentObject currentObject = new CurrentObject();

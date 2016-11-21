@@ -1,6 +1,6 @@
 package com.flytxt.tp.marker;
 
-public class Marker implements Comparable<byte[]> {
+public class Marker {
 
     public int index;
 
@@ -122,12 +122,6 @@ public class Marker implements Comparable<byte[]> {
     @Override
     public String toString() {
         return new String((localData == null) ? currentObject.getLine() : localData, index, length);
-    }
-
-    @Override
-    public int compareTo(byte[] o) {
-        // TODO Auto-generated method stub
-        return 0;
     }
 
     public int asInt() {

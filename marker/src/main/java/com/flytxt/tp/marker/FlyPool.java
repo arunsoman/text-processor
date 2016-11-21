@@ -1,6 +1,6 @@
 package com.flytxt.tp.marker;
 
-public class FlyPool<T extends Comparable<J>, J> {
+public class FlyPool<T > {
 
     private Node<T> current;
 
@@ -8,7 +8,7 @@ public class FlyPool<T extends Comparable<J>, J> {
 
     private int size;
 
-    private class Node<T extends Comparable<J>> {
+    private class Node<T> {
 
         T item;
 
@@ -41,17 +41,8 @@ public class FlyPool<T extends Comparable<J>, J> {
         current = head;
     }
 
-    public T find(J j) {
-        Node<T> temp = current;
-        while (temp != null) {
-            if (temp.item.compareTo(j) == 0)
-                return temp.item;
-            temp = temp.next;
-        }
-        return null;
-    }
     
     int getSize(){
-    	return size;
+    		return size;
     }
 }
