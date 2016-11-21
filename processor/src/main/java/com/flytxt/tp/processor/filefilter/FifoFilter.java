@@ -15,7 +15,7 @@ public class FifoFilter extends FilterChain{
 			public int compare(File o1, File o2) {
 				return ((int)(o1.lastModified()-o2.lastModified()));
 			}});
-		return null;
+		return files;
 	}
 
 }

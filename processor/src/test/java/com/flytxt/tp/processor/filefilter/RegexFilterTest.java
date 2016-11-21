@@ -17,7 +17,7 @@ public class RegexFilterTest {
 	public void init(){
 		for(int i =0; i < 10; i++){
 		File mockedFile = Mockito.mock(File.class);
-		Mockito.when(mockedFile.getName()).thenReturn(1+".txt");
+		Mockito.when(mockedFile.getName()).thenReturn(i+".txt");
 		files[i] = mockedFile;
 		}
 	}
