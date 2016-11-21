@@ -16,26 +16,13 @@ import java.util.regex.Pattern;
 
 public class Utils {
 
-    static String[] loc = new String[]{"","/BOOT-INF/classes/", "./BOOT-INF/classes/", "./classes/", "classes/"};
-    public String readLptemplate(String name) throws IOException, URISyntaxException {
-        URI uri;
-        for(int i = 0; i < loc.length; i ++)
+    public String readLptemplate(String name) throws Exception{
             try{
-                //  uri = findFile(name, i);
-                //String str = new String(Files.readAllBytes(Paths.get(uri)));
-                //return str;
-                String valueOf = new String(findFile(name, i));
+                String valueOf = new String(findFile(name));
                 return valueOf;
             }catch(Exception e){
+            		throw e;
             }
-        try{
-            uri = fileFromReource(name);
-            String str = new String(Files.readAllBytes(Paths.get(uri)));
-            return str;
-        }catch(Exception e){
-        }
-
-        throw new RuntimeException("file not found "+name);
     }
 
     public static String replaceWithConsoleStore(String absProcessor) {
@@ -45,7 +32,7 @@ public class Utils {
             return m.replaceAll("$1 Console$3");
         return null;
     }
-    private byte[] findFile(String name,int i) throws URISyntaxException{
+    private byte[] findFile(String name) throws URISyntaxException{
         InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(name);
         try (ByteArrayOutputStream os = new ByteArrayOutputStream();)
         {
@@ -64,14 +51,5 @@ public class Utils {
         return null;
         // return getClass().getResource(loc[i]+name).toURI();
 
-    }
-
-    private URI fileFromReource(String name) throws URISyntaxException, IOException {
-        Enumeration<URL> systemResources = ClassLoader.getSystemResources(name);
-        while(systemResources.hasMoreElements()){
-            URL nextElement = systemResources.nextElement();
-            return nextElement.toURI();
-        }
-        return null;
     }
 }
