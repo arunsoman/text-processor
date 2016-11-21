@@ -18,9 +18,11 @@ public class RegexFilter extends FilterChain{
 	}
 	@Override
 	public File[] canProcess(File...files ) {
+		int index = 0;
 		for(File aFile: files){
-			if(pattern.matcher(aFile.getName()).matches())
-				aFile = null;
+			if(!pattern.matcher(aFile.getName()).matches())
+				files[index] = null;
+			index++;
 		}
 		if(nextLink != null)
 			return nextLink.canProcess(files);
