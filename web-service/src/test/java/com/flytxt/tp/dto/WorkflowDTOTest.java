@@ -20,7 +20,7 @@ public class WorkflowDTOTest {
     WorkflowDTO dto;
 
     @Before
-    public void init() throws IOException, URISyntaxException {
+    public void init() throws Exception{
         dto = new WorkflowDTO();
     }
 

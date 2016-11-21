@@ -22,7 +22,7 @@ public class WorkflowDTO {
 
     private String scriptlp;
 
-    public WorkflowDTO() throws IOException, URISyntaxException {
+    public WorkflowDTO() throws Exception{
         scriptlp = utils.readLptemplate("Script.lp");
     }
 

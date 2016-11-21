@@ -19,39 +19,40 @@ import com.flytxt.tp.dto.WorkflowDTO;
 @RepositoryEventHandler(Job.class)
 public class JobListener {
 
-    private WorkflowDTO dto;
-    private Queue <String>notifications;
-    
-    public JobListener() {
-        try {
-            dto = new WorkflowDTO();
-            notifications = new LinkedList<String>(); 
-        } catch (IOException | URISyntaxException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
+	private WorkflowDTO dto;
+	private Queue<String> notifications;
 
-    @HandleBeforeCreate
-    @HandleBeforeSave
-    public void executeMeBeforeSave(final Job job) {
-        if (job.isActive())
-            try {
-                byte[] compileToBytes = dto.serialize(dto.convert(job));
-                job.setByteCode(compileToBytes);
-                job.setStatus(true);
-                notifications.add(job.getHostName());
-            } catch (Exception e) {
-                job.setStatus(false);
-            }
-    }
-    
-    @Scheduled(fixedDelay=5*60*1000)
-    public void pushNotifications(){
-    	String host;
-    	while((host = notifications.poll()) != null){
-    		RestTemplate restTemplate = new RestTemplate();
-    		String result = restTemplate.getForObject("http://"+host+"9001/reload", String.class);
-    	}
-    }
+	public JobListener() {
+		try {
+			dto = new WorkflowDTO();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}
+		notifications = new LinkedList<String>();
+	}
+
+	@HandleBeforeCreate
+	@HandleBeforeSave
+	public void executeMeBeforeSave(final Job job) {
+		if (job.isActive())
+			try {
+				byte[] compileToBytes = dto.serialize(dto.convert(job));
+				job.setByteCode(compileToBytes);
+				job.setStatus(true);
+				notifications.add(job.getHostName());
+			} catch (Exception e) {
+				job.setStatus(false);
+			}
+	}
+
+	@Scheduled(fixedDelay = 5 * 60 * 1000)
+	public void pushNotifications() {
+		String host;
+		while ((host = notifications.poll()) != null) {
+			RestTemplate restTemplate = new RestTemplate();
+			restTemplate.getForObject("http://" + host + "9001/reload", String.class);
+		}
+	}
 }
