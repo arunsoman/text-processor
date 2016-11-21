@@ -38,7 +38,7 @@ public class FlyReader implements Callable<FlyReader> {
 
     byte[] eol = "\n".getBytes();// System.lineSeparator().getBytes();
     final ByteBuffer buf = ByteBuffer.allocate(51200);
-
+    private String lastProcessedFile;
     private final Logger appLog = LoggerFactory.getLogger("applicationLog");
 
     private final Logger transLog = LoggerFactory.getLogger("transactionLog");
@@ -67,6 +67,7 @@ public class FlyReader implements Callable<FlyReader> {
                         lp.init(fileName, attr.lastModifiedTime().toMillis());
                         processFile(path);
                         Files.delete(path);
+                        lastProcessedFile = fileName;
                         if (stopRequested) {
                             appLog.debug("shutting down Worker @ :" + folder);
                             break;

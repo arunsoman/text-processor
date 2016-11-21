@@ -25,14 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProxyScripts {
 
-	public String getScript;
-
-	public String getJar;
-
-	public String remoteHost;
-
-	public String hostName;
-
+	
 	private List<LineProcessor> lps = new ArrayList<>();
 
 	private List<com.flytxt.tp.processor.FolderEventListener.Watch> folderWatch;
