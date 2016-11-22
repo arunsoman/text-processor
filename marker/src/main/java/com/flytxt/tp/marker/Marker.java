@@ -22,13 +22,13 @@ public class Marker {
         this.currentObject = currentObject;
     }
 
-    public void setLineAttribute(int index, int length) {
+    void setLineAttribute(int index, int length) {
         this.index = index;
         this.length = length;
         localData = null;
     }
 
-    public void setData(byte[] data, int index, int length) {
+    void setData(byte[] data, int index, int length) {
         localData = data;
         this.index = index;
         this.length = length;

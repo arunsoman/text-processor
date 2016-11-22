@@ -50,7 +50,7 @@ public final class MarkerFactory {
 			m = new Marker(currentObject);
 			markerPool.add(m);
 		}
-		m.setLineAttribute(index, length);
+		m.setData(null,index, length);
 		return m;
 	}
 
