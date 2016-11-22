@@ -15,10 +15,8 @@ public abstract class Lookup<T> {
     @SuppressWarnings("unchecked")
     protected void loadFromFile() {
 
-        try {
-            final File file = new File(fileName);
-            final FileReader fileReader = new FileReader(file);
-            final BufferedReader bufferedReader = new BufferedReader(fileReader);
+        try(final BufferedReader bufferedReader = 
+        		new BufferedReader(new FileReader(new File(fileName)));){
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 final String key = line.substring(0, line.indexOf('|'));
@@ -28,9 +26,9 @@ public abstract class Lookup<T> {
                 if (!key.isEmpty())
                     this.load(key.getBytes(), (T) mf.createMarker(valueByteArray, 0, valueByteArray.length));
             }
-            fileReader.close();
         } catch (final IOException e) {
             e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 
