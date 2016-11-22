@@ -131,7 +131,7 @@ public class TpMath extends Translator {
     }
 
     public Marker extractDecimalFractionPart(final Marker m, final MarkerFactory mf) {
-        boolean createImmutable = false;
+        boolean createImmutable = m.isDataLocal();
         byte[] data = m.getData();
         int index = m.index;
         boolean found = false;
@@ -145,12 +145,12 @@ public class TpMath extends Translator {
         if (!found)
             return mf.createMarker(doubleZero, 0, doubleZero.length);
         if(createImmutable){
-            final int size = m.length - index+1;
+            final int size = m.length - index;
             final byte[] result = new byte[size];
             System.arraycopy(data, index, result, 0, result.length);
-            return mf.createMarker(data, 0, size);
+            return mf.createMarker(result, 0, size);
         } else
-            return mf.createMarker(m.getData(),index, m.length-index);
+            return mf.createMarker(null,index, m.length-index);
     }
 
     public boolean isNumber(final Marker m, final MarkerFactory mf) {
