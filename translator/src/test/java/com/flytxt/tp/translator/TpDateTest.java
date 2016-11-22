@@ -1,15 +1,17 @@
 package com.flytxt.tp.translator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import com.flytxt.tp.marker.Marker;
 import com.flytxt.tp.marker.Router;
-import com.flytxt.tp.translator.TpDate;
+import com.flytxt.tp.translator.tpdateutils.TpDateUtil;
 
 public class TpDateTest extends TpAbsTest {
 
@@ -45,9 +47,25 @@ public class TpDateTest extends TpAbsTest {
 		}
 	}
 
-	@Test
+	//@Test
 	public final void testDifferenceInMillis() {
-		//fail("Not yet implemented");
+		
+		DateTime testTime =  new DateTime();
+		String d1 = dateToString(testTime);
+		
+		DateTime testTime2 =  new DateTime();
+		String d2 = dateToString(testTime2);
+		
+		Marker m1 = getMarker(d1);
+		Marker m2 = getMarker(d2);
+		
+		try {
+			assertEquals(testTime.getMillis()-testTime2.getMillis(), tpDate.differenceInMillis(m1, m2, markerFactory));
+		} catch (ParseException e) {
+			fail(e.getMessage());
+		}
+		
+	
 	}
 
 	@Test
@@ -82,6 +100,47 @@ public class TpDateTest extends TpAbsTest {
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}	
+	}
+	
+	@Test
+	public final void testToLong() {
+		
+		DateTime testTime =  new DateTime();		
+		String d1 = dateToString(testTime);
+		try {
+			TpDateUtil tpDateUtil = new TpDateUtil();			
+			Marker m1 = getMarker(d1);
+			assertEquals( tpDateUtil.parse(d1).getMillis(), tpDate.toLong(m1, markerFactory));
+		} catch (ParseException e) {
+			fail(e.getMessage());
+		}	
+	}
+	
+	@Test
+	public void textConvertDate(){
+		Marker tmp1 = markerFactory.createMarker(null, 0, 0);
+		try {
+			tmp1 = tpDate.convertDate(tmp1, markerFactory, "yyyy-mm-dd'T'HH:mm:ssX");
+		} catch (ParseException e) {
+			assertEquals(true, e.getMessage().contains("no data in marker to parse with format"));
 		}
 	}
+	
+	
+	
+	/**
+	 * 
+	 * @param dt
+	 * @return
+	 */
+	private String dateToString(org.joda.time.DateTime dt) {
+	
+		org.joda.time.format.DateTimeFormatter fmt = org.joda.time.format.DateTimeFormat.forPattern( "ddMMyyyy HH:mm:ss.SZ");
+		String dateAsstr = fmt.print(dt);
+		return dateAsstr;
+	}
+
+	
+	
 }

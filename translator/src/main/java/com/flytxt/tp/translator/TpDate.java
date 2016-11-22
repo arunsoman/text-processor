@@ -77,7 +77,7 @@ public class TpDate extends Translator {
 
     public Marker differenceInMillis(final Marker m, final Marker m2, MarkerFactory mf) throws ParseException {
     	DateTime diff = tpDateUtil.parse(m.toString()).minus(tpDateUtil.parse(m2.toString()).getMillis());
-    	return mf.createMarker(String.valueOf(diff));
+    	return mf.createMarker(String.valueOf(diff.getMillis()));
    	}
 
     public long toLong(final Marker m, MarkerFactory mf) throws ParseException {
