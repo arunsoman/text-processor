@@ -69,6 +69,7 @@ public class Marker {
     void reset(){
     		localData = null;
     		dataType = 0;
+    		length = 0;
     }
     public void splitAndGetMarkers(final byte[] token, final Router r, final MarkerFactory mf, Marker... markers) {
         if (localData == null) {
@@ -81,7 +82,7 @@ public class Marker {
 
     private void resetMarkerLength(Marker... markers) {
         for (Marker aMarker : markers) {
-            aMarker.length = 0;
+            aMarker.reset();
         }
     }
 
