@@ -23,26 +23,21 @@ public class Utils {
 		Matcher m = p.matcher(absProcessor);
 		if (m.find())
 			return m.replaceAll("$1 Console$3");
-		return null;
+		return absProcessor;
 	}
 
 	private byte[] findFile(String name) throws URISyntaxException {
 		InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(name);
 		try (ByteArrayOutputStream os = new ByteArrayOutputStream();) {
 			byte[] buffer = new byte[0xFFFF];
-
 			for (int len; (len = resourceAsStream.read(buffer)) != -1;)
 				os.write(buffer, 0, len);
 
 			os.flush();
-
 			return os.toByteArray();
 		} catch (IOException e) {
-
 			e.printStackTrace();
+			throw new URISyntaxException(name, e.getMessage());
 		}
-		return null;
-		// return getClass().getResource(loc[i]+name).toURI();
-
 	}
 }

@@ -11,28 +11,29 @@ import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
 
-
 public class RealtimeCompiler {
 
 	static JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
 	private static final String SHARED_LIB_FOLDER = "/shared-lib";
-	
+
 	private static final List<String> optionList = new ArrayList<>();
 
 	static {
-		File folder = new File(SHARED_LIB_FOLDER);
 		StringBuilder builder = new StringBuilder();
 		builder.append(System.getProperty("java.class.path"));
-		if (folder.isDirectory()) {
-			File[] files = folder.listFiles();
-			for (File f : files) {
-				builder.append(":");
-				builder.append(SHARED_LIB_FOLDER).append("/").append(f.getName());
+		File folder = new File(SHARED_LIB_FOLDER);
+		if (folder != null) {
+			if (folder.isDirectory()) {
+				File[] files = folder.listFiles();
+				for (File f : files) {
+					builder.append(":");
+					builder.append(SHARED_LIB_FOLDER).append("/").append(f.getName());
+				}
 			}
+			optionList.add("-classpath");
+			System.out.println(builder.toString());
+			optionList.add(builder.toString());
 		}
-		optionList.add("-classpath");
-		System.out.println(builder.toString());
-		optionList.add(builder.toString());
 	}
 
 	public static byte[] compileToBytes(String className, String sourceCodeInText) throws Exception {
