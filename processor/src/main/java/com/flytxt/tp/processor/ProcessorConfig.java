@@ -24,14 +24,13 @@ public class ProcessorConfig {
 	}
 
 	@Bean
-	@Lazy
 	public FolderEventListener folderEventListener() {
 		return new FolderEventListener();
 	}
 
 	@Bean
 	@Lazy
-	public FlyReader FlyReader() {
+	public FlyReader flyReader() {
 		return new FlyReader();
 	}
 

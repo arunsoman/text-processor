@@ -45,7 +45,7 @@ public class Processor {
 		executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(size);
 		String folder;
 		for (LineProcessor lP : lpInstance) {
-			FlyReader reader = (FlyReader) ctx.getBean("flyReader");
+			FlyReader reader = ctx.getBean(FlyReader.class);
 			folder = lP.getSourceFolder();
 			reader.set(folder, lP);
 			fileReaders.add(reader);

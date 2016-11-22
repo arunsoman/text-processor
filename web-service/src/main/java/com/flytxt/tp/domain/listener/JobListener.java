@@ -1,7 +1,5 @@
 package com.flytxt.tp.domain.listener;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -12,11 +10,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import com.flytxt.tp.Job;
 import com.flytxt.tp.dto.WorkflowDTO;
+import com.flytxt.tp.processor.Job;
 
 @Component
-@RepositoryEventHandler(Job.class)
+@RepositoryEventHandler
 public class JobListener {
 
 	private WorkflowDTO dto;
@@ -35,7 +33,9 @@ public class JobListener {
 
 	@HandleBeforeCreate
 	@HandleBeforeSave
-	public void executeMeBeforeSave(final Job job) {
+	public void executeMeBeforeSave(final Job job) throws Exception  {
+		//log.info("executing  ");
+		System.out.println(" testing  ");
 		if (job.isActive())
 			try {
 				byte[] compileToBytes = dto.serialize(dto.convert(job));
@@ -44,6 +44,7 @@ public class JobListener {
 				notifications.add(job.getHostName());
 			} catch (Exception e) {
 				job.setStatus(false);
+				throw e;
 			}
 	}
 
@@ -55,4 +56,6 @@ public class JobListener {
 			restTemplate.getForObject("http://" + host + "9001/reload", String.class);
 		}
 	}
+	
+	
 }

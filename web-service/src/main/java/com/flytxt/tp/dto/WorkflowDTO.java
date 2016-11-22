@@ -1,18 +1,17 @@
 package com.flytxt.tp.dto;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flytxt.tp.Job;
 import com.flytxt.tp.Utils;
 import com.flytxt.tp.compiler.RealtimeCompiler;
 import com.flytxt.tp.domain.Workflow;
 import com.flytxt.tp.marker.CurrentObject;
 import com.flytxt.tp.marker.MarkerFactory;
+import com.flytxt.tp.processor.Job;
 import com.flytxt.tp.processor.LineProcessor;
 
 @Component
@@ -27,7 +26,7 @@ public class WorkflowDTO {
     }
 
     public String execute(Workflow workflow) throws Exception {
-        prep(workflow);
+    	prep(workflow,true);
         try {
             Class<LineProcessor> class1 = (Class<LineProcessor>) RealtimeCompiler.getClass(workflow.get(workflow.name));
             LineProcessor lp = class1.newInstance();
@@ -49,16 +48,17 @@ public class WorkflowDTO {
     }
 
     public byte[] serialize(Workflow workflow) throws Exception {
-        return prep(workflow);
+        return prep(workflow,false);
     }
 
-    private byte[] prep(Workflow workflow) throws Exception {
+    private byte[] prep(Workflow workflow,boolean isValidate) throws Exception {
         StrSubstitutor sub = new StrSubstitutor(workflow, "%(", ")");
         String result = sub.replace(scriptlp);
+        if(isValidate)
         result = Utils.replaceWithConsoleStore(result);
-        // TODO replace input Location to link location
         return RealtimeCompiler.compileToBytes(workflow.get(workflow.name), result);
     }
+    
 
     public Workflow convert(Job job) {
         Workflow wf = parseScript(job.getSchema());
