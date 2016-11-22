@@ -212,6 +212,7 @@ public class FolderEventListener {
                         take = watcher.take();
                     } catch (final InterruptedException e) {
                         e.printStackTrace();
+                        return;
                     }
 
                     for (final WatchEvent<?> event : take.pollEvents()) {

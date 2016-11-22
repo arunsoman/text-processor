@@ -28,6 +28,6 @@ public class CharacterNode<T> {
                 maxPath = aPath;
             }
         }
-        return maxPath.value;
+        return (maxPath==null)?null:maxPath.value;
     }
 }
