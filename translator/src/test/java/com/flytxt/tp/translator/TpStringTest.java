@@ -185,6 +185,7 @@ public class TpStringTest extends TpAbsTest {
 		final Marker mocker2 = markerFactory.createMarker("");
 
 		final Marker result1 = tpString.extractTrailing(mocker1, 3, markerFactory);
+		result1.toString();
 		assertEquals("GUJARAT".substring(4, "GUJARAT".length()), result1.toString());
 
 		try {

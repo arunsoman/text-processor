@@ -63,7 +63,7 @@ public class RouterFT {
 		Router r = new Router(input);
 		for(int i = 0; i < input.length; i++){
 			Marker m = markers[r.getMarkerPosition(i)];
-			m.setLineAttribute(r.geNthtMarkerlocation(i), 1);
+			m.set(r.geNthtMarkerlocation(i), 1);
 		}
 	}
 }

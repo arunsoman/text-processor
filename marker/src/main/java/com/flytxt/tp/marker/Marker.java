@@ -8,32 +8,68 @@ public class Marker {
 
     private FindMarker fm = new FindMarker();
 
+
+    private int dataType;
+    
+    private long longValue;
+    private double doubleValue;
     private CurrentObject currentObject;
-
     private byte[] localData;
-
+    
+    public static final int longDataType = 1;
+    public static final int doubleDataType = 2;
+    public static final int lineDataType = 3;
+    public static final int localDataType = 4;
+    
+    Marker(long l){
+    		longValue =l;
+    		dataType = longDataType;
+    }
+    
+    Marker(double d){
+    		doubleValue = d;
+    		dataType = doubleDataType;
+    }
+    
     Marker(byte[] data, int index, int length) {
         localData = data;
         this.index = index;
         this.length = length;
+        dataType = localDataType;
     }
 
     public Marker(CurrentObject currentObject) {
         this.currentObject = currentObject;
+        dataType = lineDataType;
     }
 
-    void setLineAttribute(int index, int length) {
+    void set(int index, int length) {
         this.index = index;
         this.length = length;
         localData = null;
+        dataType = lineDataType;
     }
 
-    void setData(byte[] data, int index, int length) {
+    void set(byte[] data, int index, int length) {
         localData = data;
         this.index = index;
         this.length = length;
+        dataType = localDataType;
+    }
+    
+    void set(long lvalue){
+    		longValue=lvalue;
+    		dataType = longDataType;
     }
 
+    void set(double dvalue){
+    		doubleValue=dvalue;
+    		dataType = doubleDataType;
+    }
+    void reset(){
+    		localData = null;
+    		dataType = 0;
+    }
     public void splitAndGetMarkers(final byte[] token, final Router r, final MarkerFactory mf, Marker... markers) {
         if (localData == null) {
             byte[] data = currentObject.getLine();
@@ -49,10 +85,8 @@ public class Marker {
         }
     }
 
-    protected void find(boolean assignData, byte[] data, byte[] token, final Router router, MarkerFactory mf, Marker... markers) {
+    private void find(boolean assignData, byte[] data, byte[] token, final Router router, MarkerFactory mf, Marker... markers) {
         resetMarkerLength(markers);
-
-
         if (token.length == 1)
             fromByteArray(assignData, token[0], data, router, markers);
         else
@@ -82,9 +116,9 @@ public class Marker {
             if (i == nextPos) {
                 int ptr = router.getMarkerPosition(counter);
                 Marker m = markers[ptr];
-                m.setLineAttribute(stx, len);
+                m.set(stx, len);
                 if (assignData)
-                    m.setData(data, stx, len);
+                    m.set(data, stx, len);
                 counter++;
             }
             stx = from + 1;
@@ -106,9 +140,9 @@ public class Marker {
             if (i == nextPos) {
                 int ptr = router.getMarkerPosition(counter);
                 Marker m = markers[ptr];
-                m.setLineAttribute(stx, len);
+                m.set(stx, len);
                 if (assignData)
-                    m.setData(data, stx, len);
+                    m.set(data, stx, len);
                 counter++;
             }
             stx = from;
@@ -116,20 +150,44 @@ public class Marker {
     }
 
     public byte[] getData() {
-        return (localData == null) ? currentObject.getLine() : localData;
+    		byte[] data ;
+    		switch(dataType){
+    		case longDataType:
+    			data = String.valueOf(longValue).getBytes();
+    			length = data.length;
+    			break;
+    		case localDataType:
+    			data = localData;
+    			break;
+    		case doubleDataType:
+    			data = String.valueOf(doubleValue).getBytes();
+    			length = data.length;
+    			break;
+    		case lineDataType:
+    			data = currentObject.getLine();
+    			break;
+    		default:
+    			data = new byte[0];
+    			length = 0;
+    		}
+        return data;
     }
 
     @Override
     public String toString() {
-        return new String((localData == null) ? currentObject.getLine() : localData, index, length);
+        return new String(getData(), index, length);
     }
 
     public int asInt() {
+    		if(dataType == longDataType)
+    			return (int)longValue;
     		return (int)asLong();
     }
 
     public long asLong() {
-        if (length == 0) {
+    		if(dataType == longDataType)
+			return longValue;
+    		if (length == 0) {
             return 0;
         }
         long value = 0;
@@ -143,6 +201,9 @@ public class Marker {
     }
 
     public double asDouble() {
+    		if(dataType == doubleDataType)
+    			return doubleValue;
+    		
         if (length == 0) {
             return 0;
         }
@@ -152,5 +213,4 @@ public class Marker {
 	public boolean isDataLocal() {
 		return localData!= null;
 	}
-
 }

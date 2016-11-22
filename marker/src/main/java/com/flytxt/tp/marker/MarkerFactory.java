@@ -12,21 +12,25 @@ public final class MarkerFactory {
 	private Marker lineMarker;
 
 	public Marker createMarker(int val) {
-		return createMarker(String.valueOf(val));
+		return create(Marker.longDataType, val, 0, null, 0, 0);
 	}
+
 	public Marker createMarker(long val) {
-		return createMarker(String.valueOf(val));
+		return create(Marker.longDataType, val, 0, null, 0, 0);
 	}
+
 	public Marker createMarker(double val) {
-		return createMarker(String.valueOf(val));
+		return create(Marker.doubleDataType, 0, val, null, 0, 0);
 	}
+
 	public Marker createMarker(String str) {
 		byte[] data = str.getBytes();
-		return createMarker(data, 0, data.length);
+		return create(Marker.localDataType, 0, 0, data, 0, data.length);
 	}
 
 	public Marker createMarker(byte[] data, int index, int length) {
-		return (data == null) ? create(index, length) : createImmutable(data, index, length);
+		return create((data == null) ? Marker.lineDataType : Marker.localDataType,
+				0, 0, data, index, length);
 	}
 
 	public void reclaim() {
@@ -35,28 +39,58 @@ public final class MarkerFactory {
 
 	public Marker getLineMarker() {
 		lineMarker = (lineMarker == null ? new Marker(currentObject) : lineMarker);
-		lineMarker.setLineAttribute(currentObject.getIndex(), currentObject.getLength());
+		lineMarker.set(currentObject.getIndex(), currentObject.getLength());
 		return lineMarker;
 	}
 
-	private Marker createImmutable(byte[] data, int index, int length) {
+	private Marker create(int dataType, long lvalue, double dvalue, byte[] data, final int index, final int length) {
 		Marker m = markerPool.peek();
 		if (m == null) {
-			m = new Marker(data, index, length);
+			m = from(dataType, lvalue, dvalue, data, index, length);
 			markerPool.add(m);
+		} else {
+			m.reset();
+			set(m, dataType, lvalue, dvalue, data, index, length);
 		}
-		m.setData(data, index, length);
 		return m;
 	}
 
-	private Marker create(final int index, final int length) {
-		Marker m = markerPool.peek();
-		if (m == null) {
-			m = new Marker(currentObject);
-			markerPool.add(m);
+	private void set(Marker m, int dataType, long lvalue, double dvalue, byte[] data, int index, int length) {
+		switch (dataType) {
+		case Marker.doubleDataType:
+			m.set(dvalue);
+			break;
+		case Marker.longDataType:
+			m.set(lvalue);
+			break;
+		case Marker.lineDataType:
+			m.index = index;
+			m.length = length;
+			break;
+		case Marker.localDataType:
+			m.set(data, index, length);
+			break;
+		default:
+			throw new RuntimeException(dataType + " not valid data type");
 		}
-		m.setData(null,index, length);
-		return m;
+	}
+
+	private Marker from(int dataType, long lvalue, double dvalue, byte[] data, int index, int length) {
+		switch (dataType) {
+		case Marker.doubleDataType:
+			return new Marker(dvalue);
+		case Marker.longDataType:
+			return new Marker(lvalue);
+		case Marker.lineDataType:
+			Marker m = new Marker(currentObject);
+			m.index = index;
+			m.length = length;
+			return m;
+		case Marker.localDataType:
+			return new Marker(data, index, length);
+		default:
+			throw new RuntimeException(dataType + " not valid data type");
+		}
 	}
 
 	int getMarkerPoolSize() {
