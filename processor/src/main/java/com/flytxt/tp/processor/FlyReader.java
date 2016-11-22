@@ -92,11 +92,11 @@ public class FlyReader implements Callable<FlyReader> {
         	lp.done();
         	file.close();        
         }catch (Exception e) {
+	        	appLog.debug("Could not process {}: cause{}" + inputFile, e.getMessage());
 			throw e;
 		}
         final long totalTimeTaken = System.currentTimeMillis() - t1;
-        appLog.debug("total time taken: " + totalTimeTaken);
-        transLog.debug("{},{},{}", inputFile, fileSize, totalTimeTaken);
+        transLog.info("{},{},{}", inputFile, fileSize, totalTimeTaken);
     }
 
     private final void readLines(final FileChannel file, final ByteBuffer buf)  throws Exception {
