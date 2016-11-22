@@ -14,7 +14,12 @@ public final class MarkerFactory {
 	public Marker createMarker(int val) {
 		return createMarker(String.valueOf(val));
 	}
-
+	public Marker createMarker(long val) {
+		return createMarker(String.valueOf(val));
+	}
+	public Marker createMarker(double val) {
+		return createMarker(String.valueOf(val));
+	}
 	public Marker createMarker(String str) {
 		byte[] data = str.getBytes();
 		return createMarker(data, 0, data.length);

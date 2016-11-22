@@ -5,10 +5,11 @@ import java.math.BigDecimal;
 import org.apache.commons.math3.util.FastMath;
 import org.apache.commons.math3.util.Precision;
 
+import com.flytxt.tp.marker.ConstantMarker;
 import com.flytxt.tp.marker.Marker;
 import com.flytxt.tp.marker.MarkerFactory;
 import com.flytxt.tp.marker.Router;
-public class TpMath extends Translator {
+public class TpMath implements ConstantMarker {
 
     private static final Router INDEX_OF_ZERO = new Router(new int[]{0});
 
@@ -27,12 +28,11 @@ public class TpMath extends Translator {
     }
 
     public boolean lessThan(final Marker m1, final Marker m2, final MarkerFactory mf) {
-        return asDouble(m1) < asDouble(m2) ? true : false;
+        return m1.asDouble() < m2.asDouble() ? true : false;
     }
 
     public boolean lessEqThan(final Marker m1, final Marker m2, final MarkerFactory mf) {
-
-        return asDouble(m1) <= asDouble(m2) ? true : false;
+        return m1.asDouble() <= m2.asDouble() ? true : false;
     }
 
     public boolean greaterEqThan(final Marker m1, final Marker m2,
@@ -46,40 +46,31 @@ public class TpMath extends Translator {
     }
 
     public Marker subLong(final Marker m1, final Marker m2, final MarkerFactory mf) {
-
-        final long res = asLong(m1) - asLong( m2);
-        final byte[] resB = asByteArray(res);
-        return mf.createMarker(resB, 0, resB.length);
+        final long res = (m1.asLong() - m2.asLong());
+        return mf.createMarker(res);
     }
 
     public Marker subDouble(final Marker m1, final Marker m2, final MarkerFactory mf) {
-
-        final double res = asDouble( m1) - asDouble( m2);
-        final byte[] resB = asByteArray(res);
-        return mf.createMarker(resB, 0, resB.length);
+        final double res =  m1.asDouble() -  m2.asDouble();
+        return mf.createMarker(res);
     }
 
     public Marker addLong(final Marker m1, final Marker m2, final MarkerFactory mf) {
-
-        final long res = asLong(m1) + asLong(m2);
-        final byte[] resB = asByteArray(res);
-        return mf.createMarker(resB, 0, resB.length);
+        final long res =(m1.asLong()) +(m2.asLong());
+        return mf.createMarker(res);
     }
 
     public Marker addDouble(final Marker m1, final Marker m2, final MarkerFactory mf) {
-        final long res = (long) (asDouble( m1) * 1000 + asDouble( m2) * 1000);
-        final byte[] resB = asByteArray(((double) res / 1000));
-        return mf.createMarker(resB, 0, resB.length);
+        final long res = (long) ( m1.asDouble() * 1000 +  m2.asDouble() * 1000);
+        return mf.createMarker(((double) res / 1000));
     }
 
     public Marker mulDouble(final Marker m1, final Marker m2, final MarkerFactory mf) {
-        final byte[] resB = asByteArray(asDouble( m1)*asDouble( m2));
-        return mf.createMarker(resB, 0, resB.length);
+        return mf.createMarker(m1.asDouble()* m2.asDouble());
     }
 
     public Marker divDouble(final Marker m1, final Marker m2, final MarkerFactory mf) {
-        final byte[] resB = asByteArray(asDouble( m1)/asDouble( m2));
-        return mf.createMarker(resB, 0, resB.length);
+        return mf.createMarker(m1.asDouble()/ m2.asDouble());
     }
 
     public Marker toMarker(double d, final MarkerFactory mf) {
@@ -93,21 +84,18 @@ public class TpMath extends Translator {
     }
 
     public Marker ceil(final Marker m, final MarkerFactory mf) {
-        //byte[] d1 = m.getData();
         double ceil = FastMath.ceil(Double.parseDouble(m.toString()));
         byte[] result = String.valueOf(ceil).getBytes();
         return removeTrailingZeroz(result,mf);
     }
 
     public Marker floor(final Marker m, final MarkerFactory mf) {
-        //byte[] d1 = m.getData() == null ? data : m.getData();
         double floor = FastMath.floor(Double.parseDouble(m.toString()));
         byte[] result = String.valueOf(floor == 0 ? 0 : floor).getBytes();
         return removeTrailingZeroz(result,mf);
     }
 
     public Marker round(final int scale, final Marker m, final MarkerFactory mf) {
-        //byte[] d1 = m.getData();
         double d = Precision.round(Double.parseDouble(m.toString()), scale, BigDecimal.ROUND_HALF_EVEN);
         byte[] result = String.valueOf( d).getBytes();
         return removeTrailingZeroz(result,mf);

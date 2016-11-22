@@ -8,7 +8,7 @@ import com.flytxt.tp.marker.Marker;
 import com.flytxt.tp.marker.MarkerFactory;
 import com.flytxt.tp.translator.tpdateutils.TpDateUtil;
 
-public class TpDate extends Translator {
+public class TpDate {
 
     public static String flyDateFormat = "ddMMyyyy HH:mm:ss";
 

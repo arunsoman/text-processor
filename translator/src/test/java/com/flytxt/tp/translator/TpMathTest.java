@@ -192,41 +192,7 @@ public class TpMathTest extends TpAbsTest {
 		Marker m1 = markerFactory.createMarker(str1);
 		boolean res = tpMath.isNumber(m1, markerFactory);
 		assertEquals(true, res);
-	}
-
-	@Test
-	public final void testAsByteArrayDouble() {
-		double input1 = 98.78;
-		byte[] bDoubleA = tpMath.asByteArray(input1);
-		assertArrayEquals(String.valueOf(input1).getBytes(), bDoubleA);
-	}
-
-	@Test
-	public final void testAsByteArrayLong() {
-		long input1 = 342349878;
-		byte[] res = tpMath.asByteArray(input1);
-		assertArrayEquals(String.valueOf(input1).getBytes(), res);
-	}
-
-	@Test
-	public final void testAsLong() {
-		String str1 = "9878";
-		Marker m1 = markerFactory.createMarker(str1);
-		long res = tpMath.asLong(m1);
-		assertEquals(str1, String.valueOf(res));
-	}
-
-	@Test
-	public final void testAsDouble() {
-		String str1 = "98.78";
-		Marker m1 = markerFactory.createMarker(str1);
-		double res = tpMath.asDouble(m1);
-		assertEquals(str1, String.valueOf(res));
-	}
-	
-	
-	// Added from here on-words 
-	
+	}	
 	
 	@Test
 	public final void testMulDouble(){
