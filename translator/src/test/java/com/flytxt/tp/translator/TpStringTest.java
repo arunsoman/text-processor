@@ -305,5 +305,44 @@ public class TpStringTest extends TpAbsTest {
 		final Marker result = tpString.trim(mocker, markerFactory);
 		assertEquals("abc", result.toString());
 	}
+	
+	
+	//Test Added from here 
+	/**
+	 * Test Case for unequal length test 
+	 */
+	@Test
+	public void testEquals_length() {		
+		final Marker marker1 = markerFactory.createMarker("FLYTXT");
+		final Marker marker2 =markerFactory.createMarker("FLYTXTT");		
+		assertEquals( false,tpString.equals(marker1, marker2));
+	}
+	
+	/**
+	 * Test Case for unequal content 
+	 */
+	@Test
+	public void testEquals_unequalContent() {		
+		final Marker marker1 = markerFactory.createMarker("FLYTXT");
+		final Marker marker2 =markerFactory.createMarker("INDIAN");
+		assertEquals(false, tpString.equals(marker1, marker2));
+	}
+	
+	
+	/**
+	 * Test With invalid InvalidExtract count 
+	 */
+	@Test	
+	public void testExtractLeading_InvalidExtract() {
+		final String str = "GUJARAT";
+		final Marker mocker = getMarker(str);
+		try{
+			 tpString.extractLeading(mocker, -1, markerFactory);
+		}catch(RuntimeException exception){
+			assertEquals(exception.getMessage(), "extractCnt should be greater than 0 current:-1");
+		}
+		
+	}
+
 
 }

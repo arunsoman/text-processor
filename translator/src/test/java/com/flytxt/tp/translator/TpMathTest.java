@@ -92,6 +92,8 @@ public class TpMathTest extends TpAbsTest {
 		assertEquals(str3, res.toString());
 	}
 	
+	
+	
 	@Test
 	public final void testMin() {
 		String str1 = "98785";
@@ -221,4 +223,95 @@ public class TpMathTest extends TpAbsTest {
 		double res = tpMath.asDouble(m1);
 		assertEquals(str1, String.valueOf(res));
 	}
+	
+	
+	// Added from here on-words 
+	
+	
+	@Test
+	public final void testMulDouble(){
+		
+		String str1 = "2.2";
+		Marker m1 = markerFactory.createMarker(str1);
+		String str2 = "2.2";
+		String result = "4.84";
+		Marker m2 = markerFactory.createMarker(str2);
+		Marker res = tpMath.mulDouble(m1, m2, markerFactory);
+		assertEquals(true, res.toString().contains(result));
+		
+	}
+	
+	@Test
+	public final void testDivDouble(){
+		
+		String str1 = "2.2";
+		Marker m1 = markerFactory.createMarker(str1);
+		String str2 = "2.2";
+		String result = "1.0";
+		Marker m2 = markerFactory.createMarker(str2);
+		Marker res = tpMath.divDouble(m1, m2, markerFactory);
+		assertEquals(result, res.toString());
+		
+	}
+	
+	@Test
+	public final void testToMarke_doubler(){		
+		double doubleValue = 2.2;		
+		Marker res = tpMath.toMarker(doubleValue,markerFactory);
+		assertEquals(String.valueOf(doubleValue), res.toString());		
+	}
+
+	@Test
+	public final void testToMarker_long(){		
+		double longValue = 2;		
+		Marker res = tpMath.toMarker(longValue,markerFactory);
+		assertEquals(String.valueOf(longValue), res.toString());		
+	}
+			
+	/**
+	 * Test two markers are unequal even if the length exceeds 
+	 */
+	@Test
+	public final void testEq_LengthExceed() {
+		String str1 = "98.780";
+		Marker m1 = markerFactory.createMarker(str1);
+		String str2 = "98.78";
+		Marker m2 = markerFactory.createMarker(str2);
+		assertEquals(tpMath.eq(m1, m2, markerFactory), false);
+	}
+	
+
+	/**
+	 * Test the negative scenario, unequal Marker scenario  
+	 */
+	@Test
+	public final void testEq_unequalPrecision() {
+		String str1 = "98.780";
+		Marker m1 = markerFactory.createMarker(str1);
+		String str2 = "98.871";
+		Marker m2 = markerFactory.createMarker(str2);
+		assertEquals(tpMath.eq(m1, m2, markerFactory), false);
+	}
+	
+	/**
+	 * Test the negative scenario, unequal Marker scenario  
+	 */
+	@Test
+	public final void testEq_unequalScale() {
+		String str1 = "198.780";
+		Marker m1 = markerFactory.createMarker(str1);
+		String str2 = "298.780";
+		Marker m2 = markerFactory.createMarker(str2);
+		assertEquals(tpMath.eq(m1, m2, markerFactory), false);
+	}
+	
+	
+	@Test
+	public final void testGraterThan() {
+		String str1 = "98.78";
+		Marker m1 = markerFactory.createMarker(str1);
+		String str2 = "99.78";
+		Marker m2 = markerFactory.createMarker(str2);
+		assertEquals( false,tpMath.greaterThan(m1, m2, markerFactory));
+	}	
 }

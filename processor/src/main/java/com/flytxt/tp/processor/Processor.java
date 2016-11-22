@@ -24,7 +24,7 @@ public class Processor {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private List<FlyReader> fileReaders = new ArrayList<FlyReader>();
+	private List<FlyReader> fileReaders;
 
 	private ThreadPoolExecutor executor;
 
@@ -35,25 +35,21 @@ public class Processor {
 
 	@PostConstruct
 	public void startFileReaders() throws Exception {
-		try {
-			List<LineProcessor> lpInstance = proxy.getLPInstance();
-			if (lpInstance.size() < 1) {
-				logger.info("No jobs configured... will exit");
-				return;
-			}
-			executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(lpInstance.size());
-			String folder;
-			for (LineProcessor lP : lpInstance) {
-				FlyReader reader = ctx.getBean(FlyReader.class);
-				folder = lP.getSourceFolder();
-				reader.set(folder, lP);
-				fileReaders.add(reader);
-				executor.submit(reader);
-			}
-
-		} catch (Exception e) {
-			logger.error("can't start readers", e);
-			throw e;
+		List<LineProcessor> lpInstance = proxy.getLPInstance();
+		int size = lpInstance.size();
+		if (size < 1) {
+			logger.info("No jobs configured... ");
+			return;
+		}
+		fileReaders = new ArrayList<FlyReader>(size);
+		executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(size);
+		String folder;
+		for (LineProcessor lP : lpInstance) {
+			FlyReader reader = ctx.getBean(FlyReader.class);
+			folder = lP.getSourceFolder();
+			reader.set(folder, lP);
+			fileReaders.add(reader);
+			executor.submit(reader);
 		}
 	}
 
