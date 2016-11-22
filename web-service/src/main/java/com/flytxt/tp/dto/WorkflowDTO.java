@@ -1,18 +1,17 @@
 package com.flytxt.tp.dto;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flytxt.tp.Job;
 import com.flytxt.tp.Utils;
 import com.flytxt.tp.compiler.RealtimeCompiler;
 import com.flytxt.tp.domain.Workflow;
 import com.flytxt.tp.marker.CurrentObject;
 import com.flytxt.tp.marker.MarkerFactory;
+import com.flytxt.tp.processor.Job;
 import com.flytxt.tp.processor.LineProcessor;
 
 @Component

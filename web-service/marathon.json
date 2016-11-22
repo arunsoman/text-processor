@@ -1,47 +1,57 @@
 {
-  "id":"/${project.artifactId}",
-  "container":{
-    "type":"DOCKER",
-    "volumes":[
-      {
-        "hostPath":"/etc/localtime",
-        "containerPath":"/etc/localtime",
-        "mode":"RO"
-      },
-      {
-        "hostPath":"/usr/share/zoneinfo/",
-        "containerPath":"/usr/share/zoneinfo/",
-        "mode":"RO"
-      }
-    ],
-    "docker":{
-      "image":"template",
-      "forcePullImage":true,
-      "network":"BRIDGE",
-      "portMappings":[
-        {
-          "containerPort":9000
-        }
-      ],
-      "parameters":[
-        {
-          "key":"net",
-          "value":"fly-net"
-        }
-      ]
-    }
-  },
- "instances":${tp-ws.instances},
-  "cpus":${tp-ws.cpus},
-  "mem":${tp-ws.mem},
-  "healthChecks":[
-    {
-      "protocol":"TCP",
-      "portIndex":0,
-      "gracePeriodSeconds":300,
-      "intervalSeconds":60,
-      "timeoutSeconds":20,
-      "maxConsecutiveFailures":3
-    }
-  ]
+	"id": "/${project.artifactId}",
+	"container": {
+		"type": "DOCKER",
+		"volumes": [
+			{
+				"hostPath": "/etc/localtime",
+				"containerPath": "/etc/localtime",
+				"mode": "RO"
+			},
+			{
+				"hostPath": "/usr/share/zoneinfo/",
+				"containerPath": "/usr/share/zoneinfo/",
+				"mode": "RO"
+			},
+			{
+				"containerPath": "/input",
+				"hostPath": "/usr/local/flytxt/rte/input",
+				"mode": "RW"
+			},
+			{
+				"containerPath": "/conf",
+				"hostPath": "/usr/local/flytxt/hadoop",
+				"mode": "RW"
+			}
+		],
+		"docker": {
+			"image": "${dockerhub.url}/${project.artifactId}:${versionNumber}",
+			"forcePullImage": true,
+			"network": "BRIDGE",
+			"portMappings": [
+				{
+					"containerPort": 9000
+				}
+			],
+			"parameters": [
+				{
+					"key": "net",
+					"value": "fly-net"
+				}
+			]
+		}
+	},
+	"instances": ${tp-ws.instances},
+	"cpus": ${tp-ws.cpus},
+	"mem": ${tp-ws.mem},
+	"healthChecks": [
+		{
+			"protocol": "TCP",
+			"portIndex": 0,
+			"gracePeriodSeconds": 300,
+			"intervalSeconds": 60,
+			"timeoutSeconds": 20,
+			"maxConsecutiveFailures": 3
+		}
+	]
 }
