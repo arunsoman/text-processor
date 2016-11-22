@@ -72,11 +72,11 @@ public class Marker {
     		length = 0;
     }
     public void splitAndGetMarkers(final byte[] token, final Router r, final MarkerFactory mf, Marker... markers) {
-        if (localData == null) {
+        if (dataType == lineDataType) {
             byte[] data = currentObject.getLine();
             find(false, data, token, r, mf, markers);
         } else {
-            find(true, localData, token, r, mf, markers);
+            find(true, getData(), token, r, mf, markers);
         }
     }
 
@@ -156,6 +156,7 @@ public class Marker {
     		case longDataType:
     			data = String.valueOf(longValue).getBytes();
     			length = data.length;
+    			index = 0;
     			break;
     		case localDataType:
     			data = localData;
@@ -163,6 +164,7 @@ public class Marker {
     		case doubleDataType:
     			data = String.valueOf(doubleValue).getBytes();
     			length = data.length;
+    			index = 0;
     			break;
     		case lineDataType:
     			data = currentObject.getLine();
