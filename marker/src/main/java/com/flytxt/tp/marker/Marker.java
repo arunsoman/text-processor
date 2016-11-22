@@ -149,4 +149,8 @@ public class Marker {
         return Double.parseDouble(toString());
     }
 
+	public boolean isDataLocal() {
+		return localData!= null;
+	}
+
 }
