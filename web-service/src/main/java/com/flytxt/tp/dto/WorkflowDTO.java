@@ -26,7 +26,7 @@ public class WorkflowDTO {
     }
 
     public String execute(Workflow workflow) throws Exception {
-        prep(workflow);
+    	prep(workflow,true);
         try {
             Class<LineProcessor> class1 = (Class<LineProcessor>) RealtimeCompiler.getClass(workflow.get(workflow.name));
             LineProcessor lp = class1.newInstance();
@@ -48,16 +48,17 @@ public class WorkflowDTO {
     }
 
     public byte[] serialize(Workflow workflow) throws Exception {
-        return prep(workflow);
+        return prep(workflow,false);
     }
 
-    private byte[] prep(Workflow workflow) throws Exception {
+    private byte[] prep(Workflow workflow,boolean isValidate) throws Exception {
         StrSubstitutor sub = new StrSubstitutor(workflow, "%(", ")");
         String result = sub.replace(scriptlp);
+        if(isValidate)
         result = Utils.replaceWithConsoleStore(result);
-        // TODO replace input Location to link location
         return RealtimeCompiler.compileToBytes(workflow.get(workflow.name), result);
     }
+    
 
     public Workflow convert(Job job) {
         Workflow wf = parseScript(job.getSchema());

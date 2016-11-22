@@ -61,7 +61,7 @@ public class ProxyScripts {
 		folderWatch = new ArrayList<>(jobs.size());
 		for (Job aJob : jobs) {
 			lps.add(loader.getClass(aJob.getByteCode(), aJob.getName()).newInstance());
-			String destination = "/tmp/" + aJob.getName() + "/" + aJob.getInputPath();
+			String destination = "/tmp/" + aJob.getName() +  aJob.getInputPath();
 			//String destination =aJob.getOutputPath();
 			log.info("destination {}", destination);
 			File theDir = new File(destination);

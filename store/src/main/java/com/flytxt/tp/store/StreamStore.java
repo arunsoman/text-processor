@@ -17,7 +17,7 @@ public class StreamStore implements Store {
 
     private String baseDir = "/tmp/tx-processor";
 
-    public StreamStore(String baseDir) {
+    public StreamStore(String baseDir,String...args) {
         super();
         this.baseDir = baseDir.endsWith("/") ? baseDir : baseDir + "/";
         this.queueWriter = new ChronicleWriter<>(this.baseDir);
