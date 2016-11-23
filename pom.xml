@@ -156,4 +156,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	<modules>
+		<module>text-processor-db</module>
+	</modules>
 </project>
