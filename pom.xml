@@ -19,7 +19,7 @@
 		<docker-plugin.version>0.4.9</docker-plugin.version>
 		<versionNumber>${project.version}</versionNumber>
 		<marathon-plugin.version>0.0.3-SNAPSHOT</marathon-plugin.version>
-	    <dockerhub.url>dhub.trv.flytxt.com</dockerhub.url>
+		<dockerhub.url>dhub.trv.flytxt.com</dockerhub.url>
 	</properties>
 	<scm>
 		<connection>scm:git:https://github.com/arunsoman/text-processor.git</connection>
@@ -118,14 +118,33 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	<modules>
-		<module>marker</module>
-		<module>translator</module>
-		<module>store</module>
-		<module>processor</module>
-		<module>compiler</module>
-		<module>web-service</module>
-	</modules>
+	<profiles>
+		<profile>
+			<id>tp-web</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>marker</module>
+				<module>translator</module>
+				<module>store</module>
+				<module>processor</module>
+				<module>compiler</module>
+				<module>web-service</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>processor</id>
+			<modules>
+				<module>marker</module>
+				<module>translator</module>
+				<module>store</module>
+				<module>processor</module>
+				<module>compiler</module>
+				<!-- <module>web-service</module> -->
+			</modules>
+		</profile>
+	</profiles>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
