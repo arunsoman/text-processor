@@ -38,7 +38,7 @@ public class MarkerSerDer {
         dOs.writeInt(markers.length);
         for (Marker aMarker : markers) {
             dOs.writeInt(aMarker.length);
-            dOs.write(aMarker.getData());
+            dOs.write(aMarker.getData(), aMarker.index, aMarker.length);
         }
         dOs.flush();
     }
