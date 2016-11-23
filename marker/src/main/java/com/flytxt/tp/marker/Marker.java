@@ -4,213 +4,233 @@ import lombok.Getter;
 
 public class Marker {
 
-    public int index;
+	public int index;
 
-    public int length;
+	public int length;
 
-    private FindMarker fm = new FindMarker();
+	private FindMarker fm = new FindMarker();
 
-    @Getter
-    private int dataType;
-    
-    private long longValue;
-    private double doubleValue;
-    private CurrentObject currentObject;
-    private byte[] localData;
-    
-    public static final int longDataType = 1;
-    public static final int doubleDataType = 2;
-    public static final int lineDataType = 3;
-    public static final int localDataType = 4;
-    
-    Marker(long l){
-    		set(l);
-    }
-    
-    Marker(double d){
-    		set(d);
-    }
-    
-    Marker(byte[] data, int index, int length) {
-    		set(data, index, length);
-    }
+	@Getter
+	private int dataType;
 
-    Marker(CurrentObject currentObject) {
-        this.currentObject = currentObject;
-        dataType = lineDataType;
-    }
+	private long longValue;
+	private double doubleValue;
+	private CurrentObject currentObject;
+	private byte[] localData;
 
-    void set(int index, int length) {
-        this.index = index;
-        this.length = length;
-        localData = null;
-        dataType = lineDataType;
-    }
+	public static final int longDataType = 1;
+	public static final int doubleDataType = 2;
+	public static final int lineDataType = 3;
+	public static final int localDataType = 4;
 
-    void set(byte[] data, int index, int length) {
-        localData = data;
-        this.index = index;
-        this.length = length;
-        dataType = localDataType;
-    }
-    
-    void set(long lvalue){
-    		longValue=lvalue;
-    		dataType = longDataType;
-    }
+	Marker(long l) {
+		set(l);
+	}
 
-    void set(double dvalue){
-    		doubleValue=dvalue;
-    		dataType = doubleDataType;
-    }
-    void reset(){
-    		localData = null;
-    		dataType = 0;
-    		length = 0;
-    }
-    public void splitAndGetMarkers(final byte[] token, final Router r, final MarkerFactory mf, Marker... markers) {
-        if (dataType == lineDataType) {
-            byte[] data = currentObject.getLine();
-            find(false, data, token, r, mf, markers);
-        } else {
-            find(true, getData(), token, r, mf, markers);
-        }
-    }
+	Marker(double d) {
+		set(d);
+	}
 
-    private void resetMarkerLength(Marker... markers) {
-        for (Marker aMarker : markers) {
-            aMarker.reset();
-        }
-    }
+	Marker(byte[] data, int index, int length) {
+		set(data, index, length);
+	}
 
-    private void find(boolean assignData, byte[] data, byte[] token, final Router router, MarkerFactory mf, Marker... markers) {
-        resetMarkerLength(markers);
-        if (token.length == 1)
-            fromByteArray(assignData, token[0], data, router, markers);
-        else
-            fromByteArray(assignData, token, data, router, markers);
-        // System.out.println("\n");
-    }
+	Marker(CurrentObject currentObject) {
+		this.currentObject = currentObject;
+		dataType = lineDataType;
+	}
 
-    private void fromByteArray(boolean assignData,  byte token, byte[] data, Router router, Marker... markers) {
-        int eol = this.index + length;
-        int from = this.index;
-        int stx = this.index;
+	void set(int index, int length) {
+		this.index = index;
+		this.length = length;
+		localData = null;
+		dataType = lineDataType;
+	}
 
-        int markers2Mine = router.maxMarkers2Mine();
-        int counter = 0;
-        for (int i = 0; i <= markers2Mine; i++) {
-            from = fm.findPreMarker(token, from + 1, eol, data);
-            if (from == -1) {// there is no marker hence consider the whole ",NoCommaAfterThis."
-                from = eol;
-            }
-            int len = from - stx;
-            if (len < 0) {
-                stx = 0;
-                len = 0;
-            }
-            // System.out.println("{M:"+i +" from:"+from +" str: "+new String(data, stx, len) +" } ");
-            int nextPos = router.geNthtMarkerlocation(counter);
-            if (i == nextPos) {
-                int ptr = router.getMarkerPosition(counter);
-                Marker m = markers[ptr];
-                m.set(stx, len);
-                if (assignData)
-                    m.set(data, stx, len);
-                counter++;
-            }
-            stx = from + 1;
-        }
+	void set(byte[] data, int index, int length) {
+		localData = data;
+		this.index = index;
+		this.length = length;
+		dataType = localDataType;
+	}
 
-    }
+	void set(long lvalue) {
+		longValue = lvalue;
+		dataType = longDataType;
+	}
 
-    private void fromByteArray(boolean assignData,  byte[] token, byte[] data, Router router, Marker... markers) {
-        int eol = this.index + length;
-        int from = this.index;
-        int stx = this.index;
-        int markers2Mine = router.maxMarkers2Mine();
-        int counter = 0;
-        for (int i = 0; i <= markers2Mine; i++) {
-            from = fm.findPreMarker(token, from + 1, eol, data);
-            int len = from - stx - token.length;
-            // System.out.println("{M:"+i +" from:"+from +" str: "+new String(data, stx, len) +" } ");
-            int nextPos = router.geNthtMarkerlocation(counter);
-            if (i == nextPos) {
-                int ptr = router.getMarkerPosition(counter);
-                Marker m = markers[ptr];
-                m.set(stx, len);
-                if (assignData)
-                    m.set(data, stx, len);
-                counter++;
-            }
-            stx = from;
-        }
-    }
+	void set(double dvalue) {
+		doubleValue = dvalue;
+		dataType = doubleDataType;
+	}
 
-    public byte[] getData() {
-    		byte[] data ;
-    		switch(dataType){
-    		case longDataType:
-    			data = String.valueOf(longValue).getBytes();
-    			length = data.length;
-    			index = 0;
-    			break;
-    		case localDataType:
-    			data = localData;
-    			break;
-    		case doubleDataType:
-    			data = String.valueOf(doubleValue).getBytes();
-    			length = data.length;
-    			index = 0;
-    			break;
-    		case lineDataType:
-    			data = currentObject.getLine();
-    			break;
-    		default:
-    			data = new byte[0];
-    			length = 0;
-    		}
-        return data;
-    }
+	void reset() {
+		localData = null;
+		dataType = 0;
+		length = 0;
+	}
 
-    @Override
-    public String toString() {
-        return new String(getData(), index, length);
-    }
+	public void splitAndGetMarkers(final byte[] token, final Router r, final MarkerFactory mf, Marker... markers) {
+		if (dataType == lineDataType) {
+			byte[] data = currentObject.getLine();
+			find(false, data, token, r, mf, markers);
+		} else {
+			find(true, getData(), token, r, mf, markers);
+		}
+	}
 
-    public int asInt() {
-    		if(dataType == longDataType)
-    			return (int)longValue;
-    		return (int)asLong();
-    }
+	private void resetMarkerLength(Marker... markers) {
+		for (Marker aMarker : markers) {
+			aMarker.reset();
+		}
+	}
 
-    public long asLong() {
-    		if(dataType == longDataType)
+	private void find(boolean assignData, byte[] data, byte[] token, final Router router, MarkerFactory mf,
+			Marker... markers) {
+		resetMarkerLength(markers);
+		if (token.length == 1)
+			fromByteArray(assignData, token[0], data, router, markers);
+		else
+			fromByteArray(assignData, token, data, router, markers);
+		// System.out.println("\n");
+	}
+
+	private void fromByteArray(boolean assignData, byte token, byte[] data, Router router, Marker... markers) {
+		int eol = this.index + length;
+		int from = this.index;
+		int stx = this.index;
+
+		int markers2Mine = router.maxMarkers2Mine();
+		int counter = 0;
+		for (int i = 0; i <= markers2Mine; i++) {
+			from = fm.findPreMarker(token, from + 1, eol, data);
+			if (from == -1) {// there is no marker hence consider the whole
+								// ",NoCommaAfterThis."
+				from = eol;
+			}
+			int len = from - stx;
+			if (len < 0) {
+				stx = 0;
+				len = 0;
+			}
+			// System.out.println("{M:"+i +" from:"+from +" str: "+new
+			// String(data, stx, len) +" } ");
+			int nextPos = router.geNthtMarkerlocation(counter);
+			if (i == nextPos) {
+				int ptr = router.getMarkerPosition(counter);
+				Marker m = markers[ptr];
+				m.set(stx, len);
+				if (assignData)
+					m.set(data, stx, len);
+				counter++;
+			}
+			stx = from + 1;
+		}
+
+	}
+
+	private void fromByteArray(boolean assignData, byte[] token, byte[] data, Router router, Marker... markers) {
+		int eol = this.index + length;
+		int from = this.index;
+		int stx = this.index;
+		int markers2Mine = router.maxMarkers2Mine();
+		int counter = 0;
+		for (int i = 0; i <= markers2Mine; i++) {
+			from = fm.findPreMarker(token, from + 1, eol, data);
+			int len = from - stx - token.length;
+			// System.out.println("{M:"+i +" from:"+from +" str: "+new
+			// String(data, stx, len) +" } ");
+			int nextPos = router.geNthtMarkerlocation(counter);
+			if (i == nextPos) {
+				int ptr = router.getMarkerPosition(counter);
+				Marker m = markers[ptr];
+				m.set(stx, len);
+				if (assignData)
+					m.set(data, stx, len);
+				counter++;
+			}
+			stx = from;
+		}
+	}
+
+	public byte[] getData() {
+		byte[] data;
+		switch (dataType) {
+		case longDataType:
+			data = String.valueOf(longValue).getBytes();
+			length = data.length;
+			index = 0;
+			break;
+		case localDataType:
+			data = localData;
+			break;
+		case doubleDataType:
+			data = String.valueOf(doubleValue).getBytes();
+			length = data.length;
+			index = 0;
+			break;
+		case lineDataType:
+			data = currentObject.getLine();
+			break;
+		default:
+			data = new byte[0];
+			length = 0;
+		}
+		return data;
+	}
+
+	@Override
+	public String toString() {
+		switch (dataType) {
+		case localDataType:
+			return new String(localData, index, length);
+		case longDataType:
+			return String.valueOf(longValue);
+		case doubleDataType:
+			return String.valueOf(doubleValue);
+		case lineDataType:
+			return new String(currentObject.getLine(), index, length);
+		}
+		return null;
+	}
+
+	public int asInt() {
+		if (dataType == longDataType)
+			return (int) longValue;
+		return (int) asLong();
+	}
+
+	public long asLong() {
+		if (dataType == longDataType )
 			return longValue;
-    		if (length == 0) {
-            return 0;
-        }
-        long value = 0;
-        byte[] data = getData();
-        int power = length;
-        for (int i = index; i < index + length; i++) {
-            power = power - 1;
-            value += Math.pow(10, power) * Character.getNumericValue(data[i]);
-        }
-        return value;
-    }
+		if(dataType == doubleDataType)
+			return (long)doubleValue;
+		
+		if (length == 0) {
+			return 0;
+		}
+		long value = 0;
+		byte[] data = getData();
+		int power = length;
+		for (int i = index; i < index + length; i++) {
+			power = power - 1;
+			value += Math.pow(10, power) * Character.getNumericValue(data[i]);
+		}
+		return value;
+	}
 
-    public double asDouble() {
-    		if(dataType == doubleDataType)
-    			return doubleValue;
-    		
-        if (length == 0) {
-            return 0;
-        }
-        return Double.parseDouble(toString());
-    }
+	public double asDouble() {
+		if (dataType == doubleDataType)
+			return doubleValue;
+		if (dataType == longDataType)
+			throw new RuntimeException("Type cast exception LongMarker to DoubleMarker");
+		if (length == 0) {
+			return 0;
+		}
+		return Double.parseDouble(toString());
+	}
 
 	public boolean isDataLocal() {
-		return localData!= null;
+		return localData != null;
 	}
 }
