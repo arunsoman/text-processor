@@ -178,6 +178,9 @@ public class Marker {
 
     @Override
     public String toString() {
+        return toString(getData());
+    }
+    public String toString(byte[] data) {
         return new String(getData(), index, length);
     }
 
@@ -190,11 +193,11 @@ public class Marker {
     public long asLong() {
     		if(dataType == longDataType)
 			return longValue;
-    		if (length == 0) {
+    		byte[] data = getData();
+    		if (data == null) {
             return 0;
         }
-        long value = 0;
-        byte[] data = getData();
+        long value = 0;   
         int power = length;
         for (int i = index; i < index + length; i++) {
             power = power - 1;
@@ -204,13 +207,14 @@ public class Marker {
     }
 
     public double asDouble() {
-    		if(dataType == doubleDataType)
-    			return doubleValue;
+    		if(dataType <= doubleDataType)
+    			return doubleValue==0?longValue:doubleValue;
     		
-        if (length == 0) {
-            return 0;
-        }
-        return Double.parseDouble(toString());
+    		byte[] data = getData();
+    		if(data ==null){
+    			return 0;
+    		}
+        return Double.parseDouble(toString(data));
     }
 
 	public boolean isDataLocal() {

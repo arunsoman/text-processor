@@ -13,7 +13,6 @@ public class TranslatorFT {
 	final String str = 
 "1,22,1,1,,45,30,False$2011-11-11T12:00:00-05:00+FAlse*,,,-False^False,1,0,,,,,,,,,,,1,1";
 
-	@Ignore
 	@Test
 	public void ft(){
 		MarkerFactory mf = new MarkerFactory();
@@ -28,14 +27,10 @@ public class TranslatorFT {
         int [] indices = new int[]{1,6,5};
         Router r = new Router(indices);
         lineMarker.splitAndGetMarkers(",".getBytes(),r , mf, m1, m2, m4);
-        //System.out.println(m1+" : "+m2+" : "+m3+" : "+m4);
         TpMath m = new TpMath();
         m3 = m.addLong(m1, m2, mf);
-        //System.out.println(m1+" : "+m2+" : "+m3+" : "+m4);
         m5 = m.subDouble(m3, m4, mf);
-        System.out.println(m1+" : "+m2+" : "+m3+" : "+m4);
-        System.out.println(m5);
-        //22 30 52 45 7
+       
         double result = 7;
         Assert.assertEquals(result, m5.asDouble());
         		
