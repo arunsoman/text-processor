@@ -1,5 +1,7 @@
 package com.flytxt.tp.marker;
 
+import lombok.Getter;
+
 public class Marker {
 
     public int index;
@@ -8,7 +10,7 @@ public class Marker {
 
     private FindMarker fm = new FindMarker();
 
-
+    @Getter
     private int dataType;
     
     private long longValue;
