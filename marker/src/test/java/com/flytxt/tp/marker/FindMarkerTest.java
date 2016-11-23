@@ -9,11 +9,18 @@ import junit.framework.Assert;
 public class FindMarkerTest {
 	FindMarker fm = new FindMarker();
 	@Test
-	public void test0(){
+	public void whenThereIsNoTokenByte(){
 		String str = "12345";
 		byte[] data = str.getBytes();
 		byte[] token = "^".getBytes();
 		Assert.assertEquals(str.indexOf("^"), fm.findPreMarker(token[0], 0, data.length, data));
+	}
+	@Test
+	public void whenThereIsNoTokenByteArray(){
+		String str = "12345";
+		byte[] data = str.getBytes();
+		byte[] token = "^#".getBytes();
+		Assert.assertEquals(str.indexOf("^#"), fm.findPreMarker(token[0], 0, data.length, data));
 	}
 	@Test
 	public void test1(){

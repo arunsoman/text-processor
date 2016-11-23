@@ -18,7 +18,17 @@ public class MarkerFactoryTest {
     	if(String.valueOf(value).equals(mInt.toString()))
     		Assert.assertEquals(String.valueOf(value), mInt.toString());
     }
-	
+
+	@Test
+    public void createMarkerDouble(){
+    	double value = 998.7654;
+    	Marker mInt = markerFactory.createMarker(value);
+    	if(value != mInt.asDouble())
+    		Assert.assertEquals(value, mInt.asDouble());
+    	if(String.valueOf(value).equals(mInt.toString()))
+    		Assert.assertEquals(String.valueOf(value), mInt.toString());
+    }
+
 	@Test
     public void createMarkerString(){
     	String value = "998765-- 8 4";

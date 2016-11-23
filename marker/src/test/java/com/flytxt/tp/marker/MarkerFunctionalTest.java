@@ -22,7 +22,19 @@ public class MarkerFunctionalTest extends TestConstruct implements ConstantMarke
         line.splitAndGetMarkers("False".getBytes(),r , markerFactory, m1, m2);
         validate("False", indices, str, m1,m2);
     }
-	
+
+	@Test
+    public void testWithoutLineMarker() {      
+		final Marker line = getLineMarker(str);
+        Marker m1 = markerFactory.createMarker(str);
+        Marker m2 = markerFactory.createMarker(null, 0,0);
+        Marker m3 = markerFactory.createMarker(null, 0,0);
+        int [] indices = new int[]{1,2};
+        Router r = new Router(indices);
+        m1.splitAndGetMarkers("False".getBytes(),r , markerFactory, m2, m3);
+        validate("False", indices, str, m2,m3);
+    }
+
 	@Test
     public void testFalse() {        
         final Marker line = getLineMarker(str);

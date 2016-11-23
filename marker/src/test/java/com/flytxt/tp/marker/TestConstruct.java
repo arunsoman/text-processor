@@ -10,6 +10,7 @@ public abstract class TestConstruct {
 
 	protected Marker getLineMarker(String str) {
 		byte[] lineMarker = str.getBytes();
+		markerFactory.getCurrentObject().init("dummy-Folder", "fileName");
 		markerFactory.getCurrentObject().setCurrentLine(lineMarker, 0, lineMarker.length);
 		Marker line = markerFactory.getLineMarker();
 		return line;
@@ -26,9 +27,10 @@ public abstract class TestConstruct {
 			Assert.assertEquals("split size can't be less than indies", splits.length, indices);
 		}
 		for (int i = 0; i < indices.length; i++) {
+			String actualStr = new String(markers[i].getData(), markers[i].index, markers[i].length);
 			try {
-				if (!splits[indices[i]].equals(markers[i].toString()))
-					Assert.assertEquals(splits[indices[i]], markers[i].toString());
+				if (!splits[indices[i]].equals(actualStr))
+					Assert.assertEquals(splits[indices[i]], actualStr);
 			} catch (ArrayIndexOutOfBoundsException e) {
 				Assert.assertEquals(0, markers[i].length);
 			}
