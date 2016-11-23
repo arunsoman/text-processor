@@ -1,5 +1,7 @@
 package com.flytxt.tp.marker;
 
+import javax.crypto.spec.IvParameterSpec;
+
 import lombok.Getter;
 
 public class Marker {
@@ -22,7 +24,7 @@ public class Marker {
 	public static final int doubleDataType = 2;
 	public static final int lineDataType = 3;
 	public static final int localDataType = 4;
-
+	final static int maxDigitsInLong = String.valueOf(Long.MAX_VALUE).length();
 	Marker(long l) {
 		set(l);
 	}
@@ -197,7 +199,10 @@ public class Marker {
 	public int asInt() {
 		if (dataType == longDataType)
 			return (int) longValue;
-		return (int) asLong();
+		long lValue = asLong();
+		if(lValue < Integer.MIN_VALUE || lValue > Integer.MAX_VALUE)
+			throw new RuntimeException(lValue +" cant cast to int");
+		return (int)lValue;
 	}
 
 	public long asLong() {
@@ -211,6 +216,12 @@ public class Marker {
 		}
 		long value = 0;
 		byte[] data = getData();
+		if(length > maxDigitsInLong){
+			throw new RuntimeException(new String(data, index, length)+" cant be Long");
+		}
+		if(length == maxDigitsInLong){
+			Long.parseLong(new String(data, index, length));
+		}
 		int power = length;
 		for (int i = index; i < index + length; i++) {
 			power = power - 1;

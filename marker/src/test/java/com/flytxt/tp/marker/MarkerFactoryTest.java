@@ -18,7 +18,27 @@ public class MarkerFactoryTest {
     	if(String.valueOf(value).equals(mInt.toString()))
     		Assert.assertEquals(String.valueOf(value), mInt.toString());
     }
-
+	@Test
+    public void createLongAndReadAsInt(){
+    	String value = "43453453453345345654";
+    	Marker strM = markerFactory.createMarker(value);
+    	try{
+    	int iVal = strM.asInt();
+    	Assert.fail();
+	}catch(RuntimeException e){
+		}
+	}
+	
+	@Test
+    public void createInvalidLongAndReadAsLong(){
+    	String value = "43666666666666666664534534533453456548888888888888888";
+    	Marker strM = markerFactory.createMarker(value);
+    	try{
+    	long lVal = strM.asLong();
+    	Assert.fail();
+	}catch(RuntimeException e){
+		}
+	}
 	@Test
     public void createMarkerDouble(){
     	double value = 998.7654;
