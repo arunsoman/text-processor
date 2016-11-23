@@ -22,23 +22,18 @@ public class Marker {
     public static final int localDataType = 4;
     
     Marker(long l){
-    		longValue =l;
-    		dataType = longDataType;
+    		set(l);
     }
     
     Marker(double d){
-    		doubleValue = d;
-    		dataType = doubleDataType;
+    		set(d);
     }
     
     Marker(byte[] data, int index, int length) {
-        localData = data;
-        this.index = index;
-        this.length = length;
-        dataType = localDataType;
+    		set(data, index, length);
     }
 
-    public Marker(CurrentObject currentObject) {
+    Marker(CurrentObject currentObject) {
         this.currentObject = currentObject;
         dataType = lineDataType;
     }
