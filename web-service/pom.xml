@@ -147,7 +147,7 @@
 						<executions>
 							<execution>
 								<id>build-image</id>
-								<phase>install</phase>
+								<phase>deploy</phase>
 								<goals>
 									<goal>build</goal>
 									<goal>push</goal>
@@ -167,7 +167,7 @@
 								<goals>
 									<goal>deploy</goal>
 								</goals>
-								<phase>install</phase>
+								<phase>deploy</phase>
 							</execution>
 						</executions>
 					</plugin>
