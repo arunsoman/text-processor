@@ -47,7 +47,7 @@ public class Processor {
 			FlyReader reader = ctx.getBean(FlyReader.class);
 			LineProcessor lP = pConfig.getLp(aJob.getByteCode(), aJob.getName());
 			folder = lP.getSourceFolder();
-			reader.set(folder, lP);
+			reader.set(folder, lP,aJob.getName());
 			fileReaders.add(reader);
 			executor.submit(reader);
 		}
