@@ -7,19 +7,17 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.concurrent.Semaphore;
-import java.util.stream.Stream;
-
 import javax.annotation.concurrent.ThreadSafe;
 
 import com.flytxt.tp.marker.Marker;
 
 @ThreadSafe
 public class FlyMemStore {
-	private MappedByteBuffer out;
+	private final MappedByteBuffer out;
 
 	// read and write indexes are stored in this buffer in ((int)readIndex,
 	// (int)writeIndex) format
-	private MappedByteBuffer meta;
+	private final MappedByteBuffer meta;
 
 	private static final byte[] newLine = "\n".getBytes();
 	private static final byte[] comma = ",".getBytes();
@@ -35,31 +33,33 @@ public class FlyMemStore {
 	}
 
 	public static synchronized FlyMemStore getSingletonInstance() throws FileNotFoundException, IOException {
-		if (instance == null)
+		if (instance == null) {
 			instance = new FlyMemStore();
+		}
 		return instance;
 	}
 
-	public void write(Marker... markers) {
+	public void write(final Marker... markers) {
 		// keep on pushing data to out, when there is no more space to write
 		// throw Arrayoutofbound
-		int dataLenght = Arrays.stream(markers).mapToInt(mapper -> mapper.length).sum();
+		final int dataLenght = Arrays.stream(markers).mapToInt(mapper -> mapper.length).sum();
 
 		try {
 			semaphore.acquire();
-			if (out.remaining() < dataLenght + markers.length + newLine.length - 1)
+			if (out.remaining() < dataLenght + markers.length + newLine.length - 1) {
 				throw new ArrayIndexOutOfBoundsException();
+			}
 			boolean needDelimiter = false;
-			for (int i = 0; i < markers.length; i++) {
+			for (final Marker marker : markers) {
 				if (needDelimiter) {
 					out.put(comma);
 				}
-				out.put(markers[i].getData(), markers[i].index, markers[i].length);
+				out.put(marker.getData(), marker.index, marker.length);
 				needDelimiter = true;
 			}
 			out.put(newLine);
 			meta.putInt(4, out.position());
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			e.printStackTrace();
 		} finally {
 			semaphore.release();
@@ -71,18 +71,18 @@ public class FlyMemStore {
 		byte[] data = null;
 		try {
 			semaphore.acquire();
-			int lastWriteIndex = meta.getInt(4);
-			int lastReadIndex = meta.getInt(1);
+			final int lastWriteIndex = meta.getInt(4);
+			final int lastReadIndex = meta.getInt(1);
 			out.position(lastReadIndex);
-			int datalenght = lastWriteIndex - lastReadIndex;
-			if(datalenght>0){
-			data = new byte[datalenght];
-			out.get(data, lastReadIndex, lastWriteIndex - lastReadIndex);
-			out.position(lastReadIndex);
+			final int datalenght = lastWriteIndex - lastReadIndex;
+			if (datalenght > 0) {
+				data = new byte[datalenght];
+				out.get(data, lastReadIndex, lastWriteIndex - lastReadIndex);
+				out.position(lastReadIndex);
 			}
 			meta.putInt(1, lastReadIndex);
 			meta.putInt(4, lastReadIndex);
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			e.printStackTrace();
 		} finally {
 			semaphore.release();
@@ -91,10 +91,16 @@ public class FlyMemStore {
 	}
 
 	public void close() throws IOException {
-		if (outFile != null)
+		try {
+			semaphore.acquire();
 			outFile.close();
-		if (metaFile != null)
 			metaFile.close();
-		instance = null;
+			instance = null;
+		}catch (final InterruptedException e) {
+			e.printStackTrace();
+		} finally {
+			semaphore.release();
+		}
+
 	}
 }
