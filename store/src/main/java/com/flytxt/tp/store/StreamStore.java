@@ -37,7 +37,8 @@ public class StreamStore implements Store {
 
     @Override
     public String done() throws IOException {
-        // TODO Auto-generated method stub
-        return null;
+    	if(queueWriter !=null)
+    	queueWriter.destroy();
+    	return null;
     }
 }
