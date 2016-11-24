@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <property name="clob.default" value="EMPTY_CLOB()" dbms="oracle" />
+    <property name="clob.default" value="NULL" dbms="mysql" />
+    <property name="clob.default" value="NULL" dbms="h2" />
+    
+    <property name="default.timestamp.value" value="SYSTIMESTAMP" dbms="oracle" />
+    <property name="default.timestamp.value" value="CURRENT_TIMESTAMP()" dbms="mysql" />
+    <property name="default.timestamp.value" value="CURRENT_TIMESTAMP()" dbms="h2" />
+
+    <property name="default.date.value" value="SYSDATE" dbms="oracle" />
+    <property name="default.date.value" value="NULL" dbms="mysql" />
+    <property name="default.date.value" value="CURRENT_DATE()" dbms="h2" />
+    
+    <changeSet author="aslam.remeez" id="003">
+        <createTable tableName="dk_config">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="value" type="varchar(100)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    
+      <changeSet author="aslam.remeez" id="001">
+        <preConditions onFail="MARK_RAN" >  
+               <not><tableExists tableName="app_partner_profile_field"/></not>
+        </preConditions>
+        <createTable tableName="app_partner_profile_field">
+            <column name="PARTNER_PROFILE_FIELD_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="PARTNER_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="PARTNER_PROFILE_FIELD_NAME" type="VARCHAR2(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="PROFILE_FIELD_TYPE_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="PARTNER_PROFILE_FIELD_POSITION" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="STATUS_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="FIELD_NAME" type="VARCHAR2(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR2(255)" />
+            <column defaultValueNumeric="0" name="SPECIAL_CATEGORY" type="NUMBER(1, 0)" />
+            <column name="GROUP_ID" type="BIGINT" />
+            <column name="UI_ORDER_ID" type="BIGINT" />
+            <column defaultValueNumeric="0" name="IS_HIGHLIGHTABLE" type="BIGINT" />
+        </createTable>
+    </changeSet>
+    
+    
+     <changeSet author="aslam.remeez" id="004">
+        <preConditions onFail="MARK_RAN" >  
+               <not><tableExists tableName="registration_list"/></not>
+        </preConditions>
+        <createTable tableName="registration_list">
+            <column name="REGISTRATION_LIST_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="REGISTRATION_LIST_NAME" type="VARCHAR2(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="REGISTRATION_LIST_TYPE_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="PARTNER_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="MEMBER_COUNT" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="LAST_FULL_COUNT" type="TIMESTAMP" />
+            <column name="CREATED_BY" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="CREATE_DATE" type="TIMESTAMP" defaultValue="${default.timestamp.value}">
+                <constraints nullable="false" />
+            </column>
+            <column name="UPDATED_BY" type="BIGINT" />
+            <column name="UPDATE_DATE" type="TIMESTAMP" />
+            <column name="STATUS_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR2(255)" />
+            <column name="EVENT_INSTANCE_ID" type="BIGINT" />
+            <column defaultValueNumeric="0" name="DNC_TYPE" type="NUMBER(1, 0)" />
+        </createTable>
+    </changeSet>
+    
+    <changeSet author="aslam.remeez" id="005">
+        <preConditions onFail="MARK_RAN" >  
+               <not><tableExists tableName="metric_config"/></not>
+        </preConditions>
+        <createTable tableName="metric_config">
+            <column name="METRIC_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="METRIC_NAME" type="VARCHAR2(30)" />
+            <column name="METRIC_DESC" type="VARCHAR2(500)" />
+            <column name="PARTNER_ID" type="BIGINT" />
+            <column name="DAY_COUNT" type="NUMBER(4, 0)" />
+            <column name="WEEK_COUNT" type="NUMBER(4, 0)" />
+            <column name="MONTH_COUNT" type="NUMBER(4, 0)" />
+            <column name="AGG_BASIS" type="VARCHAR2(30)" />
+            <column name="DAY_DTE" type="date" />
+            <column name="DAY_ID" type="BIGINT" />
+            <column name="WEEK_DTE" type="date" />
+            <column name="WEEK_ID" type="BIGINT" />
+            <column name="MONTH_DTE" type="date" />
+            <column name="MONTH_ID" type="BIGINT" />
+            <column name="TRACKABLE" type="NUMBER(1, 0)" />
+            <column name="WEEK_TYPE" type="NUMBER(2, 0)" />
+        </createTable>
+    </changeSet>
+    
+     <changeSet author="aslam.remeez" id="006">
+        <preConditions onFail="MARK_RAN" >  
+               <not><tableExists tableName="track_event_type"/></not>
+        </preConditions>
+        <createTable tableName="track_event_type">
+            <column name="EVENT_TYPE_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="EVENT_TYPE_NAME" type="VARCHAR2(50)" />
+            <column defaultValueNumeric="1" name="SUMMARY" type="NUMBER(1, 0)" />
+            <column name="UNIQUE_EVENT_TYPE_ID" type="BIGINT" />
+            <column name="CUSTOM_EVENT" type="NUMBER(1, 0)" />
+            <column name="PARTNER_ID" type="BIGINT" />
+            <column name="DESCRIPTION" type="VARCHAR2(500)" />
+            <column defaultValueNumeric="0" name="NE_EVENT" type="BIGINT" />
+        </createTable>
+    </changeSet>
+    
+
+</databaseChangeLog>
