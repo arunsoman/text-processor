@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class NeonStoreTest {
 
 	}
 
-	@Test	
+	@Test
 	public void test() throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader("app/test/testFile"));
 		String string = null;

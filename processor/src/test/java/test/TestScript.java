@@ -113,4 +113,10 @@ hdfsStore.set(fileNameStr);
 		hdfsStore.save(data, fileName.toString(), m__temp1,mpr);
 
 	}
+
+	@Override
+	public void preDestroy() {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -46,4 +46,10 @@ public class StreamStore implements Store {
         log.info("[StreamStore|done|File processed: {}]", fileName);
         return null;
     }
+
+	@Override
+	public void preDestroy() {
+		// TODO Auto-generated method stub
+		
+	}
 }

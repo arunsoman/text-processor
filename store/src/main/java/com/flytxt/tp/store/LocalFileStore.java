@@ -155,4 +155,10 @@ public class LocalFileStore implements Store {
         Files.move(Paths.get(filePath.toAbsolutePath() + TMP), Paths.get(folderName + "/" + doneFile));
         return null;
     }
+
+	@Override
+	public void preDestroy() {
+		// TODO Auto-generated method stub
+		
+	}
 }
