@@ -17,4 +17,6 @@ public interface LineProcessor {
     String getFilter();
 
     MarkerFactory getMf();
+    
+    void preDestroy();
 }

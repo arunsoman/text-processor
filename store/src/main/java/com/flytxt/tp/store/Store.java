@@ -11,4 +11,6 @@ public interface Store {
     public void save(final byte[] data,   String fileName, final Marker... markers) throws IOException;
 
     public String done() throws IOException;
+    
+    void preDestroy();
 }

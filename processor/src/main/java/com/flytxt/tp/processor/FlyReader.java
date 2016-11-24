@@ -69,6 +69,7 @@ public class FlyReader implements Callable<FlyReader> {
                         Files.delete(path);
                         lastProcessedFile = fileName;
                         if (stopRequested) {
+                        	lp.preDestroy();
                             appLog.debug("shutting down Worker @ :" + folder);
                             break;
                         }
@@ -130,7 +131,7 @@ public class FlyReader implements Callable<FlyReader> {
     }
 
     @PreDestroy
-    public void stop() {
+    public void preDestroy() {
         stopRequested = true;
     }
 

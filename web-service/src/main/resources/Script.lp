@@ -76,6 +76,9 @@ public final class %(name) implements LineProcessor,ConstantMarker {
 	    return sb.toString();
 	}
 
+	public void preDestroy(){
+	%(preDestroy)
+	}
 	public String getFilter(){
 	    return this.regex;
 	}

@@ -23,4 +23,10 @@ public class Blackhole implements Store {
     @Override
     public void set(String fileName) {
     }
+
+	@Override
+	public void preDestroy() {
+		// TODO Auto-generated method stub
+		
+	}
 }

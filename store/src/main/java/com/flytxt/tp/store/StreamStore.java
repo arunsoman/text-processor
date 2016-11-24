@@ -40,4 +40,10 @@ public class StreamStore implements Store {
         // TODO Auto-generated method stub
         return null;
     }
+
+	@Override
+	public void preDestroy() {
+		// TODO Auto-generated method stub
+		
+	}
 }

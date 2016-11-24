@@ -27,7 +27,7 @@ public class Processor {
 
 	public void stopFileReads() {
 		for (FlyReader aReader : fileReaders)
-			aReader.stop();
+			aReader.preDestroy();
 	}
 
 	@PostConstruct
@@ -62,9 +62,9 @@ public class Processor {
 	}
 
 	@PreDestroy
-	public void init0() {
+	public void preDestroy() {
 		for (FlyReader aReader : fileReaders)
-			aReader.stop();
+			aReader.preDestroy();
 		executor.shutdown();
 
 	}
