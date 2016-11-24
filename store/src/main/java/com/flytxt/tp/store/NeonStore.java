@@ -77,6 +77,7 @@ public class NeonStore implements Store {
 				public Void run() throws Exception {
 					rwl.writeLock().lock();
 					try {
+						if(data !=null)
 						writer.write(data);
 					} finally {
 						writer.close();
@@ -119,7 +120,6 @@ public class NeonStore implements Store {
 		if (tryLock) {
 			try {
 				writeToHdfs(fms.read());
-
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
