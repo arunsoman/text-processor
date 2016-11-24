@@ -65,7 +65,7 @@ public class ConsoleStore implements Store {
     }
 
 	@Override
-	public void preDestroy() {
+	public void close() throws Exception {
 		// TODO Auto-generated method stub
 		
 	}

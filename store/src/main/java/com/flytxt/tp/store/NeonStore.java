@@ -35,14 +35,7 @@ public class NeonStore implements Store {
 		
 	}
 
-	@Override
-	@PreDestroy
-	public String done() throws IOException {
-		
-		return null;
-	}
-
-	// provided lower priority in hdfs write
+		// provided lower priority in hdfs write
 	@Scheduled(fixedDelay = 500)
 	public void timer() {
 		hdfswrite();
@@ -64,10 +57,16 @@ public class NeonStore implements Store {
 		*/
 	}
 
-	
 	@Override
-	public void preDestroy() {
+	public void close() throws Exception {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public String done() throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
