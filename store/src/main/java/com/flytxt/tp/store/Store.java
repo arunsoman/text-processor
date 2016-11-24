@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import com.flytxt.tp.marker.Marker;
 
-public interface Store {
+public interface Store extends AutoCloseable{
 
     public void set(final String fileName);
 
@@ -12,5 +12,4 @@ public interface Store {
 
     public String done() throws IOException;
     
-    void preDestroy();
 }

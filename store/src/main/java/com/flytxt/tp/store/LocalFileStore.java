@@ -157,7 +157,7 @@ public class LocalFileStore implements Store {
     }
 
 	@Override
-	public void preDestroy() {
+	public void close() throws Exception {
 		// TODO Auto-generated method stub
 		
 	}
