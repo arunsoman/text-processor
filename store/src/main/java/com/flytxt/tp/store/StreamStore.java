@@ -7,6 +7,9 @@ import com.flytxt.tp.marker.MarkerSerDer;
 import com.flytxt.tp.store.chronicle.ChronicleWriter;
 import com.flytxt.tp.store.chronicle.StreamData;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class StreamStore implements Store {
 
     private MarkerSerDer serDer = new MarkerSerDer();
@@ -17,7 +20,9 @@ public class StreamStore implements Store {
 
     private String baseDir = "/tmp/tx-processor";
 
-    public StreamStore(String baseDir,String...args) {
+    private String fileName = "";
+
+    public StreamStore(String baseDir, String... args) {
         super();
         this.baseDir = baseDir.endsWith("/") ? baseDir : baseDir + "/";
         this.queueWriter = new ChronicleWriter<>(this.baseDir);
@@ -26,6 +31,7 @@ public class StreamStore implements Store {
 
     @Override
     public void set(String fileName) {
+        this.fileName = fileName;
     }
 
     @Override
@@ -37,7 +43,7 @@ public class StreamStore implements Store {
 
     @Override
     public String done() throws IOException {
-        // TODO Auto-generated method stub
+        log.info("[StreamStore|done|File processed: {}]", fileName);
         return null;
     }
 }

@@ -37,6 +37,8 @@ public class ChronicleWriter<T extends Marshallable> {
 
     private Logger appLogger;
 
+    private ChronicleQueue queue;
+
     public ChronicleWriter(String chroniclePath) {
         super();
         this.chroniclePath = chroniclePath;
@@ -44,8 +46,9 @@ public class ChronicleWriter<T extends Marshallable> {
     }
 
     public void init() {
-        ChronicleQueue queue = ChronicleQueueBuilder.single(chroniclePath).build();
+        queue = ChronicleQueueBuilder.single(chroniclePath).build();
         appender = queue.acquireAppender();
+        appLogger.info("[ChronicleWriter|init|Writer Initialized on:{}]", chroniclePath);
     }
 
     public void write(T document) {
@@ -53,8 +56,10 @@ public class ChronicleWriter<T extends Marshallable> {
     }
 
     public void destroy() {
-        // TODO Auto-generated method stub
-
+        if (queue.isClosed()) {
+            queue.close();
+            appLogger.info("[ChronicleWriter|destroy|Queue distroyed Location:{}]", chroniclePath);
+        }
     }
 
 }
