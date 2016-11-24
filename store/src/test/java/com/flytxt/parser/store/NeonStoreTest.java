@@ -7,19 +7,13 @@ import java.io.IOException;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import com.flytxt.tp.marker.Marker;
 import com.flytxt.tp.marker.MarkerFactory;
 import com.flytxt.tp.store.NeonStore;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={TestSpringApplciation.class})
+
 public class NeonStoreTest {
 
 	@Autowired
@@ -34,14 +28,14 @@ public class NeonStoreTest {
 
 	@Test
 	public void test() throws IOException {
-		BufferedReader reader = new BufferedReader(new FileReader("app/test/testFile"));
+		final BufferedReader reader = new BufferedReader(new FileReader("app/test/testFile"));
 		String string = null;
 		while ((string = reader.readLine()) != null) {
-			String[] split = string.split(",");
-			Marker[] markerArray = new Marker[split.length];
+			final String[] split = string.split(",");
+			final Marker[] markerArray = new Marker[split.length];
 			int i = 0;
-			for (String str : split) {
-				Marker createMarker = mf.createMarker(str);
+			for (final String str : split) {
+				final Marker createMarker = mf.createMarker(str);
 				markerArray[i++] = createMarker;
 
 			}
