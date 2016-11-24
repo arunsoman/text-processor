@@ -30,3 +30,6 @@ compiler:
 folder:
   expireTimeInMinutes: 1
   cacheCleanUpTime: 30000
+filters:
+  filterNameMap:
+    sample_filter_name: com.flytxt.tp.processor.filefilter.LastModifiedWindowFilter,com.flytxt.tp.processor.filefilter.RegexFilter

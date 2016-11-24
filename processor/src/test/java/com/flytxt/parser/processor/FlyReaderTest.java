@@ -24,7 +24,7 @@ public class FlyReaderTest {
 		LineProcessor lp = new TestScript();
         lp.getMf().getCurrentObject().init("", "");
         lp.init("TestScript", System.currentTimeMillis());
-		fr.set("DummyFolder", lp);
+		fr.set("DummyFolder", lp,"DummyFilter");
 		try {
 			processFile = fr.getClass().getDeclaredMethod("processFile", Path.class);
 			processFile.setAccessible(true);

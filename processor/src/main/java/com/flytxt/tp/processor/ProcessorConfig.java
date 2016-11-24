@@ -18,6 +18,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 
 import com.flytxt.tp.processor.FolderEventListener.Watch;
+import com.flytxt.tp.processor.filefilter.FilterChainBuilder;
+import com.flytxt.tp.processor.filefilter.FlyFileFilter;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -120,5 +122,15 @@ public class ProcessorConfig {
 	public Controller controller() {
 		return new Controller();
 
+	}
+	@Bean
+	public FilterChainBuilder filterChainBuilder() {
+		return new FilterChainBuilder();
+	}
+	
+	@Bean
+	@Lazy
+	public FlyFileFilter flyFileFilter() {
+		return new FlyFileFilter();
 	}
 }

@@ -27,7 +27,7 @@ public class Processor {
 
 	public void stopFileReads() {
 		for (FlyReader aReader : fileReaders)
-			aReader.stop();
+			aReader.preDestroy();
 	}
 
 	@PostConstruct
@@ -47,7 +47,7 @@ public class Processor {
 			FlyReader reader = ctx.getBean(FlyReader.class);
 			LineProcessor lP = pConfig.getLp(aJob.getByteCode(), aJob.getName());
 			folder = lP.getSourceFolder();
-			reader.set(folder, lP);
+			reader.set(folder, lP,aJob.getName());
 			fileReaders.add(reader);
 			executor.submit(reader);
 		}
@@ -62,9 +62,9 @@ public class Processor {
 	}
 
 	@PreDestroy
-	public void init0() {
+	public void preDestroy() {
 		for (FlyReader aReader : fileReaders)
-			aReader.stop();
+			aReader.preDestroy();
 		executor.shutdown();
 
 	}
