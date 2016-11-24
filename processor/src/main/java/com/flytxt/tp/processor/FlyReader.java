@@ -17,8 +17,11 @@ import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 import com.flytxt.tp.marker.CurrentObject;
+import com.flytxt.tp.processor.filefilter.FlyFileFilter;
 
 import lombok.Getter;
 
@@ -27,6 +30,13 @@ public class FlyReader implements Callable<FlyReader> {
 
     private LineProcessor lp;
 
+    @Autowired
+    private ApplicationContext context;
+    
+    /** Expected as the Filter name is same as Job Name . */
+    private String filterName;
+    
+    
     private boolean stopRequested;
 
     public enum Status {
@@ -43,8 +53,9 @@ public class FlyReader implements Callable<FlyReader> {
 
     private final Logger transLog = LoggerFactory.getLogger("transactionLog");
 
-    public void set(final String folder, final LineProcessor lp) {
+    public void set(final String folder, final LineProcessor lp,String filterName) {
         this.lp = lp;
+        this.filterName = filterName; 
         appLog.debug("file reader @ " + folder);
     }
 
@@ -55,8 +66,11 @@ public class FlyReader implements Callable<FlyReader> {
         final Path folderP = Paths.get(lp.getSourceFolder());
         assert Files.exists(folderP);
         
-        while (!stopRequested) {
-            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder))) {
+        FlyFileFilter fileFilter =  getFileFilter(folder);
+       
+        while (!stopRequested) {        	
+        	
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder),fileFilter)) {
                 for (final Path path : directoryStream) {
                 	try{
                 		appLog.debug("picked up " + path.toString());
@@ -84,7 +98,21 @@ public class FlyReader implements Callable<FlyReader> {
         appLog.debug("Worker down " + lp.getSourceFolder());
     }
 
-    private void processFile(final Path path) throws Exception {
+    /**
+     * 
+     * @param folder
+     * @param filterName2
+     * @return
+     */
+    private FlyFileFilter getFileFilter(String folder) {
+    	
+    	FlyFileFilter fileFilter = context.getBean(FlyFileFilter.class);
+    	fileFilter.set(folder,filterName);
+    	return fileFilter;
+		
+	}
+
+	private void processFile(final Path path) throws Exception {
         final long t1 = System.currentTimeMillis();
         final long fileSize = Files.size(path);
         final String inputFile = path.toString();

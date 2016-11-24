@@ -31,7 +31,6 @@ public class NeonStore implements Store {
 		
 	}
 
-
 	public void set(String fileName) {
 		
 	}
@@ -55,7 +54,6 @@ public class NeonStore implements Store {
 		if (tryLock) {
 			try {
 				writeToHdfs(fms.read());
-
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
