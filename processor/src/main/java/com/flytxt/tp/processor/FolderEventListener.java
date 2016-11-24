@@ -32,7 +32,7 @@ import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.context.ApplicationContext;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -63,8 +63,8 @@ public class FolderEventListener {
     private int expireTimeInMinutes;
 
     @Autowired
-    private ProxyScripts ps;
-
+	private ApplicationContext ctx;
+    
     @Data
     public static class Watch {
 
@@ -111,8 +111,8 @@ public class FolderEventListener {
             }
 
         }, 0, cacheCleanUpTime); // every 30s cache clean up will happen
-
-        for (final Watch w : ps.getFolderWatch())
+        ProcessorConfig pConfig = ctx.getBean(ProcessorConfig.class);
+        for (final Watch w : pConfig.getFolderWatch())
             try {
                 attachFolder(w.source, w.regex, w.destination);
             } catch (final IOException e) {
