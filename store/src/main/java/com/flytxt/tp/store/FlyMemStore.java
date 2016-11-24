@@ -75,10 +75,13 @@ public class FlyMemStore {
 			int lastReadIndex = meta.getInt(1);
 			out.position(lastReadIndex);
 			int datalenght = lastWriteIndex - lastReadIndex;
+			if(datalenght>0){
 			data = new byte[datalenght];
 			out.get(data, lastReadIndex, lastWriteIndex - lastReadIndex);
 			out.position(lastReadIndex);
+			}
 			meta.putInt(1, lastReadIndex);
+			meta.putInt(4, lastReadIndex);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
