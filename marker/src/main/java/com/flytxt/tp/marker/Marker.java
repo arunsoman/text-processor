@@ -11,7 +11,8 @@ public class Marker {
 	public int length;
 
 	private FindMarker fm = new FindMarker();
-
+	private long lastModifiedTime;
+	private long lastReadTime;
 	@Getter
 	private int dataType;
 
@@ -40,6 +41,7 @@ public class Marker {
 	Marker(CurrentObject currentObject) {
 		this.currentObject = currentObject;
 		dataType = lineDataType;
+		lastModifiedTime = lastReadTime+1;
 	}
 
 	void set(int index, int length) {
@@ -47,6 +49,7 @@ public class Marker {
 		this.length = length;
 		localData = null;
 		dataType = lineDataType;
+		lastModifiedTime = lastReadTime+1;
 	}
 
 	void set(byte[] data, int index, int length) {
@@ -54,22 +57,26 @@ public class Marker {
 		this.index = index;
 		this.length = length;
 		dataType = localDataType;
+		lastModifiedTime = lastReadTime+1;
 	}
-
+    
 	void set(long lvalue) {
 		longValue = lvalue;
 		dataType = longDataType;
+		lastModifiedTime = lastReadTime+1;
 	}
 
 	void set(double dvalue) {
 		doubleValue = dvalue;
 		dataType = doubleDataType;
+		lastModifiedTime = lastReadTime+1;
 	}
 
 	void reset() {
 		localData = null;
 		dataType = 0;
 		length = 0;
+		lastModifiedTime = lastReadTime =0;
 	}
 
 	public void splitAndGetMarkers(final byte[] token, final Router r, final MarkerFactory mf, Marker... markers) {
@@ -199,6 +206,8 @@ public class Marker {
 	public int asInt() {
 		if (dataType == longDataType)
 			return (int) longValue;
+		if(lastModifiedTime<lastReadTime)
+			return (int)longValue;
 		long lValue = asLong();
 		if(lValue < Integer.MIN_VALUE || lValue > Integer.MAX_VALUE)
 			throw new RuntimeException(lValue +" cant cast to int");
@@ -210,6 +219,8 @@ public class Marker {
 			return longValue;
 		if(dataType == doubleDataType)
 			return (long)doubleValue;
+		if(lastModifiedTime<lastReadTime)
+			return longValue;
 		
 		if (length == 0) {
 			return 0;
@@ -227,21 +238,24 @@ public class Marker {
 			power = power - 1;
 			value += Math.pow(10, power) * Character.getNumericValue(data[i]);
 		}
+		lastReadTime = lastModifiedTime+1;
+		longValue = value;
 		return value;
 	}
 
 	public double asDouble() {
 		if (dataType == doubleDataType)
 			return doubleValue;
+		if(lastReadTime > lastModifiedTime)
+			return doubleValue;
 		if (dataType == longDataType)
 			throw new RuntimeException("Type cast exception LongMarker to DoubleMarker");
+		
 		if (length == 0) {
 			return 0;
 		}
-		return Double.parseDouble(toString());
-	}
-
-	public boolean isDataLocal() {
-		return localData != null;
+		lastReadTime = lastModifiedTime+1;
+		doubleValue = Double.parseDouble(toString());;
+		return doubleValue;
 	}
 }
