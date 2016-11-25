@@ -183,7 +183,7 @@ public class TpMathTest extends TpAbsTest {
 		String str2 = ".78";
 		Marker m1 = markerFactory.createMarker(str1);
 		Marker res = tpMath.extractDecimalFractionPart(m1, markerFactory);
-		assertEquals(str2, res.toString());
+		assertEquals(Double.valueOf(str2), res.asDouble(), 0001);
 	}
 
 	@Test
