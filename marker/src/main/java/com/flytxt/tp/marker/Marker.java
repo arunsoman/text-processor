@@ -1,11 +1,10 @@
 package com.flytxt.tp.marker;
 
-import javax.crypto.spec.IvParameterSpec;
-
 import lombok.Getter;
 
 public class Marker {
 
+	boolean cacheValue = true;
 	public int index;
 
 	public int length;
@@ -206,7 +205,8 @@ public class Marker {
 	public int asInt() {
 		if (dataType == longDataType)
 			return (int) longValue;
-		if(lastModifiedTime<lastReadTime)
+		if(cacheValue)
+			if(lastModifiedTime<lastReadTime)
 			return (int)longValue;
 		long lValue = asLong();
 		if(lValue < Integer.MIN_VALUE || lValue > Integer.MAX_VALUE)
@@ -219,7 +219,8 @@ public class Marker {
 			return longValue;
 		if(dataType == doubleDataType)
 			return (long)doubleValue;
-		if(lastModifiedTime<lastReadTime)
+		if(cacheValue)
+			if(lastModifiedTime<lastReadTime)
 			return longValue;
 		
 		if (length == 0) {
@@ -230,14 +231,7 @@ public class Marker {
 		if(length > maxDigitsInLong){
 			throw new RuntimeException(new String(data, index, length)+" cant be Long");
 		}
-		if(length == maxDigitsInLong){
-			Long.parseLong(new String(data, index, length));
-		}
-		int power = length;
-		for (int i = index; i < index + length; i++) {
-			power = power - 1;
-			value += Math.pow(10, power) * Character.getNumericValue(data[i]);
-		}
+		value = Long.parseLong(new String(data, index, length));
 		lastReadTime = lastModifiedTime+1;
 		longValue = value;
 		return value;
@@ -246,7 +240,8 @@ public class Marker {
 	public double asDouble() {
 		if (dataType == doubleDataType)
 			return doubleValue;
-		if(lastReadTime > lastModifiedTime)
+		if(cacheValue)
+			if(lastModifiedTime<lastReadTime)
 			return doubleValue;
 		if (dataType == longDataType)
 			throw new RuntimeException("Type cast exception LongMarker to DoubleMarker");
