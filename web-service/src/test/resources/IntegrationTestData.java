@@ -110,6 +110,10 @@ hdfsStore.set(fileNameStr);
 	
 	public void store(final byte[] data) throws Exception {
 		hdfsStore.save(data, fileName.toString(), m__temp1,mpr);
-
+	}
+	
+	@Override
+	public void preDestroy()throws Exception {
+		hdfsStore.close();
 	}
 }
