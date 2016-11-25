@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -19,12 +20,18 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "filters")
 public class FilterChainBuilder {
 	
+	/** Filter Parameters configuration against each Filter class*/
+	@Autowired
+	private FilterParameters filterParameters;
+	
 	/**  Configured file filters from Application.yaml  */
 	private Map<String,String> filterNameMap;
 	
 	
+	
 	/** filter chain Map . Contain multiple filter chains */
 	private Map<String,FilterChain> filterChainMap = null;
+	
 	
 	
 	/**   Filter separator in apllication.yaml  */	 
@@ -35,14 +42,18 @@ public class FilterChainBuilder {
 	
 	
 	/**
-	 * For building the File filter chain */
+	 * For building the File filter chain 
+	 * Build the Filter chain and kept inside the Map filterChainMap 
+	 * The key will be the filter Name and value will be the constructed  FilterChain object
+	 * 
+	 */
 	@PostConstruct
 	public void build(){		
 		if(null!=getFilterNameMap() && getFilterNameMap().size()>0){
 			filterChainMap = new HashMap<>(getFilterNameMap().size());
 			Set<Entry<String, String>> entries =  getFilterNameMap().entrySet();
 			for(Entry<String, String> entry : entries){
-				filterChainMap.put(entry.getKey(), getFilterChain(entry.getValue()));
+				filterChainMap.put(entry.getKey(), getFilterChain(entry.getValue(),entry.getKey()));
 			}		
 		}		
 	}
@@ -51,33 +62,40 @@ public class FilterChainBuilder {
 	 * For creating the filterChain implementation class instance 
 	 * 
 	 * @param fileFilterClassName : FilterChain implementation Class name 
+	 * @param filterName 
 	 * @return instance of the given class name
 	 */
-	private FilterChain getFilterInstance(String fileFilterClassName) {
-		try {
-			Class<?> filterClass = Class.forName(fileFilterClassName);
-			return (FilterChain)filterClass.newInstance();
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			logger.info("Unable to create the instance of the file filter : "+fileFilterClassName);
+	private FilterChain getFilterInstance(String fileFilterClassName, String filterName) {
+		Filter filter = Filter.value(fileFilterClassName);
+		if(null!=filter) {
+			if(null!=filterParameters.getArgMap()){
+				return filter.getFilterInstance(filterParameters.getArgMap().get(filterName));
+			}else{
+				return filter.getInstance();
+			}
+		}else{
+			logger.error("Unable to create the instance of the file filter : "+fileFilterClassName + 
+					" Please check the Filter ENUM is properlly implemented." );
 			return null;
-		}
+		}			
 	}
 
 
 	/** 
 	 * COnvert the given  filters to the corresponding filter class.
+	 * @param filterName 
 	 * @return the first filterChain node 
 	 */
-	private FilterChain getFilterChain(String fileFilters) {
+	private FilterChain getFilterChain(String fileFilters, String filterName) {
 		FilterChain filterChain = null,firstNode = null;		
 		if(null!=fileFilters){
 			String [] fileFilterArray  = fileFilters.split(FILTER_CLASS_SEPARATOR);
 			for(String fileFilter:fileFilterArray){				
 				if(null==filterChain){
-					filterChain = getFilterInstance(fileFilter);
+					filterChain = getFilterInstance(fileFilter,filterName);
 					firstNode = filterChain;
 				}else{
-					filterChain.nextLink = getFilterInstance(fileFilter);
+					filterChain.nextLink = getFilterInstance(fileFilter,filterName);
 					filterChain = filterChain.nextLink;
 				}				
 			}

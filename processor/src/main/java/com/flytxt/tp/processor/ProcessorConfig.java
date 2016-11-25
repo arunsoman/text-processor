@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Profile;
 
 import com.flytxt.tp.processor.FolderEventListener.Watch;
 import com.flytxt.tp.processor.filefilter.FilterChainBuilder;
+import com.flytxt.tp.processor.filefilter.FilterParameters;
 import com.flytxt.tp.processor.filefilter.FlyFileFilter;
 
 import lombok.Getter;
@@ -126,6 +127,11 @@ public class ProcessorConfig {
 	@Bean
 	public FilterChainBuilder filterChainBuilder() {
 		return new FilterChainBuilder();
+	}
+	
+	@Bean
+	public FilterParameters filterParameters() {
+		return new FilterParameters();
 	}
 	
 	@Bean
