@@ -1,9 +1,11 @@
 package com.flytxt.tp.store;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
@@ -20,32 +22,51 @@ final public class FlyMemStore {
 
 	private MappedByteBuffer out;
 	private static MappedByteBuffer meta;
-	private static MappedByteBuffer hmeta;
 
 	private static final byte[] newLine = "\n".getBytes();
 	private static final byte[] comma = ",".getBytes();
 	private static RandomAccessFile outFile;
 	private static RandomAccessFile metaFile;
-	private static RandomAccessFile historyMetaFile;
 	private static final int totalbufSize = 1024 * 3;
-	private byte[] historyData;
-	private int metaStartPostion;
-	private  int writeIndexPostion=12;
-	private  int readIndexPostion=8;
+	private int writeIndexPostion = 4;
+	private int readIndexPostion = 0;
+	private boolean isRegistered;
 	static {
 		try {
 			outFile = new RandomAccessFile("hadoopData.dat", "rw");
 			final File file = new File("hadoopMeta.dat");
-			if(file.exists()) {
-				final String filename="hadoopMeta.dat.hist"+System.currentTimeMillis();
-				file.renameTo(new File(filename));
-				historyMetaFile= new RandomAccessFile("hadoopMeta.dat", "rw");
-				hmeta=historyMetaFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, 2*1024);
-			}
-			metaFile = new RandomAccessFile("hadoopMeta.dat", "rw");
+			if (file.exists()) {
+				metaFile = new RandomAccessFile(file, "rw");
+				meta = metaFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, 2 * 1024);
+				int entry = meta.getInt();
+				if (entry >= 0) {
+					log.debug(" meta size " + meta.getInt());
+					int bufferentry = 0;
+					ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+					while (entry >= 0) {
+						if (isExprired(meta))
+							next(meta);
+						else {
+							bufferentry++;
+							copyToBuffer(buffer, meta);
+						}
+					}
+					if (bufferentry > 0) {
+						meta.putInt(0, bufferentry);
+						meta.put(buffer.toByteArray());
+					}
 
-			meta = metaFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, 2*1024); // meta size fixed to 2kb
-			meta.position(0);
+				}
+			} else {
+				metaFile = new RandomAccessFile("hadoopMeta.dat", "rw");
+
+				meta = metaFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, 2 * 1024); // meta
+																								// size
+																								// fixed
+																								// to
+																								// 2kb
+				meta.position(0);
+			}
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -53,6 +74,33 @@ final public class FlyMemStore {
 
 	private FlyMemStore() {
 
+	}
+
+	public boolean isRegistered() {
+		return isRegistered;
+	}
+
+	private static void copyToBuffer(ByteArrayOutputStream buffer, MappedByteBuffer meta2) throws IOException {
+		int postion = meta2.position();
+		int fileLength = meta2.getInt();
+		meta2.position(postion);
+		byte[] data = new byte[fileLength + 24];
+		meta2.get(data);
+		buffer.write(data);
+	}
+
+	private static void next(MappedByteBuffer meta2) {
+		int fileLength = meta2.getInt();
+		meta2.position(fileLength + 20);
+	}
+
+	private static boolean isExprired(MappedByteBuffer meta2) {
+		int position = meta2.position();
+		int fileLength = meta2.getInt();
+		int startpostion = meta2.getInt(meta2.position() + fileLength);
+		int endpostion = meta2.getInt();
+		meta2.position(position);
+		return endpostion - startpostion <= 0;
 	}
 
 	protected static FlyMemStore newInstance() throws FileNotFoundException, IOException {
@@ -80,11 +128,7 @@ final public class FlyMemStore {
 	}
 
 	public byte[] read() {
-		if(historyData !=null){
-			final byte[] clone = historyData.clone();
-			historyData=null;
-			return clone;
-		}
+	
 		byte[] data = null;
 		final int lastWriteIndex = meta.getInt(writeIndexPostion);
 		final int lastReadIndex = meta.getInt(readIndexPostion);
@@ -101,70 +145,85 @@ final public class FlyMemStore {
 		return data;
 	}
 
-	public void close() throws IOException {
+	public static void close() throws IOException {
 		outFile.close();
 		metaFile.close();
-
-
 	}
 
-	public void reAllocate(final String folderName) {
-
+	
+	public void registerMe(final String folderName) throws IOException {
+		if (isRegistered)
+			return;
+		byte[] key = folderName.getBytes();
+		int metaStartPostion = findMetaStartIndex(key);
+		if (metaStartPostion < 0) {
+			final int allocate = totalbufSize / 10;
+			int startPoint = 0;
+			int metasize = meta.getInt(0);
+			startPoint = seek( allocate);
+			metaStartPostion=insertToMeta(key, allocate, startPoint);
+			createMetaFile(allocate, startPoint);
+			metasize++;
+			meta.putInt(0, metasize);
+		}
+		readIndexPostion=metaStartPostion;
+		writeIndexPostion=metaStartPostion+4;
+		isRegistered=true;
 	}
 
-	public void registerMe(final String folderName, final int start, final int length) throws IOException {
-		final int allocate = totalbufSize / length;
-		final int startPoint = start * allocate;
-		historyData=insertOrUpdateMeta(folderName, allocate, startPoint);
-		out = outFile.getChannel().map(FileChannel.MapMode.READ_WRITE, startPoint, allocate);
-		writeIndexPostion+=metaStartPostion;
-		readIndexPostion+=metaStartPostion;
-	}
-
-	private byte[] insertOrUpdateMeta(final String folderName,  int allocate,  final int startPoint) {
-		final byte[] folder = folderName.getBytes();
-		int lastReadIndex=0;
-		int lastWriteIndex=0;
-		final byte[] dummyName=  new byte[folder.length];
-		final int lenght=folder.length+4*5;
-		byte[] previousData =null;
-		if(hmeta !=null) {
-			hmeta.position(0);
-			while(hmeta.getInt()>0 && hmeta.remaining()>=lenght){
-				final int filenameLength = hmeta.getInt();
-				hmeta.get(dummyName, hmeta.position(), filenameLength);
-				if(Arrays.equals(dummyName, folder)){
-
-					final int previousStartPoint=hmeta.getInt();
-					final int previousAllocation=hmeta.getInt();
-					log.debug(" previousStartPoint "+previousStartPoint+" previousAllocation "+previousAllocation);
-					lastReadIndex=hmeta.getInt();
-					lastWriteIndex=hmeta.getInt();
-					final int bufferDataLength=lastWriteIndex-lastReadIndex;
-					if(bufferDataLength !=0 && bufferDataLength >allocate){
-						allocate=bufferDataLength;
-						try {
-							final int previousDataLenght=lastWriteIndex-lastReadIndex;
-							previousData = new byte[previousDataLenght];
-							outFile.getChannel().map(FileChannel.MapMode.READ_WRITE, previousStartPoint+lastReadIndex, previousDataLenght).get(previousData);
-						} catch (final IOException e) {
-							e.printStackTrace();
-						}
-					}
+	private int seek(int allocate) {
+		int metalength = meta.getInt(0);
+		boolean notfixed = true;
+		int startpoint = -allocate;
+		while (notfixed) {
+			meta.position(8);
+			startpoint += allocate;
+			notfixed = false;
+			while (metalength > 0) {
+				metalength--;
+				int keyLength = meta.getInt();
+				int previousStartPoint = meta.getInt(keyLength+8);
+				int allocatedSpace = meta.getInt();
+				if (!(previousStartPoint + allocatedSpace > startpoint
+						|| (previousStartPoint >= startpoint + allocate))) {
+					notfixed = true;
 				}
-				return previousData;
 			}
 		}
+		return startpoint;
+	}
 
-
-		meta.putInt(lenght);
-		meta.putInt(folder.length);
-		meta.put(folder);
-		metaStartPostion=meta.position();
+	private int insertToMeta(byte[] key, int allocate, int startPoint) {// { count ,metalength : { keylength , key , readindex, writeindex, filestartindex, allocate} } 
+		int lastUpdateIndex = meta.getInt(4);
+		meta.putInt(lastUpdateIndex, key.length);
+		meta.put(key);
+		int metaStartPostion = meta.position();
+		meta.putInt(0);
+		meta.putInt(0);
 		meta.putInt(startPoint);
 		meta.putInt(allocate);
-		meta.putInt(0);
-		meta.putInt(0);
-		return previousData;
+		meta.putInt(4, meta.position());
+		return metaStartPostion;
 	}
+
+	private int findMetaStartIndex(byte[] folderName) {
+		int metalength = meta.getInt(0);
+		meta.position(8);
+		while (metalength > 0) {
+			int folderLenght = meta.getInt();
+			byte[] folder = new byte[folderLenght];
+			meta.get(folder);
+			if (Arrays.equals(folder, folderName)) {
+				return meta.position();
+			}
+			metalength--;
+		}
+
+		return -1;
+	}
+
+	private void createMetaFile(int allocate, int startpoint) throws IOException {
+		out = outFile.getChannel().map(FileChannel.MapMode.READ_WRITE, startpoint, allocate);
+	}
+
 }

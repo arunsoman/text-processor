@@ -8,16 +8,13 @@ public final class MemStrorePool {
 
 	private static volatile MemStrorePool instance ;
 
-	private final int initMaxInstance;
-
-	private int currentTotalInstance;
-
-	protected MemStrorePool(final int count){
-		initMaxInstance=count;
+	
+	protected MemStrorePool(){
 	}
 
-	public static synchronized MemStrorePool getSingletonInstance(final int instancecount){
-		instance= new MemStrorePool(instancecount);
+	public static synchronized MemStrorePool getSingletonInstance(){
+		if(instance !=null)
+		instance= new MemStrorePool();
 		return instance;
 	}
 
@@ -30,11 +27,7 @@ public final class MemStrorePool {
 
 	public FlyMemStore getMemStore(final String folderName) throws IOException{
 		final FlyMemStore store=localMemStore.get();
-		if(++currentTotalInstance<=initMaxInstance) {
-			store.registerMe(folderName,currentTotalInstance,initMaxInstance);
-		}else{
-			store.reAllocate(folderName);
-		}
+		store.registerMe(folderName);
 		return	store;
 	}
 
@@ -49,6 +42,10 @@ public final class MemStrorePool {
 
 	}
 
+	
+	public void destroy() throws IOException{
+		FlyMemStore.close();
+	}
 
 
 
