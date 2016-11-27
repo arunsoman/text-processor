@@ -42,7 +42,7 @@ public class FlyReader implements Callable<FlyReader> {
     public enum Status {
         RUNNING, TERMINATED, SHUTTINGDOWN
     }
-
+    
     @Getter
     private Status status;
 
@@ -67,7 +67,7 @@ public class FlyReader implements Callable<FlyReader> {
         assert Files.exists(folderP);
         
         FlyFileFilter fileFilter =  getFileFilter(folder);
-       
+       status = Status.RUNNING;
         while (!stopRequested) {        	
         	
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder),fileFilter)) {
@@ -95,6 +95,7 @@ public class FlyReader implements Callable<FlyReader> {
                 ex.printStackTrace();
             }
         }
+        status = Status.TERMINATED;
         appLog.debug("Worker down " + lp.getSourceFolder());
     }
 
