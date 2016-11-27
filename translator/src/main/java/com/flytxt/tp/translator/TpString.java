@@ -229,7 +229,7 @@ public class TpString {
 	public Marker extractLeading(Marker m1, final int extractCnt, MarkerFactory mf) {
 		if (extractCnt < 0)
 			throw new RuntimeException("extractCnt should be greater than 0 current:" + extractCnt);
-			return mf.createMarker((!m1.isDataLocal())?
+			return mf.createMarker((m1.getDataType()==Marker.lineDataType)?
 					null:m1.getData(), m1.index, extractCnt);
 	}
 
@@ -238,7 +238,7 @@ public class TpString {
 			return ConstantMarker.mnull;
 		if (extractCnt < 0)
 			throw new RuntimeException("extractCnt should be greater than 0 current:" + extractCnt);
-		return mf.createMarker((!m1.isDataLocal())?
+		return mf.createMarker((m1.getDataType()==Marker.lineDataType)?
 					null:m1.getData(), m1.index + m1.length - extractCnt, extractCnt);
 	}
 

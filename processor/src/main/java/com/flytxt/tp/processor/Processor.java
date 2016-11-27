@@ -21,7 +21,7 @@ public class Processor {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private List<FlyReader> fileReaders;
+	List<FlyReader> fileReaders;
 
 	private ThreadPoolExecutor executor;
 

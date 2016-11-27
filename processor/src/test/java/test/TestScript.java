@@ -1,22 +1,17 @@
 package test;
+import java.io.IOException;
+
+import com.flytxt.tp.marker.ConstantMarker;
 import com.flytxt.tp.marker.Marker;
 import com.flytxt.tp.marker.MarkerFactory;
-import com.flytxt.tp.lookup.Lookup;
-import com.flytxt.tp.lookup.PrefixLookupIgnoreCase;
+import com.flytxt.tp.marker.Router;
 import com.flytxt.tp.processor.LineProcessor;
 import com.flytxt.tp.store.ConsoleStore;
-import com.flytxt.tp.store.HdfsStore;
-import com.flytxt.tp.store.LocalFileStore;
-import com.flytxt.tp.store.NeonStore;
 import com.flytxt.tp.store.Store;
-import com.flytxt.tp.store.StreamStore;
-import com.flytxt.tp.marker.ConstantMarker;
 import com.flytxt.tp.translator.TpDate;
 import com.flytxt.tp.translator.TpLogic;
 import com.flytxt.tp.translator.TpMath;
 import com.flytxt.tp.translator.TpString;
-import com.flytxt.tp.marker.Router;
-import java.io.IOException;
 
 public final class TestScript implements LineProcessor,ConstantMarker {
 	public final String outputFolder = "TestScript1479106100547";
@@ -115,8 +110,7 @@ hdfsStore.set(fileNameStr);
 	}
 
 	@Override
-	public void preDestroy() {
-		// TODO Auto-generated method stub
-		
+	public void preDestroy()throws Exception {
+		hdfsStore.close();
 	}
 }

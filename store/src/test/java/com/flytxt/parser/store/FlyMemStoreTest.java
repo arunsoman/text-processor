@@ -13,11 +13,13 @@ import java.security.NoSuchAlgorithmException;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import com.flytxt.tp.marker.Marker;
 import com.flytxt.tp.marker.MarkerFactory;
 import com.flytxt.tp.store.FlyMemStore;
 import com.flytxt.tp.store.MemStrorePool;
+
 
 
 public class FlyMemStoreTest {

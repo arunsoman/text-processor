@@ -16,7 +16,7 @@ import com.flytxt.tp.store.NeonStore;
 
 public class NeonStoreTest {
 
-	@Autowired
+	
 	private NeonStore store;
 	private MarkerFactory mf;
 
