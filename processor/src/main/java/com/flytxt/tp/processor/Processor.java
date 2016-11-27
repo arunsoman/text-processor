@@ -12,7 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
+
+import com.flytxt.tp.processor.filefilter.FlyFileFilter;
 
 public class Processor {
 
@@ -47,10 +48,23 @@ public class Processor {
 			FlyReader reader = ctx.getBean(FlyReader.class);
 			LineProcessor lP = pConfig.getLp(aJob.getByteCode(), aJob.getName());
 			folder = lP.getSourceFolder();
-			reader.set(folder, lP,aJob.getName());
+			reader.set(folder, lP, getFileFilter(folder, aJob.getName()));
 			fileReaders.add(reader);
 			executor.submit(reader);
 		}
+	}
+
+	/**
+	 * 
+	 * @param folder
+	 * @param filterName2
+	 * @return
+	 */
+	private FlyFileFilter getFileFilter(String folder, String filterName) {
+		FlyFileFilter fileFilter = ctx.getBean(FlyFileFilter.class);
+		fileFilter.set(folder, filterName);
+		return fileFilter;
+
 	}
 
 	public void handleEvent(String folderName, String fileName) {
