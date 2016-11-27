@@ -7,7 +7,6 @@ import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.flytxt.tp.marker.Marker;
@@ -19,21 +18,22 @@ public class FlyMemStoreTest {
 	MarkerFactory mf = new MarkerFactory();
 
 	private Marker[] generateMarkers() {
-		Marker[] mArray = new Marker[10];
+		final Marker[] mArray = new Marker[10];
 		int i = 0;
-		for (Marker aMarker : mArray) {
+		for (final Marker aMarker : mArray) {
 			mArray[i++] = mf.createMarker(makeString());
 		}
 
 		return mArray;
 	}
 
-	private byte[] toBytes(Marker... markers) throws IOException {
-		ByteArrayOutputStream bOs = new ByteArrayOutputStream();
+	private byte[] toBytes(final Marker... markers) throws IOException {
+		final ByteArrayOutputStream bOs = new ByteArrayOutputStream();
 		boolean ifComma = false;
-		for (Marker aMarker : markers) {
-			if (ifComma)
+		for (final Marker aMarker : markers) {
+			if (ifComma) {
 				bOs.write(",".getBytes());
+			}
 			bOs.write(aMarker.getData(), aMarker.index, aMarker.length);
 			ifComma = true;
 		}
@@ -43,8 +43,8 @@ public class FlyMemStoreTest {
 	}
 
 	private String makeString() {
-		String str = new String((new byte[] { (byte) (myRandom.nextInt(26) + 'A'), (byte) (myRandom.nextInt(26) + 'a'),
-				(byte) (myRandom.nextInt(26) + 'a') }));
+		final String str = new String(new byte[] { (byte) (myRandom.nextInt(26) + 'A'), (byte) (myRandom.nextInt(26) + 'a'),
+				(byte) (myRandom.nextInt(26) + 'a') });
 		return str;
 	}
 
@@ -52,15 +52,16 @@ public class FlyMemStoreTest {
 
 	@Before
 	public void init() throws FileNotFoundException, IOException {
-		mStore = FlyMemStore.getSingletonInstance();
+
+		mStore = MemStrorePool.getSingletonInstance().getMemStore("/test/folder");
 	}
 
 	@Test
 	public void unitTestW1R1() throws IOException {
-		Marker[] ms = generateMarkers();
-		byte[] data = toBytes(ms);
+		final Marker[] ms = generateMarkers();
+		final byte[] data = toBytes(ms);
 		mStore.write(ms);
-		byte[] d2 = mStore.read();
+		final byte[] d2 = mStore.read();
 		Assert.assertArrayEquals(data, d2);
 
 	}
@@ -68,17 +69,17 @@ public class FlyMemStoreTest {
 	@Test
 	public void unitTestWManayR1() {
 		try {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			final ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			for (int i = 0; i < 10; i++) {
-				Marker[] ms = generateMarkers();
-				byte[] data = toBytes(ms);
+				final Marker[] ms = generateMarkers();
+				final byte[] data = toBytes(ms);
 				mStore.write(ms);
 				bos.write(data);
 			}
-			byte[] d2 = mStore.read();
-			byte[] actual = bos.toByteArray();
+			final byte[] d2 = mStore.read();
+			final byte[] actual = bos.toByteArray();
 			Assert.assertArrayEquals(actual, d2);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -88,10 +89,10 @@ public class FlyMemStoreTest {
 	@Test
 	public void unitTestWRMany() throws IOException {
 		for (int i = 0; i < 10; i++) {
-			Marker[] ms = generateMarkers();
-			byte[] data = toBytes(ms);
+			final Marker[] ms = generateMarkers();
+			final byte[] data = toBytes(ms);
 			mStore.write(ms);
-			byte[] d2 = mStore.read();
+			final byte[] d2 = mStore.read();
 			Assert.assertArrayEquals(data, d2);
 		}
 

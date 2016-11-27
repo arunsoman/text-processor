@@ -19,42 +19,45 @@ public class RealtimeCompiler {
 	private static final List<String> optionList = new ArrayList<>();
 
 	static {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		builder.append(System.getProperty("java.class.path"));
-		File folder = new File(SHARED_LIB_FOLDER);
-		if (folder != null) {
-			if (folder.isDirectory()) {
-				File[] files = folder.listFiles();
-				for (File f : files) {
+		final File folder = new File(SHARED_LIB_FOLDER);
+
+		if (folder.isDirectory()) {
+			final File[] files = folder.listFiles();
+			if(files !=null){
+				for (final File f : files) {
 					builder.append(":");
 					builder.append(SHARED_LIB_FOLDER).append("/").append(f.getName());
 				}
 			}
-			optionList.add("-classpath");
-			System.out.println(builder.toString());
-			optionList.add(builder.toString());
 		}
+		optionList.add("-classpath");
+		System.out.println(builder.toString());
+		optionList.add(builder.toString());
+
 	}
 
-	public static byte[] compileToBytes(String className, String sourceCodeInText) throws Exception {
+	public static byte[] compileToBytes(final String className, final String sourceCodeInText) throws Exception {
 
 		System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 		System.out.println(sourceCodeInText);
 		System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
-		FlyClassLoader cl = new FlyClassLoader(Thread.currentThread().getContextClassLoader());
-		FlyJavaFileObject sourceCode = new FlyJavaFileObject(className, sourceCodeInText);
-		CompiledCode compiledCode = new CompiledCode(className);
-		Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(sourceCode);
+		final FlyClassLoader cl = new FlyClassLoader(Thread.currentThread().getContextClassLoader());
+		final FlyJavaFileObject sourceCode = new FlyJavaFileObject(className, sourceCodeInText);
+		final CompiledCode compiledCode = new CompiledCode(className);
+		final Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(sourceCode);
 		final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
-		FlyFileManager fileManager = new FlyFileManager(javac.getStandardFileManager(null, null, null), compiledCode,
+		final FlyFileManager fileManager = new FlyFileManager(javac.getStandardFileManager(null, null, null), compiledCode,
 				cl);
-		JavaCompiler.CompilationTask task = javac.getTask(null, fileManager, diagnostics, optionList, null,
+		final JavaCompiler.CompilationTask task = javac.getTask(null, fileManager, diagnostics, optionList, null,
 				compilationUnits);
 		if (!task.call()) {
-			StringBuilder sb = new StringBuilder();
-			for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics())
+			final StringBuilder sb = new StringBuilder();
+			for (final Diagnostic<?> diagnostic : diagnostics.getDiagnostics()) {
 				sb.append(String.format("Error on line %d in %s", diagnostic.getLineNumber(), diagnostic));
+			}
 			// logger.info(sourceCodeInText);
 			// log.info(sourceCodeInText);
 			// log.info(sb.toString());
@@ -63,9 +66,9 @@ public class RealtimeCompiler {
 		return cl.getBytes(className);
 	}
 
-	public static Class<?> getClass(String className) throws ClassNotFoundException {
+	public static Class<?> getClass(final String className) throws ClassNotFoundException {
 
-		FlyClassLoader cl = new FlyClassLoader(Thread.currentThread().getContextClassLoader());
+		final FlyClassLoader cl = new FlyClassLoader(Thread.currentThread().getContextClassLoader());
 		return cl.findClass(className);
 	}
 

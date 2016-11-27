@@ -15,8 +15,6 @@
  */
 package com.flytxt.tp.store.chronicle;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ChronicleQueueBuilder;
@@ -35,16 +33,15 @@ public class ChronicleWriter<T extends Marshallable> {
 
     private ExcerptAppender appender;
 
-    private Logger appLogger;
+    private ChronicleQueue queue ;
 
     public ChronicleWriter(String chroniclePath) {
         super();
         this.chroniclePath = chroniclePath;
-        appLogger = LoggerFactory.getLogger("appLogger");
     }
 
     public void init() {
-        ChronicleQueue queue = ChronicleQueueBuilder.single(chroniclePath).build();
+        queue = ChronicleQueueBuilder.single(chroniclePath).build();
         appender = queue.acquireAppender();
     }
 
@@ -53,8 +50,8 @@ public class ChronicleWriter<T extends Marshallable> {
     }
 
     public void destroy() {
-        // TODO Auto-generated method stub
-
+    	if(queue !=null && !queue.isClosed())
+    	queue.close();
     }
 
 }
