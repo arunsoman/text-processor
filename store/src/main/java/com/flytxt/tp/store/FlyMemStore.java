@@ -33,8 +33,8 @@ final public class FlyMemStore {
 	private boolean isRegistered;
 	static {
 		try {
-			outFile = new RandomAccessFile("hadoopData.dat", "rw");
-			final File file = new File("hadoopMeta.dat");
+			outFile = new RandomAccessFile("memStoreData.dat", "rw");
+			final File file = new File("memStoreMeta.dat");
 			if (file.exists()) {
 				metaFile = new RandomAccessFile(file, "rw");
 				meta = metaFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, 2 * 1024);
@@ -64,7 +64,7 @@ final public class FlyMemStore {
 					
 				}
 			} else {
-				metaFile = new RandomAccessFile("hadoopMeta.dat", "rw");
+				metaFile = new RandomAccessFile("memStoreMeta.dat", "rw");
 
 				meta = metaFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, 2 * 1024); // meta
 																								// size
@@ -196,6 +196,7 @@ final public class FlyMemStore {
 			while (metalength > 0) {
 				metalength--;
 				int keyLength = meta.getInt();
+				log.debug("keyLength " +keyLength);
 				int previousStartPoint = meta.getInt(keyLength+8);
 				int allocatedSpace = meta.getInt();
 				if (!(previousStartPoint + allocatedSpace > startpoint
