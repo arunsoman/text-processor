@@ -22,15 +22,14 @@ import com.flytxt.tp.store.MemStrorePool;
 
 public class FlyMemStoreTest {
 
-	private MemStrorePool pool;
 	private MarkerFactory mf;
 	private byte[] actual ;
 	private FlyMemStore memStore ;
 
 	@Before
 	public void before() throws FileNotFoundException, IOException, NoSuchAlgorithmException {
-		pool =MemStrorePool.getSingletonInstance(1);
-		memStore= pool.getMemStore("/usr/local");
+		MemStrorePool singletonInstance = MemStrorePool.getSingletonInstance();
+		memStore= singletonInstance.getMemStore("/usr/local");
 		mf = new MarkerFactory();
 		final MessageDigest md1 = MessageDigest.getInstance("MD5");
 		md1.update(Files.readAllBytes(Paths.get("app/test/testFile")));
@@ -43,7 +42,6 @@ public class FlyMemStoreTest {
 	public void testReadAndWrite() throws IOException, NoSuchAlgorithmException {
 		final File temp =File.createTempFile("testFile", null);
 		temp.deleteOnExit();
-		final FlyMemStore memStore = pool.getMemStore("/usr/local");
 		final MessageDigest md = MessageDigest.getInstance("MD5");
 		final FileOutputStream fos = new FileOutputStream(temp);
 		try (BufferedReader reader = new BufferedReader(new FileReader("app/test/testFile"))) {

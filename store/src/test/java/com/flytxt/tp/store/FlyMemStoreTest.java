@@ -53,7 +53,7 @@ public class FlyMemStoreTest {
 	@Before
 	public void init() throws FileNotFoundException, IOException {
 
-		mStore = MemStrorePool.getSingletonInstance(1).getMemStore("/test/folder");
+		mStore = MemStrorePool.getSingletonInstance().getMemStore("/test/folder");
 	}
 
 	@Test

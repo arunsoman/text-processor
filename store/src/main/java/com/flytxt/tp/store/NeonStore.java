@@ -18,8 +18,8 @@ public class NeonStore implements Store {
 
 	public void init(final String folderName) throws FileNotFoundException, IOException, InterruptedException {
 
-		fms=MemStrorePool.getInstance();
-		memStore = fms.getMemStore(folderName);
+		memStore=MemStrorePool.getSingletonInstance().getMemStore(folderName);
+		//memStore = fms.getMemStore(folderName);
 		writer	= new HdfsWriter(folderName);
 	}
 
@@ -67,7 +67,6 @@ public class NeonStore implements Store {
 
 	@Override
 	public String done() throws IOException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

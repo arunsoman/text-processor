@@ -13,18 +13,12 @@ public final class MemStrorePool {
 	}
 
 	public static synchronized MemStrorePool getSingletonInstance(){
-		if(instance !=null)
+		if(instance ==null)
 		instance= new MemStrorePool();
 		return instance;
 	}
 
-	protected static MemStrorePool getInstance(){
-		if(instance ==null) {
-			throw new RuntimeException("Store not initialised yet");
-		}
-		return instance;
-	}
-
+	
 	public FlyMemStore getMemStore(final String folderName) throws IOException{
 		final FlyMemStore store=localMemStore.get();
 		store.registerMe(folderName);

@@ -27,7 +27,7 @@ final public class FlyMemStore {
 	private static final byte[] comma = ",".getBytes();
 	private static RandomAccessFile outFile;
 	private static RandomAccessFile metaFile;
-	private static final int totalbufSize = 1024 * 3;
+	private static final int totalbufSize = 1024 * 1024 * 1024;
 	private int writeIndexPostion = 4;
 	private int readIndexPostion = 0;
 	private boolean isRegistered;
@@ -40,10 +40,12 @@ final public class FlyMemStore {
 				meta = metaFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, 2 * 1024);
 				int entry = meta.getInt();
 				if (entry >= 0) {
-					log.debug(" meta size " + meta.getInt());
+					log.debug(" meta size is " + meta.getInt());
 					int bufferentry = 0;
 					ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-					while (entry >= 0) {
+					while (entry > 0) {
+						log.debug(" meta postion " + meta.position());
+						entry--;
 						if (isExprired(meta))
 							next(meta);
 						else {
@@ -53,9 +55,13 @@ final public class FlyMemStore {
 					}
 					if (bufferentry > 0) {
 						meta.putInt(0, bufferentry);
+						
 						meta.put(buffer.toByteArray());
+						meta.putInt(4, meta.position());
+					}else{
+						meta.putInt(4,8);
 					}
-
+					
 				}
 			} else {
 				metaFile = new RandomAccessFile("hadoopMeta.dat", "rw");
@@ -66,6 +72,8 @@ final public class FlyMemStore {
 																								// to
 																								// 2kb
 				meta.position(0);
+				meta.putInt(0);
+				meta.putInt(8);
 			}
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
@@ -96,7 +104,9 @@ final public class FlyMemStore {
 
 	private static boolean isExprired(MappedByteBuffer meta2) {
 		int position = meta2.position();
+		log.debug( "position  " + position);
 		int fileLength = meta2.getInt();
+		log.debug( "filelength  " + fileLength);
 		int startpostion = meta2.getInt(meta2.position() + fileLength);
 		int endpostion = meta2.getInt();
 		meta2.position(position);
@@ -110,7 +120,6 @@ final public class FlyMemStore {
 	public void write(final Marker... markers) {
 
 		final int dataLenght = Arrays.stream(markers).mapToInt(mapper -> mapper.length).sum();
-
 		if (out.remaining() < dataLenght + markers.length + newLine.length - 1) {
 			throw new ArrayIndexOutOfBoundsException();
 		}
@@ -156,16 +165,21 @@ final public class FlyMemStore {
 			return;
 		byte[] key = folderName.getBytes();
 		int metaStartPostion = findMetaStartIndex(key);
+		int allocate=0;
+		int startPoint=0;
 		if (metaStartPostion < 0) {
-			final int allocate = totalbufSize / 10;
-			int startPoint = 0;
+			allocate = totalbufSize / 10;
 			int metasize = meta.getInt(0);
 			startPoint = seek( allocate);
 			metaStartPostion=insertToMeta(key, allocate, startPoint);
-			createMetaFile(allocate, startPoint);
 			metasize++;
 			meta.putInt(0, metasize);
+		}else{
+			startPoint=meta.getInt(metaStartPostion+8);
+			allocate=meta.getInt(metaStartPostion+12);
 		}
+		log.debug(" allocate "+ allocate);
+		createOutFile(allocate, startPoint);
 		readIndexPostion=metaStartPostion;
 		writeIndexPostion=metaStartPostion+4;
 		isRegistered=true;
@@ -195,7 +209,9 @@ final public class FlyMemStore {
 
 	private int insertToMeta(byte[] key, int allocate, int startPoint) {// { count ,metalength : { keylength , key , readindex, writeindex, filestartindex, allocate} } 
 		int lastUpdateIndex = meta.getInt(4);
+		log.debug("lastUpdateIndex"  +lastUpdateIndex);
 		meta.putInt(lastUpdateIndex, key.length);
+		meta.position(lastUpdateIndex+4);
 		meta.put(key);
 		int metaStartPostion = meta.position();
 		meta.putInt(0);
@@ -222,7 +238,7 @@ final public class FlyMemStore {
 		return -1;
 	}
 
-	private void createMetaFile(int allocate, int startpoint) throws IOException {
+	private void createOutFile(int allocate, int startpoint) throws IOException {
 		out = outFile.getChannel().map(FileChannel.MapMode.READ_WRITE, startpoint, allocate);
 	}
 

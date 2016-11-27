@@ -23,7 +23,7 @@ public class NeonStoreTest {
 	@Before
 	public void before() throws FileNotFoundException, IOException, InterruptedException {
 		mf = new MarkerFactory();
-
+		store = new NeonStore();
 	}
 
 	@Test
