@@ -33,3 +33,14 @@ folder:
 filters:
   filterNameMap:
     sample_filter_name: com.flytxt.tp.processor.filefilter.LastModifiedWindowFilter,com.flytxt.tp.processor.filefilter.RegexFilter
+    sample_filter_name2: com.flytxt.tp.processor.filefilter.LastModifiedWindowFilter
+    sample_filter_name3: com.flytxt.tp.processor.filefilter.FifoFilter
+
+filterArgs:
+  argMap:
+    sample_filter_name:
+      com.flytxt.tp.processor.filefilter.LastModifiedWindowFilter: 1000
+      com.flytxt.tp.processor.filefilter.RegexFilter: .*[a-zA-Z]+.*
+    sample_filter_name2:
+      com.flytxt.tp.processor.filefilter.LastModifiedWindowFilter: 1000
+      com.flytxt.tp.processor.filefilter.RegexFilter: .*[a-zA-Z]+.*
