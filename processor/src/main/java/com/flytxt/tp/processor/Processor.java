@@ -27,6 +27,11 @@ public class Processor {
 	private ThreadPoolExecutor executor;
 
 	public void stopFileReads() {
+		if(fileReaders == null){
+			logger.info("No jobs configured... nothing to stop ");
+			return;
+		}
+		logger.debug("Total FlyReaders too close:"+fileReaders.size());
 		for (FlyReader aReader : fileReaders)
 			aReader.preDestroy();
 	}
