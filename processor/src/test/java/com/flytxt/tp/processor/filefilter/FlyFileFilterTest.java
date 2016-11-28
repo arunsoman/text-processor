@@ -28,7 +28,8 @@ public class FlyFileFilterTest {
 		Map<String, String> filterValues = new HashMap<>();
 		filterValues.put("Filter_Name1", ""
 				+ "com.flytxt.tp.processor.filefilter.LastModifiedWindowFilter,"
-				+ "com.flytxt.tp.processor.filefilter.RegexFilter,");
+				+ "com.flytxt.tp.processor.filefilter.RegexFilter,"
+				+ "com.flytxt.tp.processor.filefilter.FifoFilter");
 		chainbuilder.setFilterNameMap(filterValues);
 		chainbuilder.build();
 		
@@ -80,14 +81,17 @@ public class FlyFileFilterTest {
 		
 		File file = new File("testdir"+File.separator+"TestFile1.txt");
 		File file1 = new File("testdir"+File.separator+"TestFile2.csv");
+		File file2 = new File("testdir"+File.separator+"TestFile3.txt");
 		File dir =null;		
 		try {
 			
 			String pathString = file1.getAbsolutePath().substring(0,file1.getAbsolutePath().lastIndexOf(File.separator));
 			dir = new File(pathString);
 			dir.mkdir();
-			file.createNewFile();
+			file2.createNewFile();
 			file1.createNewFile();
+			file.createNewFile();
+			
 			fileFilter.set(pathString,"Filter_Name1");		
 			
 			for(Iterator<Path> iterator = fileFilter.iterator();iterator.hasNext();){ 
@@ -110,6 +114,7 @@ public class FlyFileFilterTest {
 			
 			file1.delete();
 			file.delete();
+			file2.delete();
 			dir.delete();
 		}
 		

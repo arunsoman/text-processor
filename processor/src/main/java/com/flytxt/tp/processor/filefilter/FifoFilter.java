@@ -17,6 +17,8 @@ public class FifoFilter extends FilterChain{
 					return ((int)(o1.lastModified()-o2.lastModified()));
 				return -1;
 			}});
+		if(nextLink != null)
+			return nextLink.canProcess(files);
 		return files;
 	}
 
