@@ -19,17 +19,6 @@ public class PrefixLookup<T> extends Lookup<T> {
         this.mf = mf;
     }
 
-    public PrefixLookup(final String file) {
-        this.fileName = file;
-        loadFromFile();
-    }
-
-    public PrefixLookup(final File file, MarkerFactory mf) {
-        this.fileName = file.getAbsolutePath();
-        this.mf = mf;
-        loadFromFile();
-    }
-
     @Override
     public void load(final byte[] key, final T val) {
         map.put(new String(key), val);

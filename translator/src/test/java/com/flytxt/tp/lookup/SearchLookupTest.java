@@ -12,7 +12,7 @@ public class SearchLookupTest {
 
     final MarkerFactory mf = new MarkerFactory();
 
-    //@Test
+    @Test
     public void basicTest() {
         final String[][] data = { { "Hello World", "World" }, { "Wallnut", "fruit" } };
         final Search<Marker> object = new Search<>(mf);

@@ -6,11 +6,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.flytxt.tp.lookup.Search;
+import org.junit.Test;
+
+import com.flytxt.tp.fileutils.Channel;
+import com.flytxt.tp.fileutils.ClasspathChannel;
+import com.flytxt.tp.fileutils.loader.FileLoader;
+import com.flytxt.tp.marker.MarkerFactory;
+
 
 public class SearchLookupPerfTest {
 
-    // @Test
+//    @Test
     public void perfTest() {
         class Datum {
 
@@ -24,23 +30,21 @@ public class SearchLookupPerfTest {
                 this.value = value;
             }
         }
-        Search<String> search = new Search<>("searchdata.csv");
+        MarkerFactory mf = new MarkerFactory();
+        Search<String> search = new Search<>(mf);
+        FileLoader fLoader = new FileLoader("searchdata.csv", mf);
+        fLoader.load(search);
         ArrayList<Datum> data = new ArrayList<>();
-        try {
-            ClassLoader classLoader = getClass().getClassLoader();
-
-            File file = new File(classLoader.getResource("searchdata.csv").getFile());
-            FileReader fileReader = new FileReader(file);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            String line;
+        try (Channel cpC = new ClasspathChannel()){
+        		BufferedReader bufferedReader = cpC.open("");
+        	String line;
             while ((line = bufferedReader.readLine()) != null) {
                 String[] tt = line.split(",");
                 if (tt.length == 2)
                     if (tt[0].trim().length() > 0)
                         data.add(new Datum(tt[0].trim().getBytes(), tt[1]));
             }
-            fileReader.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
