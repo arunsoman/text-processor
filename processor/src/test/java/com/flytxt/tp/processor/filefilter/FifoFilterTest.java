@@ -21,11 +21,13 @@ public class FifoFilterTest {
 			Mockito.when(mockedFile.lastModified()).thenReturn(System.currentTimeMillis());
 		files[i] = mockedFile;
 		}
+		files[5] =null;
 	}
 	@Test
 	public void testPositive(){
 		File[] okFiles = fifo.canProcess(files);
 		for(File aFile: okFiles){
+			if(null!=aFile)
 		System.out.println(aFile.getName());
 		}
 	}
