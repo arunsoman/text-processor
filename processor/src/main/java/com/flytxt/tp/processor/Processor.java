@@ -15,9 +15,11 @@ import org.springframework.context.ApplicationContext;
 
 import com.flytxt.tp.processor.filefilter.FlyFileFilter;
 
+import lombok.Setter;
+
 public class Processor {
 
-	@Autowired
+	@Autowired @Setter
 	private ApplicationContext ctx;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
