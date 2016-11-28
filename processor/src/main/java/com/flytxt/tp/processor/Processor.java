@@ -31,7 +31,7 @@ public class Processor {
 			logger.info("No jobs configured... nothing to stop ");
 			return;
 		}
-		logger.debug("Total FlyReaders too close:"+fileReaders.size());
+		logger.debug("Total FlyReaders to close:"+fileReaders.size());
 		for (FlyReader aReader : fileReaders)
 			aReader.preDestroy();
 	}
