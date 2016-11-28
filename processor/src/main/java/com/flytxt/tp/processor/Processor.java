@@ -82,8 +82,17 @@ public class Processor {
 
 	@PreDestroy
 	public void preDestroy() {
-		for (FlyReader aReader : fileReaders)
-			aReader.preDestroy();
+		if(fileReaders == null){
+			logger.info("No jobs configured... nothing to preDestroy ");
+		}
+		else{
+			for (FlyReader aReader : fileReaders)
+				aReader.preDestroy();
+		}
+		if(executor != null 
+				&& (!executor.isShutdown()) 
+				&& (!executor.isTerminating())
+				&& (!executor.isTerminated()))
 		executor.shutdown();
 
 	}
