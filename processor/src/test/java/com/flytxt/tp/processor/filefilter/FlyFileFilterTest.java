@@ -3,11 +3,9 @@ package com.flytxt.tp.processor.filefilter;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -90,14 +88,26 @@ public class FlyFileFilterTest {
 			dir.mkdir();
 			file.createNewFile();
 			file1.createNewFile();
-			fileFilter.set(pathString,"Filter_Name1");	
-			DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(pathString),fileFilter);
+			fileFilter.set(pathString,"Filter_Name1");		
+			
+			for(Iterator<Path> iterator = fileFilter.iterator();iterator.hasNext();){ 
+				Path path = iterator.next();
+				Assert.assertNotEquals(file1.getName(),path.getFileName().toString());
+			}
+			
+			FileIterator<Path>  pathcollection = fileFilter.iterator();
+			for(Path path : pathcollection){ 
+				Assert.assertNotEquals(file1.getName(),path.getFileName().toString());
+			}
+			
+			/*DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(pathString),fileFilter);
 			 for (final Path path : directoryStream) {
 				 Assert.assertNotEquals(file1.getName(),path.getFileName().toString());
-			 }
+			 }*/
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally {			
+		}finally {	
+			
 			file1.delete();
 			file.delete();
 			dir.delete();
