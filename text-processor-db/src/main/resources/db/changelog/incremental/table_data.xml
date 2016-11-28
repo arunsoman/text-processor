@@ -16,7 +16,7 @@
             <column name="value" value="weekly"/>
         </insert>
         <insert tableName="dk_config">
-            <column name="id" valueNumeric="3" />
+            <column name="id" valueNumeric="4" />
             <column name="value" value="monthly"/>
         </insert>
     </changeSet>
