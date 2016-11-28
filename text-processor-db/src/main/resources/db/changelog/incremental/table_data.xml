@@ -19,5 +19,7 @@
             <column name="id" valueNumeric="4" />
             <column name="value" value="monthly"/>
         </insert>
+        <rollback>
+        </rollback>
     </changeSet>
 </databaseChangeLog>

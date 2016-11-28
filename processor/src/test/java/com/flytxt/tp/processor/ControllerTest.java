@@ -3,6 +3,7 @@ package com.flytxt.tp.processor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -11,9 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
 public class ControllerTest {
@@ -27,6 +29,7 @@ public class ControllerTest {
 		controller.reload();
 	}
 	@Test
+	@Ignore
 	public void testStop(){
 		int size = 5;
 		List<FlyReader> flyReaders = new ArrayList<FlyReader>(size);

@@ -22,7 +22,7 @@ final public class FlyMemStore {
 
 	private MappedByteBuffer out;
 	private static MappedByteBuffer meta;
-
+    private static final Object lock = new Object();
 	private static final byte[] newLine = "\n".getBytes();
 	private static final byte[] comma = ",".getBytes();
 	private static RandomAccessFile outFile;
@@ -170,10 +170,12 @@ final public class FlyMemStore {
 		if (metaStartPostion < 0) {
 			allocate = totalbufSize / 10;
 			int metasize = meta.getInt(0);
+			synchronized(lock){
 			startPoint = seek( allocate);
 			metaStartPostion=insertToMeta(key, allocate, startPoint);
 			metasize++;
 			meta.putInt(0, metasize);
+			}
 		}else{
 			startPoint=meta.getInt(metaStartPostion+8);
 			allocate=meta.getInt(metaStartPostion+12);
@@ -210,7 +212,6 @@ final public class FlyMemStore {
 
 	private int insertToMeta(byte[] key, int allocate, int startPoint) {// { count ,metalength : { keylength , key , readindex, writeindex, filestartindex, allocate} } 
 		int lastUpdateIndex = meta.getInt(4);
-		log.debug("lastUpdateIndex"  +lastUpdateIndex);
 		meta.putInt(lastUpdateIndex, key.length);
 		meta.position(lastUpdateIndex+4);
 		meta.put(key);
