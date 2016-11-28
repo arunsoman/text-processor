@@ -43,22 +43,6 @@ public class ProcessorConfig {
 	private final Logger appLog = LoggerFactory.getLogger("applicationLog");
 
 	
-
-	static class DbClassLoader extends ClassLoader {
-		private DbClassLoader() {
-			super(Thread.currentThread().getContextClassLoader());
-		}
-
-		@SuppressWarnings("unchecked")
-		public Class<LineProcessor> getClass(byte[] d, String name) {
-			return (Class<LineProcessor>) defineClass(name, d, 0, d.length);
-		}
-	}
-
-	public LineProcessor getLp(byte[] byteCode, String name) throws InstantiationException, IllegalAccessException{
-		DbClassLoader loader = new DbClassLoader();
-		return loader.getClass(byteCode, name).newInstance();
-	}
 	@PostConstruct
 	public void init() throws Exception {
 		String hostName = getHostname();

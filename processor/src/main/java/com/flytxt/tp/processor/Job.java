@@ -59,4 +59,21 @@ public class Job {
     public void postload() {
         this.idValue = this.id;
     }
+    
+    public LineProcessor getLp() throws InstantiationException, IllegalAccessException{
+		DbClassLoader loader = new DbClassLoader();
+		return loader.getClass(byteCode, name).newInstance();
+	}
+    
+    private static class DbClassLoader extends ClassLoader {
+		private DbClassLoader() {
+			super(Thread.currentThread().getContextClassLoader());
+		}
+
+		@SuppressWarnings("unchecked")
+		public Class<LineProcessor> getClass(byte[] d, String name) {
+			return (Class<LineProcessor>) defineClass(name, d, 0, d.length);
+		}
+	}
+
 }
