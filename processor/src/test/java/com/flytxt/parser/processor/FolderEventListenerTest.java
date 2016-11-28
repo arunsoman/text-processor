@@ -2,6 +2,7 @@ package com.flytxt.parser.processor;
 
 import java.io.IOException;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -19,7 +20,7 @@ import com.flytxt.tp.processor.FolderEventListener;
 import com.flytxt.tp.processor.ProcessorConfig;
 import com.flytxt.tp.processor.TestConfiguration;
 
-
+@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest("spring.profiles.active=processor")
 @ActiveProfiles("test")
