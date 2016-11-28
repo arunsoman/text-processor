@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
 
 import com.flytxt.tp.processor.FolderEventListener.Watch;
 import com.flytxt.tp.processor.filefilter.FilterChainBuilder;
@@ -115,6 +116,7 @@ public class ProcessorConfig {
 
 	@Bean
 	@Lazy
+	@Scope("prototype")
 	public FlyReader flyReader() {
 		return new FlyReader();
 	}

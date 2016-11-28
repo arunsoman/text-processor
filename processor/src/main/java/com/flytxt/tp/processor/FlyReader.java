@@ -5,7 +5,6 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.OverlappingFileLockException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.flytxt.tp.marker.CurrentObject;
+import com.flytxt.tp.processor.filefilter.FileIterator;
 import com.flytxt.tp.processor.filefilter.FlyFileFilter;
 
 import lombok.Getter;
@@ -60,27 +60,33 @@ public class FlyReader implements Callable<FlyReader> {
 		status = Status.RUNNING;
 		while (!stopRequested) {
 
-			try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder), fileFilter)) {
-				for (final Path path : directoryStream) {
-					try {
-						appLog.debug("picked up " + path.toString());
-						buf.clear();
-						String fileName = path.getFileName().toString();
-						lp.getMf().getCurrentObject().init(folder, fileName);
-						BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
-						lp.init(fileName, attr.lastModifiedTime().toMillis());
-						processFile(path);
-						Files.delete(path);
-						lastProcessedFile = fileName;
-						if (stopRequested) {
-							lp.preDestroy();
-							appLog.debug("shutting down Worker @ :" + folder);
-							break;
+			//try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder), fileFilter)) {
+			try{
+				
+				FileIterator<Path> directoryStream= fileFilter.iterator();
+				if(null!=directoryStream){
+					for (final Path path : directoryStream) {
+						try {
+							appLog.debug("picked up " + path.toString());
+							buf.clear();
+							String fileName = path.getFileName().toString();
+							lp.getMf().getCurrentObject().init(folder, fileName);
+							BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
+							lp.init(fileName, attr.lastModifiedTime().toMillis());
+							processFile(path);
+							Files.delete(path);
+							lastProcessedFile = fileName;
+							if (stopRequested) {
+								lp.preDestroy();
+								appLog.debug("shutting down Worker @ :" + folder);
+								break;
+							}
+						} catch (final OverlappingFileLockException e) {
+							appLog.error("Could not process " + path.toString(), e);
 						}
-					} catch (final OverlappingFileLockException e) {
-						appLog.error("Could not process " + path.toString(), e);
 					}
 				}
+				fileFilter.refresh();
 			} catch (final Exception ex) {
 				ex.printStackTrace();
 			}
