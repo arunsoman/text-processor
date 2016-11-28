@@ -18,8 +18,9 @@ public class FileLoader implements Loader {
     
     @Override
     public void load(Lookup lookup) {
-        try(final BufferedReader bufferedReader = 
-        		new DiskChannel().open(fileName);){
+    	
+    	try(final DiskChannel channel = new DiskChannel()){
+        	final BufferedReader bufferedReader =  	channel.open(fileName);
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 final String key = line.substring(0, line.indexOf('|'));
@@ -32,6 +33,9 @@ public class FileLoader implements Loader {
         } catch (final IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
-        }
+        } catch (Exception e1) {
+			e1.printStackTrace();
+		}
+       
 	}
 }
