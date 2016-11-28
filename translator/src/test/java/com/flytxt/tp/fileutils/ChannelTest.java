@@ -10,13 +10,11 @@ import org.junit.Test;
 import junit.framework.Assert;
 
 public class ChannelTest {
-	private Channel cpChannel = new ClasspathChannel();
-	private Channel diskChannel = new DiskChannel();
 	
 	@Test
 	public void testPositiveCp(){
 		BufferedReader buff;
-		try {
+		try(Channel cpChannel = new ClasspathChannel()) {
 			buff = cpChannel.open("searchdata.csv");
 			Assert.assertEquals(true, buff.ready());
 		} catch (Exception e) {
@@ -29,7 +27,7 @@ public class ChannelTest {
 		String newFile = "/tmp/test-disk";
 		BufferedReader buff;
 		File f = null;
-		try {
+		try (Channel diskChannel = new DiskChannel()){
 			f = new File(newFile);
 			FileWriter fw = new FileWriter(f.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
