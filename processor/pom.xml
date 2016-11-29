@@ -46,11 +46,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>com.flytxt.tp</groupId>
 			<artifactId>store</artifactId>
 			<version>${project.version}</version>

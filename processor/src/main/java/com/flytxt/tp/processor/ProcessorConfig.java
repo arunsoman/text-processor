@@ -12,11 +12,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import com.flytxt.tp.processor.FolderEventListener.Watch;
 import com.flytxt.tp.processor.filefilter.FilterChainBuilder;
@@ -28,13 +31,16 @@ import lombok.extern.slf4j.Slf4j;
 
 @Profile("processor")
 @Configuration
+@EnableJpaRepositories
+@EntityScan(basePackageClasses=Job.class)
 @EnableConfigurationProperties
+@ComponentScan
 @Slf4j
 public class ProcessorConfig {
 
 	@Getter
 	private List<Job> jobs;
-	
+
 	@Getter
 	private List<com.flytxt.tp.processor.FolderEventListener.Watch> folderWatch;
 
@@ -42,7 +48,7 @@ public class ProcessorConfig {
 	private JobRepo repo;
 	private final Logger appLog = LoggerFactory.getLogger("applicationLog");
 
-	
+
 
 	static class DbClassLoader extends ClassLoader {
 		private DbClassLoader() {
@@ -50,18 +56,18 @@ public class ProcessorConfig {
 		}
 
 		@SuppressWarnings("unchecked")
-		public Class<LineProcessor> getClass(byte[] d, String name) {
+		public Class<LineProcessor> getClass(final byte[] d, final String name) {
 			return (Class<LineProcessor>) defineClass(name, d, 0, d.length);
 		}
 	}
 
-	public LineProcessor getLp(byte[] byteCode, String name) throws InstantiationException, IllegalAccessException{
-		DbClassLoader loader = new DbClassLoader();
+	public LineProcessor getLp(final byte[] byteCode, final String name) throws InstantiationException, IllegalAccessException{
+		final DbClassLoader loader = new DbClassLoader();
 		return loader.getClass(byteCode, name).newInstance();
 	}
 	@PostConstruct
 	public void init() throws Exception {
-		String hostName = getHostname();
+		final String hostName = getHostname();
 		log.debug("who am i ? :" + hostName);
 		if (hostName == null || hostName.length() == 0) {
 			appLog.error("getHostName returned null, This reader will not function");
@@ -70,14 +76,15 @@ public class ProcessorConfig {
 
 		jobs = repo.findByhostNameAndActiveTrueAndStatusTrue(hostName);
 		folderWatch = new ArrayList<>(jobs.size());
-		for (Job aJob : jobs) {
-			String destination = "/tmp/" + aJob.getName() +  aJob.getInputPath();
+		for (final Job aJob : jobs) {
+			final String destination = "/tmp/" + aJob.getName() +  aJob.getInputPath();
 			//String destination =aJob.getOutputPath();
 			log.info("destination {}", destination);
-			File theDir = new File(destination);
-			if (!theDir.exists())
+			final File theDir = new File(destination);
+			if (!theDir.exists()) {
 				theDir.mkdirs();
-			com.flytxt.tp.processor.FolderEventListener.Watch w = new Watch(aJob.getInputPath(), aJob.getRegex(),
+			}
+			final com.flytxt.tp.processor.FolderEventListener.Watch w = new Watch(aJob.getInputPath(), aJob.getRegex(),
 					destination);
 			folderWatch.add(w);
 		}
@@ -85,19 +92,19 @@ public class ProcessorConfig {
 
 	private String getHostname() {
 		Process p;
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 		try {
 			p = Runtime.getRuntime().exec("hostname");
 			p.waitFor();
 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			final BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
 			String line = "";
 			while ((line = reader.readLine()) != null) {
 				result.append(line);
 			}
 			p.destroy();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 		return result.toString().trim();
@@ -130,12 +137,12 @@ public class ProcessorConfig {
 	public FilterChainBuilder filterChainBuilder() {
 		return new FilterChainBuilder();
 	}
-	
+
 	@Bean
 	public FilterParameters filterParameters() {
 		return new FilterParameters();
 	}
-	
+
 	@Bean
 	@Lazy
 	public FlyFileFilter flyFileFilter() {

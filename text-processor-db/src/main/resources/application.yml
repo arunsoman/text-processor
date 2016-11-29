@@ -4,4 +4,5 @@ spring:
      enabled: true
 liquibase:   
     changeLog: classpath:db/changelog/db.changelog-master.xml
-    rollback-file: /var/log/processor/rollback-#{new java.text.SimpleDateFormat("yyyyMMdd'_'HHmmss").format(new java.util.Date())}.sql
+liquibaseRollback:
+    file: rollback-#{new java.text.SimpleDateFormat("yyyyMMdd'_'HHmmss").format(new java.util.Date())}.sql
