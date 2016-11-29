@@ -2,6 +2,7 @@ package com.flytxt.tp.processor.filefilter;
 
 import java.io.File;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -26,9 +27,15 @@ public class FifoFilterTest {
 	@Test
 	public void testPositive(){
 		File[] okFiles = fifo.canProcess(files);
+		File preFile = null;
 		for(File aFile: okFiles){
-			if(null!=aFile)
-		System.out.println(aFile.getName());
+			if(null!=aFile){
+				Assert.assertNotNull(aFile.getName());			
+				if(preFile!=null){
+					Assert.assertTrue(aFile.lastModified() >= preFile.lastModified());
+				}			
+				preFile =aFile;	
+			}
 		}
 	}
 }
