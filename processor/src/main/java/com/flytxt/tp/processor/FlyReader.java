@@ -28,6 +28,10 @@ public class FlyReader implements Callable<FlyReader> {
 	private LineProcessor lp;
 
 	private boolean stopRequested;
+	
+	private long waitTime = 0;
+	
+	private static final long MAX_WAIT_TIME = 60000;
 
 	public enum Status {
 		RUNNING, TERMINATED, SHUTTINGDOWN
@@ -58,7 +62,8 @@ public class FlyReader implements Callable<FlyReader> {
 		assert Files.exists(folderP);
 
 		status = Status.RUNNING;
-		while (!stopRequested) {
+		try {
+			while (canProcess(fileFilter.iterator())) {
 
 			//try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder), fileFilter)) {
 			try{
@@ -90,9 +95,39 @@ public class FlyReader implements Callable<FlyReader> {
 			} catch (final Exception ex) {
 				ex.printStackTrace();
 			}
+			}
+		} catch (InterruptedException e) {
+			appLog.error(" Thread interrupted Going to shutdwon the Process " + e.getMessage());
 		}
 		status = Status.TERMINATED;
 		appLog.debug("Worker down " + lp.getSourceFolder());
+	}
+	
+	/**
+	 * 
+	 * @param iterator
+	 * @return
+	 * @throws InterruptedException
+	 */
+	private boolean canProcess(FileIterator<Path> iterator) throws InterruptedException{
+		if(stopRequested){
+			waitTime = 0;
+			return false;
+		}else{
+			if(iterator.hasNext()){
+				waitTime = 0;
+				return true;
+			}else{
+				try {
+					if(waitTime>=MAX_WAIT_TIME)
+						waitTime = 0;
+					Thread.sleep(waitTime++);
+					return true;
+				} catch (InterruptedException e) {
+					throw e;					
+				}
+			}
+		}
 	}
 
 	private void processFile(final Path path) throws Exception {
