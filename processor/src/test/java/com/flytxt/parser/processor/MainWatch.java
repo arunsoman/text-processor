@@ -16,6 +16,9 @@ import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class MainWatch {
 
 	public static void watchDirectoryPath(Path path) {
@@ -30,7 +33,7 @@ public class MainWatch {
 			ioe.printStackTrace();
 		}
 		
-		System.out.println("Watching path: " + path);
+		log.info("Watching path: " + path);
 		
 		// We obtain the file system of the Path
 		FileSystem fs = path.getFileSystem ();
@@ -59,7 +62,7 @@ public class MainWatch {
 						// A new Path was created 
 						Path newPath = ((WatchEvent<Path>) watchEvent).context();
 						// Output
-						System.out.println("New path created: " + newPath);
+						log.info("New path created: " + newPath);
 					}
 				}
 				
@@ -80,7 +83,7 @@ public class MainWatch {
 			InterruptedException {
 		// Folder we are going to watch
 		Path folder = Paths.get(System.getProperty("user.home"));
-		System.out.println("...->"+System.getProperty("user.home"));
+		log.info("...->"+System.getProperty("user.home"));
 		watchDirectoryPath(folder);
 	}
 }

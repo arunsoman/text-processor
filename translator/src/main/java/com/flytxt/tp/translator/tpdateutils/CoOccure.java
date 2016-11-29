@@ -56,7 +56,7 @@ class CoOccur {
 		if (val.count != cnt) {
 			throw new ParseException("expected count for " + aChar + " actual:" + val.count + " found:" + cnt, 0);
 		}
-		System.out.println("char:"+aChar+ " @:"+loc+" n:"+cnt);
+		//System.out.println("char:"+aChar+ " @:"+loc+" n:"+cnt);
 		list.add(new CharCnt(aChar, val.position, loc, val.chars));
 	}
 

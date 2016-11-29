@@ -27,10 +27,8 @@ public class MarkerFunctionalTest extends TestConstruct implements ConstantMarke
 		Marker m = markerFactory.createMarker("1bc78");
 		try {
 			long d = m.asLong();
-			System.out.println(d);
 			Assert.fail();
 		} catch (NumberFormatException e) {
-			// TODO: handle exception
 		}
 	}
 

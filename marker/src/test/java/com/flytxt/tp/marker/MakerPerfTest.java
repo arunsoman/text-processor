@@ -2,6 +2,8 @@ package com.flytxt.tp.marker;
 
 import org.junit.Test;
 
+import junit.framework.Assert;
+
 public class MakerPerfTest {
 	MarkerFactory mf = new MarkerFactory();
 	private Marker[] create(String str, int size, boolean cache){
@@ -71,14 +73,14 @@ public class MakerPerfTest {
 		int size = 1000000;
 		long report1 = testNonCacheLongRead(size);
 		long report2 = testCacheLongRead(size);
-		System.out.println("diff in sec"+(report1 - report2));
+		Assert.assertEquals("perf test long, Diff in sec:"+(report1 - report2), true, true);
 	}
 	@Test
 	public void testDouble(){
 		int size = 1000000;
 		long report1 = testNonCacheDoubleRead(size);
 		long report2 = testCacheDoubleRead(size);
-		System.out.println("diff in sec"+(report1 - report2));
+		Assert.assertEquals("perf test double, Diff in sec:"+(report1 - report2), true, true);
 	}
 
 

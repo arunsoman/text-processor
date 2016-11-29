@@ -13,7 +13,9 @@ import com.flytxt.tp.fileutils.ClasspathChannel;
 import com.flytxt.tp.fileutils.loader.FileLoader;
 import com.flytxt.tp.marker.MarkerFactory;
 
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SearchLookupPerfTest {
 
 //    @Test
@@ -52,7 +54,7 @@ public class SearchLookupPerfTest {
         for (Datum d : data)
             search.load(d.key, d.value);
         long end = System.nanoTime();
-        System.out.println("total time nano:" + (end - start) + " count: " + data.size() + " inserts/sec:" + ((end - start) / data.size()));
+        log.info("total time nano:" + (end - start) + " count: " + data.size() + " inserts/sec:" + ((end - start) / data.size()));
 
         start = System.currentTimeMillis();
         @SuppressWarnings("unused")
@@ -60,7 +62,7 @@ public class SearchLookupPerfTest {
         for (Datum d : data)
             str = search.get(d.key);
         end = System.currentTimeMillis();
-        System.out.println("total time:" + (end - start) + " count: " + data.size() + " gets/sec:" + ((end - start) / data.size()));
+        log.info("total time:" + (end - start) + " count: " + data.size() + " gets/sec:" + ((end - start) / data.size()));
 
     }
 }

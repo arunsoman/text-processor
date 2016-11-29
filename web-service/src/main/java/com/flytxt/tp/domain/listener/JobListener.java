@@ -34,8 +34,6 @@ public class JobListener {
 	@HandleBeforeCreate
 	@HandleBeforeSave
 	public void executeMeBeforeSave(final Job job) throws Exception  {
-		//log.info("executing  ");
-		System.out.println(" testing  ");
 		if (job.isActive())
 			try {
 				byte[] compileToBytes = dto.serialize(dto.convert(job));

@@ -19,7 +19,10 @@ import com.flytxt.tp.dao.WorkflowDao;
 import com.flytxt.tp.domain.Workflow;
 import com.flytxt.tp.dto.WorkflowDTO;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Controller
+@Slf4j
 public class WorkflowController {
 
 	@Autowired
@@ -62,7 +65,7 @@ public class WorkflowController {
 			return ResponseEntity.ok().headers(headers).contentType(MediaType.parseMediaType("application/json"))
 					.body(dao.retrieveNeonMeta());
 		} catch (final Exception e) {
-			System.out.println(e);
+			log.info("/neonMeta",e);
 			return ResponseEntity.status(500).headers(headers).contentType(MediaType.parseMediaType("application/json"))
 					.body(null);
 		}
