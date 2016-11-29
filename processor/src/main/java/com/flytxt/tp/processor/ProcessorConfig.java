@@ -40,7 +40,7 @@ public class ProcessorConfig {
 
 	@Getter
 	private List<Job> jobs;
-
+	
 	@Getter
 	private List<com.flytxt.tp.processor.FolderEventListener.Watch> folderWatch;
 
@@ -48,26 +48,10 @@ public class ProcessorConfig {
 	private JobRepo repo;
 	private final Logger appLog = LoggerFactory.getLogger("applicationLog");
 
-
-
-	static class DbClassLoader extends ClassLoader {
-		private DbClassLoader() {
-			super(Thread.currentThread().getContextClassLoader());
-		}
-
-		@SuppressWarnings("unchecked")
-		public Class<LineProcessor> getClass(final byte[] d, final String name) {
-			return (Class<LineProcessor>) defineClass(name, d, 0, d.length);
-		}
-	}
-
-	public LineProcessor getLp(final byte[] byteCode, final String name) throws InstantiationException, IllegalAccessException{
-		final DbClassLoader loader = new DbClassLoader();
-		return loader.getClass(byteCode, name).newInstance();
-	}
+	
 	@PostConstruct
 	public void init() throws Exception {
-		final String hostName = getHostname();
+		String hostName = getHostname();
 		log.debug("who am i ? :" + hostName);
 		if (hostName == null || hostName.length() == 0) {
 			appLog.error("getHostName returned null, This reader will not function");
@@ -76,15 +60,14 @@ public class ProcessorConfig {
 
 		jobs = repo.findByhostNameAndActiveTrueAndStatusTrue(hostName);
 		folderWatch = new ArrayList<>(jobs.size());
-		for (final Job aJob : jobs) {
-			final String destination = "/tmp/" + aJob.getName() +  aJob.getInputPath();
+		for (Job aJob : jobs) {
+			String destination = "/tmp/" + aJob.getName() +  aJob.getInputPath();
 			//String destination =aJob.getOutputPath();
 			log.info("destination {}", destination);
-			final File theDir = new File(destination);
-			if (!theDir.exists()) {
+			File theDir = new File(destination);
+			if (!theDir.exists())
 				theDir.mkdirs();
-			}
-			final com.flytxt.tp.processor.FolderEventListener.Watch w = new Watch(aJob.getInputPath(), aJob.getRegex(),
+			com.flytxt.tp.processor.FolderEventListener.Watch w = new Watch(aJob.getInputPath(), aJob.getRegex(),
 					destination);
 			folderWatch.add(w);
 		}
@@ -92,19 +75,19 @@ public class ProcessorConfig {
 
 	private String getHostname() {
 		Process p;
-		final StringBuilder result = new StringBuilder();
+		StringBuilder result = new StringBuilder();
 		try {
 			p = Runtime.getRuntime().exec("hostname");
 			p.waitFor();
 
-			final BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
 			String line = "";
 			while ((line = reader.readLine()) != null) {
 				result.append(line);
 			}
 			p.destroy();
-		} catch (final Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return result.toString().trim();
@@ -137,12 +120,12 @@ public class ProcessorConfig {
 	public FilterChainBuilder filterChainBuilder() {
 		return new FilterChainBuilder();
 	}
-
+	
 	@Bean
 	public FilterParameters filterParameters() {
 		return new FilterParameters();
 	}
-
+	
 	@Bean
 	@Lazy
 	public FlyFileFilter flyFileFilter() {

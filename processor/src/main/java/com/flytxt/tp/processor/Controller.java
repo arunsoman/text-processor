@@ -16,7 +16,7 @@ public class Controller {
 			public void run() {
 				processor.stopFileReads();
 				try {
-					processor.startFileReaders();
+					processor.init();
 				} catch (Exception e) {
 					// TODO log this
 					e.printStackTrace();

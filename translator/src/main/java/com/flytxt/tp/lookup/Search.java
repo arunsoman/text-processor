@@ -14,17 +14,6 @@ public class Search<T> extends Lookup<T> {
         this.mf = mf;
     }
 
-    public Search(final String file) {
-        this.fileName = file;
-        loadFromFile();
-    }
-
-    public Search(final File file, MarkerFactory mf) {
-        this.fileName = file.getAbsolutePath();
-        this.mf = mf;
-        loadFromFile();
-    }
-
     @Override
     public void load(final byte[] key, final T val) {
         for (int i = 0; i < key.length; i++) {

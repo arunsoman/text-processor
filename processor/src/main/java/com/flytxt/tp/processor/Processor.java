@@ -15,9 +15,11 @@ import org.springframework.context.ApplicationContext;
 
 import com.flytxt.tp.processor.filefilter.FlyFileFilter;
 
+import lombok.Setter;
+
 public class Processor {
 
-	@Autowired
+	@Autowired @Setter
 	private ApplicationContext ctx;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -37,9 +39,13 @@ public class Processor {
 	}
 
 	@PostConstruct
-	public void startFileReaders() throws Exception {
+	public void init() throws Exception {
 		ProcessorConfig pConfig = ctx.getBean(ProcessorConfig.class);
 		List<Job> jobs = pConfig.getJobs();
+		startFileReaders(jobs);
+	}
+	
+	private void startFileReaders(List<Job> jobs){
 		int size = jobs.size();
 		if (size < 1) {
 			logger.info("No jobs configured... ");
@@ -51,11 +57,16 @@ public class Processor {
 		String folder;
 		for (Job aJob : jobs) {
 			FlyReader reader = ctx.getBean(FlyReader.class);
-			LineProcessor lP = pConfig.getLp(aJob.getByteCode(), aJob.getName());
-			folder = lP.getSourceFolder();
-			reader.set(folder, lP, getFileFilter(folder, aJob.getName()));
-			fileReaders.add(reader);
-			executor.submit(reader);
+			LineProcessor lP;
+			try {
+				lP = aJob.getLp();
+				folder = lP.getSourceFolder();
+				reader.set(folder, lP, getFileFilter(folder, aJob.getName()));
+				fileReaders.add(reader);
+				executor.submit(reader);
+			} catch (InstantiationException | IllegalAccessException e) {
+				logger.info("could not start fileReader with job name : "+aJob.getName());
+			}
 		}
 	}
 
