@@ -14,7 +14,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -23,81 +23,81 @@ import com.google.common.io.ByteStreams;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
-@ActiveProfiles("test")
+@SpringApplicationConfiguration(ProcessorConfig.class)
+@ActiveProfiles(profiles={"test","processor"})
 public class ProcessorTest {
 	@Autowired
 	private ApplicationContext ctx;
-	
-	private Processor p = new Processor();
+
+	private final Processor p = new Processor();
 	private List<Job> jobs;
-	
+
 	private static final String DATA_FILE_PATH ="src"+File.separator+"test"+File.separator+"resources"+File.separator+"test-data";
-	
-	@Test 
+
+	@Test
 	public void testStartFileReaders(){
 		createJobs(1);
 		p.setCtx(ctx);
 		try {
-			Method startFileReaders =p.getClass().getDeclaredMethod("startFileReaders", List.class);
+			final Method startFileReaders =p.getClass().getDeclaredMethod("startFileReaders", List.class);
 			startFileReaders.setAccessible(true);
 			startFileReaders.invoke(p, jobs);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			Assert.fail();
 		}
 	}
-	
-	
+
+
 	/**
-	 * Create the Job object 
+	 * Create the Job object
 	 * @param cnt
 	 */
-	private void createJobs(int cnt){
-		jobs = new ArrayList<Job>(cnt);
+	private void createJobs(final int cnt){
+		jobs = new ArrayList<>(cnt);
 		for(int i = 0; i < cnt; i++){
-			Job aJob = new Job();
+			final Job aJob = new Job();
 			aJob.setName("com.flytxt.tp.processor.LineProcessorImpl");
 			aJob.setByteCode(getLineProcessor());
 			jobs.add(aJob);
 			createTestData();
 		}
 	}
-	
-	
+
+
 	/**
-	 * Create the File Data . Which is deleted after the process .So again it copy to the source folder 
+	 * Create the File Data . Which is deleted after the process .So again it copy to the source folder
 	 */
 	private void createTestData() {
-		File directory =  new File(LineProcessorImpl.SOURCE_PTH);
+		final File directory =  new File(LineProcessorImpl.SOURCE_PTH);
 		if(!directory.exists()){
 			directory.mkdirs();
 		}
-		
-		String sourcePath = LineProcessorImpl.SOURCE_PTH +File.separator+"test-data";
-		File file = new File(sourcePath);
+
+		final String sourcePath = LineProcessorImpl.SOURCE_PTH +File.separator+"test-data";
+		final File file = new File(sourcePath);
 		if(!file.exists()){
 			try {
 				Files.copy(Paths.get(DATA_FILE_PATH), Paths.get(sourcePath), StandardCopyOption.REPLACE_EXISTING);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				org.junit.Assert.fail("Unable to copy test data");
 			}
 		}
 	}
-	
-	
+
+
 	/**
-	 * Load the Byte Code 
+	 * Load the Byte Code
 	 * @return
 	 */
-	private byte[] getLineProcessor() {	 
-		String resource = LineProcessorImpl.class.getName().replace('.', '/')+".class";
-        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(resource);
-        try {
+	private byte[] getLineProcessor() {
+		final String resource = LineProcessorImpl.class.getName().replace('.', '/')+".class";
+		final InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(resource);
+		try {
 			return ByteStreams.toByteArray(inputStream);
-		} catch (IOException e1) {			
+		} catch (final IOException e1) {
 			e1.printStackTrace();
 			return null;
-		}		
+		}
 	}
 }

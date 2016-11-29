@@ -11,7 +11,7 @@ import com.flytxt.tp.processor.filefilter.FilterChainBuilder;
 import com.flytxt.tp.processor.filefilter.FilterParameters;
 import com.flytxt.tp.processor.filefilter.FlyFileFilter;
 
-@Configuration
+//@Configuration
 public class TestConfiguration {
 	@Autowired
 	private ApplicationContext ctx;

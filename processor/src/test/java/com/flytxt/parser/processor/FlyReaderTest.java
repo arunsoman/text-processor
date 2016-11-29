@@ -1,4 +1,4 @@
-/*package com.flytxt.parser.processor;
+package com.flytxt.parser.processor;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,16 +22,16 @@ public class FlyReaderTest {
 	java.nio.file.Path path;
 	@Before
 	public void init(){
-		LineProcessor lp = new TestScript();
-        lp.getMf().getCurrentObject().init("", "");
-        lp.init("TestScript", System.currentTimeMillis());
+		final LineProcessor lp = new TestScript();
+		lp.getMf().getCurrentObject().init("", "");
+		lp.init("TestScript", System.currentTimeMillis());
 		fr.set("DummyFolder", lp, null);
 		try {
 			processFile = fr.getClass().getDeclaredMethod("processFile", Path.class);
 			processFile.setAccessible(true);
-			
-			ClassLoader classLoader = getClass().getClassLoader();
-			File file = new File(classLoader.getResource("test-data").getFile());
+
+			final ClassLoader classLoader = getClass().getClassLoader();
+			final File file = new File(classLoader.getResource("test-data").getFile());
 			path = file.toPath().toRealPath(LinkOption.NOFOLLOW_LINKS);
 			System.out.println(path.getFileName());
 		} catch (NoSuchMethodException | SecurityException | IOException e) {
@@ -39,7 +39,7 @@ public class FlyReaderTest {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Test
 	public void test(){
 		try {
@@ -48,8 +48,7 @@ public class FlyReaderTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 }
-*/
