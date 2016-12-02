@@ -1,11 +1,8 @@
 package com.flytxt.tp.processor.filefilter;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
-import java.util.Arrays;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -16,9 +13,15 @@ public class RegexFilterTest {
 	@Before
 	public void init(){
 		for(int i =0; i < 10; i++){
-		File mockedFile = Mockito.mock(File.class);
-		Mockito.when(mockedFile.getName()).thenReturn(i+".txt");
-		files[i] = mockedFile;
+			File mockedFile = null;
+			if(i%2==0){
+				mockedFile =  Mockito.mock(File.class);
+				Mockito.when(mockedFile.getName()).thenReturn(i+".txt");
+			}else{
+				mockedFile =  Mockito.mock(File.class);
+				Mockito.when(mockedFile.getName()).thenReturn(i+".csv");
+			}
+			files[i] = mockedFile;
 		}
 	}
 	
@@ -27,7 +30,12 @@ public class RegexFilterTest {
 		String regex = ".*\\.txt";
 		rf.setRegex(regex);
 		File[] okFiles = rf.canProcess(files);
-		//TODO
+		for(File file : okFiles){	
+			if(null!=file)
+			Assert.assertTrue(file.getName().contains(".txt"));
+		}
+		
+		
 	}
 	
 	@Test
@@ -35,7 +43,10 @@ public class RegexFilterTest {
 		String regex = ".*\\.csv";
 		rf.setRegex(regex);
 		File[] okFiles = rf.canProcess(files);
-		//TODO
+		for(File file : okFiles){	
+			if(null!=file)
+			Assert.assertTrue(file.getName().contains(".csv"));
+		}
 	}
 	
 }

@@ -42,10 +42,12 @@ import com.google.common.cache.RemovalListeners;
 import com.google.common.cache.RemovalNotification;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 
 @ConfigurationProperties(prefix = "folder")
 @Data
+@Slf4j
 public class FolderEventListener {
 
     private AtomicBoolean recursive = new AtomicBoolean(true);
@@ -189,7 +191,7 @@ public class FolderEventListener {
             if (file.exists())
                 outputUnit.cache.put(sourceFile, outputUnit);
             else
-                System.out.println("File was deleted while copying: '" + file.getAbsolutePath() + "'");
+                log.info("File was deleted while copying: '" + file.getAbsolutePath() + "'");
         } finally {
             if (raf != null)
                 raf.close();
@@ -235,7 +237,7 @@ public class FolderEventListener {
                                     found = true;
                                 }
                             if (!found)
-                                System.out.println("no regx found for" + fileName);
+                                log.info("no regx found for" + fileName);
                         }
                         if (kind == ENTRY_MODIFY)
                             cache.get(source.toString().concat("/").concat(fileName));

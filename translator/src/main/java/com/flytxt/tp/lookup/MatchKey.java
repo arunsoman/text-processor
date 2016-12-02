@@ -13,17 +13,6 @@ public class MatchKey<T> extends Lookup<T> {
         this.mf = mf;
     }
 
-    public MatchKey(final String file) {
-        this.fileName = file;
-        loadFromFile();
-    }
-
-    public MatchKey(final File file, MarkerFactory mf) {
-        this.fileName = file.getAbsolutePath();
-        this.mf = mf;
-        loadFromFile();
-    }
-
     @Override
     public void load(final byte[] key, final T val) {
         node.add(key, val);

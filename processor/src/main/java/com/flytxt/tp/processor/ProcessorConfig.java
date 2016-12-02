@@ -12,13 +12,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import com.flytxt.tp.processor.FolderEventListener.Watch;
 import com.flytxt.tp.processor.filefilter.FilterChainBuilder;
+import com.flytxt.tp.processor.filefilter.FilterParameters;
 import com.flytxt.tp.processor.filefilter.FlyFileFilter;
 
 import lombok.Getter;
@@ -26,7 +31,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Profile("processor")
 @Configuration
+@EnableJpaRepositories
+@EntityScan(basePackageClasses=Job.class)
 @EnableConfigurationProperties
+@ComponentScan
 @Slf4j
 public class ProcessorConfig {
 
@@ -41,22 +49,6 @@ public class ProcessorConfig {
 	private final Logger appLog = LoggerFactory.getLogger("applicationLog");
 
 	
-
-	static class DbClassLoader extends ClassLoader {
-		private DbClassLoader() {
-			super(Thread.currentThread().getContextClassLoader());
-		}
-
-		@SuppressWarnings("unchecked")
-		public Class<LineProcessor> getClass(byte[] d, String name) {
-			return (Class<LineProcessor>) defineClass(name, d, 0, d.length);
-		}
-	}
-
-	public LineProcessor getLp(byte[] byteCode, String name) throws InstantiationException, IllegalAccessException{
-		DbClassLoader loader = new DbClassLoader();
-		return loader.getClass(byteCode, name).newInstance();
-	}
 	@PostConstruct
 	public void init() throws Exception {
 		String hostName = getHostname();
@@ -114,6 +106,7 @@ public class ProcessorConfig {
 
 	@Bean
 	@Lazy
+	@Scope("prototype")
 	public FlyReader flyReader() {
 		return new FlyReader();
 	}
@@ -126,6 +119,11 @@ public class ProcessorConfig {
 	@Bean
 	public FilterChainBuilder filterChainBuilder() {
 		return new FilterChainBuilder();
+	}
+	
+	@Bean
+	public FilterParameters filterParameters() {
+		return new FilterParameters();
 	}
 	
 	@Bean

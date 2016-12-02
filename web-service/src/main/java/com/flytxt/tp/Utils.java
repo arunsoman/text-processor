@@ -27,8 +27,9 @@ public class Utils {
 	}
 
 	private byte[] findFile(String name) throws URISyntaxException {
-		InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(name);
-		try (ByteArrayOutputStream os = new ByteArrayOutputStream();) {
+		try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(name);
+				ByteArrayOutputStream os = new ByteArrayOutputStream();) {
+
 			byte[] buffer = new byte[0xFFFF];
 			for (int len; (len = resourceAsStream.read(buffer)) != -1;)
 				os.write(buffer, 0, len);

@@ -122,26 +122,9 @@ public class TpMath implements ConstantMarker {
 	}
 
 	public Marker extractDecimalFractionPart(final Marker m, final MarkerFactory mf) {
-		boolean createImmutable = m.isDataLocal();
-		byte[] data = m.getData();
-		int index = m.index;
-		boolean found = false;
-		for (final byte b : data) {
-			if (b == dotByte) {
-				found = true;
-				break;
-			}
-			index++;
-		}
-		if (!found)
-			return mf.createMarker(doubleZero, 0, doubleZero.length);
-		if (createImmutable) {
-			final int size = m.length - index;
-			final byte[] result = new byte[size];
-			System.arraycopy(data, index, result, 0, result.length);
-			return mf.createMarker(result, 0, size);
-		} else
-			return mf.createMarker(null, index, m.length - index);
+		double d = m.asDouble();
+		double result =d - ((long)d);
+		return mf.createMarker(result);
 	}
 
 	public boolean isNumber(final Marker m, final MarkerFactory mf) {

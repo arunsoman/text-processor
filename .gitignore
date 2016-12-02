@@ -1,9 +1,9 @@
 .settings
 .project
 .classpath
-.dat
+*.dat
 target
 bin
-log
-*logs*
+*.log
+*log*
 .DS_Store

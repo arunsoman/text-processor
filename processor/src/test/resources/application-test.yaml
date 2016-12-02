@@ -1,0 +1,46 @@
+spring:
+    application:
+        name: processor
+    profiles:
+       active: processor
+    datasource:
+        url: jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE
+        driverClassName: org.h2.Driver
+        
+logging:
+  file: dev_app.log
+  pattern:
+    console: "%d %-5level %logger : %msg%n"
+    file: "%d %-5level [%thread] %logger : %msg%n"
+  level:
+    org.springframework.web: ERROR
+    guru.springframework.controllers: ERROR
+    org.hibernate: ERROR
+    com.flytxt: DEBUG
+
+server:
+    port: 0
+
+compiler:
+  getScript: /
+  getJar: /getJar
+  remoteHost: http://localhost:9000
+  hostName: demo
+
+folder:
+  expireTimeInMinutes: 1
+  cacheCleanUpTime: 30000
+filters:
+  filterNameMap:
+    sample_filter_name: com.flytxt.tp.processor.filefilter.LastModifiedWindowFilter,com.flytxt.tp.processor.filefilter.RegexFilter
+    sample_filter_name2: com.flytxt.tp.processor.filefilter.LastModifiedWindowFilter
+    sample_filter_name3: com.flytxt.tp.processor.filefilter.FifoFilter
+
+filterArgs:
+  argMap:
+    sample_filter_name:
+      com.flytxt.tp.processor.filefilter.LastModifiedWindowFilter: 1000
+      com.flytxt.tp.processor.filefilter.RegexFilter: .*[a-zA-Z]+.*
+    sample_filter_name2:
+      com.flytxt.tp.processor.filefilter.LastModifiedWindowFilter: 1000
+      com.flytxt.tp.processor.filefilter.RegexFilter: .*[a-zA-Z]+.*

@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * File Filter implementation.
  */
-public class FlyFileFilter implements DirectoryStream.Filter<Path>{
+public class FlyFileFilter implements DirectoryStream.Filter<Path>,Iterable<Path>{
 
 	/** filter chain builder for getting the filter chain  */
 	@Autowired
@@ -28,6 +28,9 @@ public class FlyFileFilter implements DirectoryStream.Filter<Path>{
 	/** For Keeping the filter applied File list*/
 	private File [] filteredFiles ;
 	
+	private String parentDirectory;
+	
+		
 	/** Logger */
 	private final Logger logger = LoggerFactory.getLogger(FlyFileFilter.class);
 	
@@ -38,9 +41,17 @@ public class FlyFileFilter implements DirectoryStream.Filter<Path>{
 	 * @param parentFolder
 	 * @param filterName
 	 */
-	public void set(String parentFolder,String filterName) {
+	public void set(String parentDirectory,String filterName) {
+		this.setParentDirectory(parentDirectory);
 		this.filterChain = builder.getFilterChainByName(filterName);
-		filteredFiles = this.doFilter(parentFolder);				
+		filteredFiles = this.doFilter(parentDirectory);		
+	}
+	
+	/**
+	 * Refresh the files. Fetch the next batch from the directory.
+	 */
+	public void refresh(){
+		filteredFiles = this.doFilter(this.getParentDirectory());
 	}
 
 
@@ -96,6 +107,29 @@ public class FlyFileFilter implements DirectoryStream.Filter<Path>{
 		if(null!= filterChain && null!=files){  
 			return filterChain.canProcess(files);				
 		}
-		return null;
+		return files;
 	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public FileIterator<Path> iterator() {
+		return new FileIterator<Path>(filteredFiles);
+	}
+	
+	
+	/**  @return Parent Directory Path as a String  */
+	public String getParentDirectory() {
+		return parentDirectory;
+	}
+	
+	/**
+	 * Setter  @param parentDirectory for setting the parent directory 
+	 */
+	public void setParentDirectory(String parentDirectory) {
+		this.parentDirectory = parentDirectory;
+	}
+
+
 }

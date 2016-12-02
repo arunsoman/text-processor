@@ -56,7 +56,7 @@ public class ChronicleWriter<T extends Marshallable> {
     }
 
     public void destroy() {
-        if (queue.isClosed()) {
+        if (queue !=null && queue.isClosed()) {
             queue.close();
             appLogger.info("[ChronicleWriter|destroy|Queue distroyed Location:{}]", chroniclePath);
         }

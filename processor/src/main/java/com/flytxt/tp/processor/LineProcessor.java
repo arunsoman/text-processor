@@ -18,5 +18,5 @@ public interface LineProcessor {
 
     MarkerFactory getMf();
     
-    void preDestroy();
+    void preDestroy()throws Exception;
 }

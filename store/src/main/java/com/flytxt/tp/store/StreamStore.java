@@ -48,8 +48,8 @@ public class StreamStore implements Store {
     }
 
 	@Override
-	public void preDestroy() {
-		// TODO Auto-generated method stub
-		
+	public void close() throws Exception {
+		if(queueWriter !=null)
+    	queueWriter.destroy();
 	}
 }

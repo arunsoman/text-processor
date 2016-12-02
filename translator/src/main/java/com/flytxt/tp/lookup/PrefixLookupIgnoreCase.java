@@ -23,17 +23,6 @@ public class PrefixLookupIgnoreCase<T> extends Lookup<T> {
         this.mf = mf;
     }
 
-    public PrefixLookupIgnoreCase(final String file) {
-        this.fileName = file;
-        loadFromFile();
-    }
-
-    public PrefixLookupIgnoreCase(final File file, MarkerFactory mf) {
-        this.fileName = file.getAbsolutePath();
-        this.mf = mf;
-        loadFromFile();
-    }
-
     private byte[] toLower(final byte[] data1) {
         final byte[] dest = new byte[data1.length];
         int index = 0;

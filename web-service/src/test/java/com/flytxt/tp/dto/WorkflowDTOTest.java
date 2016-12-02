@@ -28,7 +28,6 @@ public class WorkflowDTOTest {
     public void compileFromMap() {
         try {
         	dto.execute(createFromString());
-            //System.out.println();
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -54,9 +53,7 @@ public class WorkflowDTOTest {
                 obj.setCurrentLine(data, 0, data.length);
                 lp.process();
             }
-            System.out.println(lp.done());
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
