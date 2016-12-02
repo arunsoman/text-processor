@@ -47,9 +47,10 @@ public class StreamStore implements Store {
         return null;
     }
 
-	@Override
-	public void close() throws Exception {
-		if(queueWriter !=null)
-    	queueWriter.destroy();
-	}
+    @Override
+    public void close() throws Exception {
+        if (queueWriter != null) {
+            queueWriter.destroy();
+        }
+    }
 }
