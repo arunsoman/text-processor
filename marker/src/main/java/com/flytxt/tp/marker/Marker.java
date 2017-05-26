@@ -1,5 +1,9 @@
 package com.flytxt.tp.marker;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang3.ArrayUtils;
+
 import lombok.Getter;
 
 public class Marker {
@@ -253,4 +257,36 @@ public class Marker {
 		doubleValue = Double.parseDouble(toString());;
 		return doubleValue;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (cacheValue ? 1231 : 1237);
+		result = prime * result + ((currentObject == null) ? 0 : currentObject.hashCode());
+		result = prime * result + dataType;
+		long temp;
+		temp = Double.doubleToLongBits(doubleValue);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((fm == null) ? 0 : fm.hashCode());
+		result = prime * result + index;
+		result = prime * result + (int) (lastModifiedTime ^ (lastModifiedTime >>> 32));
+		result = prime * result + (int) (lastReadTime ^ (lastReadTime >>> 32));
+		result = prime * result + length;
+		result = prime * result + Arrays.hashCode(localData);
+		result = prime * result + (int) (longValue ^ (longValue >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		
+		return ArrayUtils.isEquals(this.getData(), ((Marker)obj).getData());
+	}
+	
+	
 }
