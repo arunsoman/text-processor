@@ -7,6 +7,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.security.UserGroupInformation;
+import org.springframework.data.hadoop.store.codec.DefaultCodecInfo;
 import org.springframework.data.hadoop.store.output.OutputStreamWriter;
 import org.springframework.data.hadoop.store.strategy.naming.RollingFileNamingStrategy;
 
@@ -27,7 +28,8 @@ public class HdfsWriter {
 		RollingFileNamingStrategy fileNamingStrategy = new RollingFileNamingStrategy().createInstance();
 		fileNamingStrategy.init(path);
 
-		writer = new OutputStreamWriter(config, path, null);
+		writer = new OutputStreamWriter(config, path, 
+				new DefaultCodecInfo("org.apache.hadoop.io.compress.BZip2Codec", true, "bzip"));
 		writer.setFileNamingStrategy(fileNamingStrategy);
 	}
 
